@@ -1,0 +1,63 @@
+name: build snapshot
+
+on:
+  workflow_call:
+    inputs:
+      namespace:
+        required: false
+        type: string
+        default: '@rush-monorepo-boilerplate'
+      package-name:
+        required: true
+        type: string
+      package-path:
+        required: false
+        type: string
+        default: './packages'
+jobs:
+  deploy:
+    # Operating system to run job on
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.x]
+    steps:
+      # Get code from repo
+      - name: Checkout code
+        uses: actions/checkout@v1
+      # Install NodeJS
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Cache Rush
+        uses: actions/cache@v2
+        with:
+          path: |
+            common/temp/install-run
+            ~/.rush
+          key: ${{ runner.os }}-${{ hashFiles('rush.json') }}
+      - name: Cache pnpm
+        uses: actions/cache@v2
+        with:
+          path: |
+            common/temp/pnpm-store
+          key: ${{ runner.os }}-${{ hashFiles('common/config/rush/pnpm-lock.yaml') }}
+      # Run rush install
+      - name: Install dependencies
+        run: |
+          npm set verify-store-integrity false
+          node common/scripts/install-run-rush.js change -v
+          node common/scripts/install-run-rush.js install
+          ./common/temp/pnpm-local/node_modules/.bin/pnpm config set store-dir common/temp/pnpm-store
+          ./common/temp/pnpm-local/node_modules/.bin/pnpm store prune
+      # Run lint for this package
+      - name: lint
+        run: node common/scripts/install-run-rush.js lint --to ${{ inputs.namespace }}/${{ inputs.package-name }}
+      # Run unit tests for this package
+      - name: test
+        run: node common/scripts/install-run-rush.js test --to ${{ inputs.namespace }}/${{ inputs.package-name }}
+      - name: Build ${{ inputs.package-name }}
+        working-directory: ${{ inputs.package-path }}/${{ inputs.package-name }}
+        run: |
+          node $GITHUB_WORKSPACE/common/scripts/install-run-rush.js build --verbose --to ${{ inputs.namespace }}/${{ inputs.package-name }}

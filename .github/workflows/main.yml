@@ -4,51 +4,7 @@ on:
   push:
   pull_request:
 jobs:
-  deploy:
-    # Operating system to run job on
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [14.x]
-        include:
-          - app-name: app-1
-            app: '@rush-monorepo-boilerplate/app-1'
-            app-dir: 'packages/app-1'
-            app-build: 'packages/app-1/dist'
-    steps:
-      # Get code from repo
-      - name: Checkout code
-        uses: actions/checkout@v1
-      # Install NodeJS
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-      - name: Cache Rush
-        uses: actions/cache@v2
-        with:
-          path: |
-            common/temp/install-run
-            ~/.rush
-          key: ${{ runner.os }}-${{ hashFiles('rush.json') }}
-      - name: Cache pnpm
-        uses: actions/cache@v2
-        with:
-          path: |
-            common/temp/pnpm-store
-          key: ${{ runner.os }}-${{ hashFiles('common/config/rush/pnpm-lock.yaml') }}
-      # Run rush install and build on our code
-      - name: Install dependencies
-        run: |
-          node common/scripts/install-run-rush.js change -v
-          node common/scripts/install-run-rush.js install
-      # Run lint for matrix.app
-      - name: lint
-        run: node common/scripts/install-run-rush.js lint --to ${{ matrix.app }}
-      # Run unit tests for matrix.app
-      - name: test
-        run: node common/scripts/install-run-rush.js test --to ${{ matrix.app }}
-      - name: Build ${{ matrix.app-name }}
-        working-directory: ${{ matrix.app-dir }}
-        run: |
-          node $GITHUB_WORKSPACE/common/scripts/install-run-rush.js build --verbose --to ${{ matrix.app }}
+  app-1:
+    uses: ./.github/workflows/base.yml
+    with:
+      package-name: app-1
