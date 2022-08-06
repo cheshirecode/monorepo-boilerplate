@@ -1,0 +1,82 @@
+// DO NOT ADD COMMENTS IN THIS FILE.  They will be lost when the Rush tool resaves it.
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/rush/v5/approved-packages.schema.json",
+  "packages": [
+    {
+      "name": "@fieryeagle/eslint-config-react",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "@rushstack/eslint-patch",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "@testing-library/jest-dom",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "@testing-library/react",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "@testing-library/user-event",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "@unocss/preset-wind",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "@unocss/transformer-directives",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "@unocss/transformer-variant-group",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "@unocss/vite",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "@vitejs/plugin-react",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "c8",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "classnames",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "eslint-plugin-jest-dom",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "jsdom",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "react",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "react-dom",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "unocss",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "vite",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "vitest",
+      "allowedCategories": [ "production" ]
+    }
+  ]
+}

@@ -3,7 +3,8 @@ import Spinner from './components/Spinner';
 
 const App: BaseFC = () => (
   <ErrorBoundary>
-    <Spinner></Spinner>
+    <Spinner />
+    <h1>@rush-monorepo-boilerplate/app-1</h1>
   </ErrorBoundary>
 );
 
