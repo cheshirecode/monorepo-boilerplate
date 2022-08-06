@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [14.x]
+        node-version: [14.x, 16.x]
     steps:
       # Get code from repo
       - name: Checkout code
@@ -49,8 +49,6 @@ jobs:
           npm set verify-store-integrity false
           node common/scripts/install-run-rush.js change -v
           node common/scripts/install-run-rush.js install
-          ./common/temp/pnpm-local/node_modules/.bin/pnpm config set store-dir common/temp/pnpm-store
-          ./common/temp/pnpm-local/node_modules/.bin/pnpm store prune
       # Run lint for this package
       - name: lint
         run: node common/scripts/install-run-rush.js lint --to ${{ inputs.namespace }}/${{ inputs.package-name }}
