@@ -1,74 +1,20 @@
 name: build snapshot
 
-# When workflow is triggered
 on:
   push:
   pull_request:
-# Jobs to carry out
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [14.x]
-    steps:
-      # Get code from repo
-      - name: Checkout code
-        uses: actions/checkout@v1
-      # Install NodeJS
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-      # Run rush install and build on our code
-      - name: Install dependencies
-        run: |
-          node common/scripts/install-run-rush.js change -v
-          node common/scripts/install-run-rush.js install
-          node common/scripts/install-run-rush.js build
-      # Run eslint to check all packages
-      - name: Lint packages
-        run: node common/scripts/install-run-rush.js lint
-  test:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [14.x]
-    env:
-      CI: true
-    steps:
-      # Get code from repo
-      - name: Checkout code
-        uses: actions/checkout@v1
-      # Install NodeJS
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-      # Run rush install
-      - name: Install dependencies
-        run: |
-          node common/scripts/install-run-rush.js change -v
-          node common/scripts/install-run-rush.js install
-          node common/scripts/install-run-rush.js build
-      # Run unit tests for all packages
-      - name: Run tests
-        run: node common/scripts/install-run-rush.js test
   deploy:
     # Operating system to run job on
     runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [14.x]
-        app-name: [app-1]
         include:
           - app-name: app-1
             app: '@rush-monorepo-boilerplate/app-1'
-            app-dir: 'apps/app-1'
-            app-build: 'apps/app-1/build'
-            site-id: NETLIFY_SITE_ID
-    needs: [lint, test]
-    # Steps in job
+            app-dir: 'packages/app-1'
+            app-build: 'packages/app-1/dist'
     steps:
       # Get code from repo
       - name: Checkout code
@@ -78,11 +24,30 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
+      - name: Cache Rush
+        uses: actions/cache@v2
+        with:
+          path: |
+            common/temp/install-run
+            ~/.rush
+          key: ${{ runner.os }}-${{ hashFiles('rush.json') }}
+      - name: Cache pnpm
+        uses: actions/cache@v2
+        with:
+          path: |
+            common/temp/pnpm-store
+          key: ${{ runner.os }}-${{ hashFiles('common/config/rush/pnpm-lock.yaml') }}
       # Run rush install and build on our code
       - name: Install dependencies
         run: |
           node common/scripts/install-run-rush.js change -v
           node common/scripts/install-run-rush.js install
+      # Run lint for matrix.app
+      - name: Run tests
+        run: node common/scripts/install-run-rush.js lint --to ${{ matrix.app }}
+      # Run unit tests for matrix.app
+      - name: Run tests
+        run: node common/scripts/install-run-rush.js test --to ${{ matrix.app }}
       - name: Build ${{ matrix.app-name }}
         working-directory: ${{ matrix.app-dir }}
         run: |
