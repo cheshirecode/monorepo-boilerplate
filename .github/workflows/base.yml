@@ -8,14 +8,14 @@ on:
         type: string
         default: '@rush-monorepo-boilerplate'
       package-name:
-        required: true
+        required: false
         type: string
       package-path:
         required: false
         type: string
         default: './packages'
 jobs:
-  deploy:
+  build-package:
     # Operating system to run job on
     runs-on: ubuntu-latest
     strategy:
@@ -30,15 +30,27 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
+      - name: Get npm cache directory
+        id: npm-cache-dir
+        run: |
+          echo "::set-output name=dir::$(npm config get cache)"
+      - name: Cache npm
+        uses: actions/cache@v3
+        id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
+        with:
+          path: ${{ steps.npm-cache-dir.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
       - name: Cache Rush
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             common/temp/install-run
             ~/.rush
           key: ${{ runner.os }}-${{ hashFiles('rush.json') }}
       - name: Cache pnpm
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             common/temp/pnpm-store
@@ -51,11 +63,14 @@ jobs:
           node common/scripts/install-run-rush.js install
       # Run lint for this package
       - name: lint
-        run: node common/scripts/install-run-rush.js lint --to ${{ inputs.namespace }}/${{ inputs.package-name }}
+        if: inputs.package-name != null
+        run: node common/scripts/install-run-rush.js lint --to ${{ inputs.namespace }}/${{ inputs.package-name }}        
       # Run unit tests for this package
       - name: test
+        if: inputs.package-name != null
         run: node common/scripts/install-run-rush.js test --to ${{ inputs.namespace }}/${{ inputs.package-name }}
-      - name: Build ${{ inputs.package-name }}
+      - name: build ${{ inputs.package-name }}
+        if: inputs.package-name != null
         working-directory: ${{ inputs.package-path }}/${{ inputs.package-name }}
         run: |
           node $GITHUB_WORKSPACE/common/scripts/install-run-rush.js build --verbose --to ${{ inputs.namespace }}/${{ inputs.package-name }}

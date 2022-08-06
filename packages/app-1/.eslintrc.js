@@ -1,8 +1,6 @@
-require('@rushstack/eslint-patch/modern-module-resolution');
-
 // Add your "extends" boilerplate here, for example:
 module.exports = {
-  extends: ['@fieryeagle/eslint-config-react'],
+  extends: ['@rush-monorepo-boilerplate/eslint-config-react'],
   settings: {
     'import/core-modules': ['virtual:uno.css']
   },

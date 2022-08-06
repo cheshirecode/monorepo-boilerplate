@@ -184,7 +184,7 @@
       "enableParallelism": true,
       "ignoreMissingScript": true,
       "ignoreDependencyOrder": true,
-      "allowWarningsInSuccessfulBuild": false
+      "allowWarningsInSuccessfulBuild": true
     }
   ],
 

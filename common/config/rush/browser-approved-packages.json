@@ -3,7 +3,19 @@
   "$schema": "https://developer.microsoft.com/json-schemas/rush/v5/approved-packages.schema.json",
   "packages": [
     {
+      "name": "@babel/core",
+      "allowedCategories": [ "tools" ]
+    },
+    {
+      "name": "@babel/eslint-parser",
+      "allowedCategories": [ "tools" ]
+    },
+    {
       "name": "@fieryeagle/eslint-config-react",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "@rush-monorepo-boilerplate/eslint-config-react",
       "allowedCategories": [ "production" ]
     },
     {
@@ -21,6 +33,14 @@
     {
       "name": "@testing-library/user-event",
       "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "@typescript-eslint/eslint-plugin",
+      "allowedCategories": [ "tools" ]
+    },
+    {
+      "name": "@typescript-eslint/parser",
+      "allowedCategories": [ "tools" ]
     },
     {
       "name": "@unocss/preset-wind",
@@ -51,20 +71,72 @@
       "allowedCategories": [ "production" ]
     },
     {
+      "name": "eslint",
+      "allowedCategories": [ "tools" ]
+    },
+    {
+      "name": "eslint-config-prettier",
+      "allowedCategories": [ "tools" ]
+    },
+    {
+      "name": "eslint-config-react-app",
+      "allowedCategories": [ "tools" ]
+    },
+    {
+      "name": "eslint-plugin-flowtype",
+      "allowedCategories": [ "tools" ]
+    },
+    {
+      "name": "eslint-plugin-import",
+      "allowedCategories": [ "tools" ]
+    },
+    {
       "name": "eslint-plugin-jest-dom",
       "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "eslint-plugin-jsx-a11y",
+      "allowedCategories": [ "tools" ]
+    },
+    {
+      "name": "eslint-plugin-prettier",
+      "allowedCategories": [ "tools" ]
+    },
+    {
+      "name": "eslint-plugin-react",
+      "allowedCategories": [ "tools" ]
+    },
+    {
+      "name": "eslint-plugin-react-hooks",
+      "allowedCategories": [ "tools" ]
     },
     {
       "name": "jsdom",
       "allowedCategories": [ "production" ]
     },
     {
+      "name": "nyc",
+      "allowedCategories": [ "tools" ]
+    },
+    {
+      "name": "prettier",
+      "allowedCategories": [ "tools" ]
+    },
+    {
       "name": "react",
-      "allowedCategories": [ "production" ]
+      "allowedCategories": [ "production", "tools" ]
     },
     {
       "name": "react-dom",
       "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "tap",
+      "allowedCategories": [ "tools" ]
+    },
+    {
+      "name": "typescript",
+      "allowedCategories": [ "tools" ]
     },
     {
       "name": "unocss",

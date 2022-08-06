@@ -4,7 +4,17 @@ on:
   push:
   pull_request:
 jobs:
+  base:
+    uses: ./.github/workflows/base.yml
+    with:
+      package-name: ' '
   app-1:
+    needs: [base]
     uses: ./.github/workflows/base.yml
     with:
       package-name: app-1
+  eslint-config-react:
+    needs: [base]
+    uses: ./.github/workflows/base.yml
+    with:
+      package-name: eslint-config-react
