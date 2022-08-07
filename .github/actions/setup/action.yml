@@ -1,0 +1,46 @@
+name: setup
+description: 'pull source code + install node and '
+inputs:
+  skip-rush:
+    required: false
+    description: 'flag to specify rush usage'
+  skip-pnpm:
+    required: false
+    description: 'flag to specify pnpm usage'
+runs:
+  using: "composite"
+  steps:
+    # Get code from repo
+    - name: Checkout code
+      uses: actions/checkout@v3
+    # Install NodeJS
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+    - name: Get npm cache directory
+      shell: bash
+      id: npm-cache-dir
+      run: |
+        echo "::set-output name=dir::$(npm config get cache)"
+    - name: Cache npm
+      uses: actions/cache@v3
+      id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
+      with:
+        path: ${{ steps.npm-cache-dir.outputs.dir }}
+        key: ${{ runner.os }}-${{ matrix.node-version }}-npm-${{ hashFiles('rush.json') }}
+    - name: Cache Rush
+      uses: actions/cache@v3
+      if: ${{ inputs.skip-rush }} != null
+      with:
+        path: |
+          common/temp/install-run
+          ~/.rush
+        key: ${{ runner.os }}-${{ matrix.node-version }}-rush-${{ hashFiles('rush.json') }}
+    - name: Cache pnpm
+      uses: actions/cache@v3
+      if: ${{ inputs.skip-pnpm }} != null
+      with:
+        path: |
+          common/temp/pnpm-store
+        key: ${{ runner.os }}-${{ matrix.node-version }}-pnpm-${{ hashFiles('common/config/rush/pnpm-lock.yaml') }}
