@@ -18,3 +18,4 @@ jobs:
     uses: ./.github/workflows/base.yml
     with:
       package-name: eslint-config-react
+      lcov: true
