@@ -1,6 +1,6 @@
 // Add your "extends" boilerplate here, for example:
 module.exports = {
-  extends: ['@rush-monorepo-boilerplate/eslint-config-react'],
+  extends: ['@fieryeagle/eslint-config-react'],
   settings: {
     'import/core-modules': ['virtual:uno.css']
   },

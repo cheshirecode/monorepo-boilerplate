@@ -17,5 +17,6 @@ jobs:
     needs: [base]
     uses: ./.github/workflows/base.yml
     with:
+      namespace: '@fieryeagle'
       package-name: eslint-config-react
       lcov: true

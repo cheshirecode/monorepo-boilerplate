@@ -1,6 +1,6 @@
 {
-  "name": "@rush-monorepo-boilerplate/eslint-config-react",
-  "version": "0.0.1",
+  "name": "@fieryeagle/eslint-config-react",
+  "version": "0.0.8",
   "main": "index.js",
   "files": [
     "index.js",

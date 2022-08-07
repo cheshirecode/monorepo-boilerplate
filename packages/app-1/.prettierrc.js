@@ -1,3 +1,3 @@
-const prettierConfig = require('@rush-monorepo-boilerplate/eslint-config-react/.prettierrc.js');
+const prettierConfig = require('@fieryeagle/eslint-config-react/.prettierrc.js');
 
 module.exports = prettierConfig;

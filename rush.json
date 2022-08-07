@@ -473,12 +473,13 @@
       ]
     },
     {
-      "packageName": "@rush-monorepo-boilerplate/eslint-config-react",
+      "packageName": "@fieryeagle/eslint-config-react",
       "projectFolder": "packages/eslint-config-react",
       "reviewCategory": "tools",
       "tags": [
         "tools"
-      ]
+      ],
+      "shouldPublish": true
     }
   ]
 }
