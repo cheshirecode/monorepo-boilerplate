@@ -42,7 +42,8 @@
     "@types/tap": "^15.0.7",
     "tap": "^16.2.0",
     "nyc": "~15.1.0",
-    "react": "~18.2.0"
+    "react": "~18.2.0",
+    "eslint-import-resolver-typescript": "~3.5.2"
   },
   "bugs": {
     "url": "https://github.com/cheshirecode/rush-monorepo-boilerplate/issues"
