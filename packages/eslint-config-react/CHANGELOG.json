@@ -2,6 +2,18 @@
   "name": "@fieryeagle/eslint-config-react",
   "entries": [
     {
+      "version": "0.0.9",
+      "tag": "@fieryeagle/eslint-config-react_v0.0.9",
+      "date": "Tue, 01 Nov 2022 13:11:09 GMT",
+      "comments": {
+        "patch": [
+          {
+            "comment": "add typescript linting"
+          }
+        ]
+      }
+    },
+    {
       "version": "0.0.8",
       "tag": "@fieryeagle/eslint-config-react_v0.0.8",
       "date": "Sun, 07 Aug 2022 16:15:58 GMT",
