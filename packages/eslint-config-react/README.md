@@ -44,11 +44,24 @@ This patch is a workaround for a longstanding ESLint feature request that would 
 - create .eslintrc.js
 
 ```
-require("@rushstack/eslint-patch/modern-module-resolution");
+import baseConfig from '@fieryeagle/eslint-config-react';
+
 module.exports = {
   extends: ['@fieryeagle/eslint-config-react'],
-  parserOptions: { tsconfigRootDir: __dirname }
+  parserOptions: {
+    ...baseConfig.parserOptions,
+    tsconfigRootDir: __dirname
+  },
+  settings: {
+    ...baseConfig.settings,
+    'import/core-modules': ['virtual:uno.css']
+  },
+  rules: {
+    ...baseConfig.rules,
+    '@typescript-eslint/ban-ts-comment': 'off'
+  }
 };
+
 ```
 - create .prettier.js
 ```
