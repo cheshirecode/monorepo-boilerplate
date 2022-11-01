@@ -83,6 +83,10 @@
       "allowedCategories": [ "tools" ]
     },
     {
+      "name": "eslint-import-resolver-typescript",
+      "allowedCategories": [ "tools" ]
+    },
+    {
       "name": "eslint-plugin-flowtype",
       "allowedCategories": [ "tools" ]
     },
