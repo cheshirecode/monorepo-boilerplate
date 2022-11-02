@@ -55,7 +55,6 @@ module.exports = {
   },
   settings: {
     ...baseConfig.settings,
-    'import/core-modules': ['virtual:uno.css'],
     'import/resolver': {
       typescript: {}
     }
