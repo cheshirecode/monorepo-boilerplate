@@ -41,10 +41,9 @@ This patch is a workaround for a longstanding ESLint feature request that would 
 ## Usage
 
 - add packages `yarn add -D @fieryeagle/eslint-config-react @rushstack/eslint-patch`
-- create .eslintrc.js
-
+- create .eslintrc.js (or use  .mjs for import/export syntax)
 ```
-import baseConfig from '@fieryeagle/eslint-config-react';
+const baseConfig = require('@fieryeagle/eslint-config-react');
 
 module.exports = {
   extends: ['@fieryeagle/eslint-config-react'],
