@@ -1,7 +1,9 @@
 // Add your "extends" boilerplate here, for example:
-import baseConfig from '@fieryeagle/eslint-config-react';
+require('@rushstack/eslint-patch/modern-module-resolution');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const baseConfig = require('@fieryeagle/eslint-config-react');
 
-const config = {
+module.exports = {
   extends: ['@fieryeagle/eslint-config-react'],
   parserOptions: {
     ...baseConfig.parserOptions,
@@ -9,12 +11,13 @@ const config = {
   },
   settings: {
     ...baseConfig.settings,
-    'import/core-modules': ['virtual:uno.css']
+    'import/core-modules': ['virtual:uno.css'],
+    'import/resolver': {
+      typescript: {}
+    }
   },
   rules: {
     ...baseConfig.rules,
     '@typescript-eslint/ban-ts-comment': 'off'
   }
 };
-
-export default config;

@@ -40,9 +40,11 @@ This patch is a workaround for a longstanding ESLint feature request that would 
 
 ## Usage
 
-- add packages `yarn add -D @fieryeagle/eslint-config-react @rushstack/eslint-patch`
+- add packages `npm i -D @fieryeagle/eslint-config-react @rushstack/eslint-patch`
 - create .eslintrc.js (or use  .mjs for import/export syntax)
 ```
+require('@rushstack/eslint-patch/modern-module-resolution');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const baseConfig = require('@fieryeagle/eslint-config-react');
 
 module.exports = {
@@ -53,7 +55,10 @@ module.exports = {
   },
   settings: {
     ...baseConfig.settings,
-    'import/core-modules': ['virtual:uno.css']
+    'import/core-modules': ['virtual:uno.css'],
+    'import/resolver': {
+      typescript: {}
+    }
   },
   rules: {
     ...baseConfig.rules,
