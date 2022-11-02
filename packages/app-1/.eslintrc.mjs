@@ -1,7 +1,7 @@
 // Add your "extends" boilerplate here, for example:
 import baseConfig from '@fieryeagle/eslint-config-react';
 
-module.exports = {
+const config = {
   extends: ['@fieryeagle/eslint-config-react'],
   parserOptions: {
     ...baseConfig.parserOptions,
@@ -16,3 +16,5 @@ module.exports = {
     '@typescript-eslint/ban-ts-comment': 'off'
   }
 };
+
+export default config;
