@@ -1,6 +1,13 @@
 # Change Log - @fieryeagle/eslint-config-react
 
-This log was last generated on Tue, 01 Nov 2022 13:52:17 GMT and should not be manually modified.
+This log was last generated on Wed, 02 Nov 2022 03:29:15 GMT and should not be manually modified.
+
+## 0.0.12
+Wed, 02 Nov 2022 03:29:15 GMT
+
+### Patches
+
+- minor errors
 
 ## 0.0.11
 Tue, 01 Nov 2022 13:52:17 GMT
