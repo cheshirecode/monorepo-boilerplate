@@ -56,70 +56,68 @@ const safelist = Object.keys(breakpoints)
 const config: UserConfig = defineConfig({
   safelist,
   theme: {
-    extend: {
-      screens: breakpoints,
-      colors: {
-        blue: {
-          'dark-moderate': '#3a649e' // https://www.colorhexa.com/3a649e
-        },
-        cyan: {
-          dark: '#0F747E'
-        }
+    screens: breakpoints,
+    colors: {
+      blue: {
+        'dark-moderate': '#3a649e' // https://www.colorhexa.com/3a649e
       },
-      fontSize: {
-        // based on https://grtcalculator.com/
-        h1: ['2.625rem', lineHeight.h1],
-        h2: ['2.0625rem', lineHeight.h2],
-        h3: ['1.625rem', lineHeight.h3],
-        h4: ['1.125rem', lineHeight.h4],
-        h5: ['1rem', lineHeight.h5],
-        h6: ['0.8125rem', lineHeight.h6],
-        small: ['0.75rem', lineHeight.h6],
-        default: '1rem'
-      },
-      lineHeight,
-      maxWidth: {
-        custom: 'clamp(900px, 80%, 1440px)',
-        ...extraSizes
-      },
-      maxHeight: {
-        ...extraSizes
-      },
-      minWidth: {
-        ...extraSizes
-      },
-      minHeight: {
-        ...extraSizes
-      },
-      height: {
-        ...extraSizes
-      },
-      width: {
-        ...extraSizes
-      },
-      gridTemplateRows: {
-        main: '1fr auto auto auto',
-        ...extraGridTemplates
-      },
-      gridTemplateColumns: {
-        main: '1fr auto auto auto',
-        ...extraGridTemplates
-      },
-      listStyleType: {
-        none: 'none',
-        disc: 'disc',
-        decimal: 'decimal',
-        square: 'square',
-        roman: 'upper-roman'
-      },
-      animation: {
-        fade: 'fadeOut 2s normal forwards ease-in-out'
-      },
-      keyframes: {
-        fadeOut: {
-          '0%': { opacity: 1 },
-          '100%': { opacity: 0 }
-        }
+      cyan: {
+        dark: '#0F747E'
+      }
+    },
+    fontSize: {
+      // based on https://grtcalculator.com/
+      h1: ['2.625rem', lineHeight.h1],
+      h2: ['2.0625rem', lineHeight.h2],
+      h3: ['1.625rem', lineHeight.h3],
+      h4: ['1.125rem', lineHeight.h4],
+      h5: ['1rem', lineHeight.h5],
+      h6: ['0.8125rem', lineHeight.h6],
+      small: ['0.75rem', lineHeight.h6],
+      default: '1rem'
+    },
+    lineHeight,
+    maxWidth: {
+      custom: 'clamp(900px, 80%, 1440px)',
+      ...extraSizes
+    },
+    maxHeight: {
+      ...extraSizes
+    },
+    minWidth: {
+      ...extraSizes
+    },
+    minHeight: {
+      ...extraSizes
+    },
+    height: {
+      ...extraSizes
+    },
+    width: {
+      ...extraSizes
+    },
+    gridTemplateRows: {
+      main: '1fr auto auto auto',
+      ...extraGridTemplates
+    },
+    gridTemplateColumns: {
+      main: '1fr auto auto auto',
+      ...extraGridTemplates
+    },
+    listStyleType: {
+      none: 'none',
+      disc: 'disc',
+      decimal: 'decimal',
+      square: 'square',
+      roman: 'upper-roman'
+    },
+    animation: {
+      fade: 'fadeOut 2s normal forwards ease-in-out'
+    },
+    keyframes: {
+      fadeOut: {
+        '0%': { opacity: 1 },
+        '100%': { opacity: 0 }
       }
     }
   },

@@ -1,19 +1,16 @@
 /// <reference types="vitest" />
-import { resolve } from 'path';
-// eslint-disable-next-line import/no-unresolved
 import { configDefaults } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import Unocss from '@unocss/vite';
 import unocssConfig from './unocss.config';
+import alias from './alias';
 
 // https://vitejs.dev/config/
 export default defineConfig((config) => ({
   plugins: [Unocss({}, unocssConfig), react()],
   resolve: {
-    alias: {
-      '@': resolve(__dirname, './src')
-    }
+    alias
   },
   base: '/',
   clearScreen: false,
@@ -21,7 +18,8 @@ export default defineConfig((config) => ({
     // skip minification to make tests faster
     minify: config.mode !== 'test' ? 'esbuild' : false,
     commonjsOptions: {
-      transformMixedEsModules: true
+      transformMixedEsModules: true,
+      esmExternals: true
     },
     rollupOptions: {
       output: {

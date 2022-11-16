@@ -11,6 +11,8 @@ declare global {
 
   export interface ErrorHttp extends Error {
     response?: unknown;
+    info?: string;
+    status?: number;
   }
 
   export type FetchResponse<R, E> = [R | undefined, Promise<E> | undefined];
