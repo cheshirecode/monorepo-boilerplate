@@ -63,11 +63,19 @@
       "allowedCategories": [ "production" ]
     },
     {
+      "name": "@vitest/coverage-c8",
+      "allowedCategories": [ "production" ]
+    },
+    {
       "name": "c8",
       "allowedCategories": [ "production" ]
     },
     {
       "name": "classnames",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "esbuild",
       "allowedCategories": [ "production" ]
     },
     {
@@ -115,7 +123,15 @@
       "allowedCategories": [ "tools" ]
     },
     {
+      "name": "fast-json-stable-stringify",
+      "allowedCategories": [ "production" ]
+    },
+    {
       "name": "jsdom",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "lodash-es",
       "allowedCategories": [ "production" ]
     },
     {
@@ -135,12 +151,20 @@
       "allowedCategories": [ "production" ]
     },
     {
+      "name": "swr",
+      "allowedCategories": [ "production" ]
+    },
+    {
       "name": "tap",
       "allowedCategories": [ "tools" ]
     },
     {
       "name": "typescript",
       "allowedCategories": [ "tools" ]
+    },
+    {
+      "name": "unfetch",
+      "allowedCategories": [ "production" ]
     },
     {
       "name": "unocss",
