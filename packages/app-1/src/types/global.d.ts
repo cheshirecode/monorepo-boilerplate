@@ -8,4 +8,10 @@ declare global {
   }
 
   type BaseFC = FC<BaseProps>;
+
+  export interface ErrorHttp extends Error {
+    response?: unknown;
+  }
+
+  export type FetchResponse<R, E> = [R | undefined, Promise<E> | undefined];
 }

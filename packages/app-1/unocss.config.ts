@@ -1,6 +1,5 @@
-import { defineConfig } from 'unocss';
-import transformerVariantGroup from '@unocss/transformer-variant-group';
-import transformerDirective from '@unocss/transformer-directives';
+import { defineConfig, transformerVariantGroup, presetAttributify, presetUno } from 'unocss';
+import type { UserConfig } from 'unocss';
 
 export const MAX_REM_UNITS = 10;
 export const MAX_GRID_SIZE = 5;
@@ -54,7 +53,7 @@ const safelist = Object.keys(breakpoints)
       .map((y) => `${x ? `${x}:` : ''}${y}`)
   );
 
-export default defineConfig({
+const config: UserConfig = defineConfig({
   safelist,
   theme: {
     extend: {
@@ -124,7 +123,14 @@ export default defineConfig({
       }
     }
   },
-  transformers: [transformerVariantGroup(), transformerDirective()],
+  presets: [
+    presetUno(),
+    presetAttributify({
+      prefix: 'uno-',
+      prefixedOnly: true
+    })
+  ],
+  transformers: [transformerVariantGroup()],
   shortcuts: {
     btn: [
       'text-white text-center uppercase bold',
@@ -143,3 +149,5 @@ export default defineConfig({
     ].join(' ')
   }
 });
+
+export default config;

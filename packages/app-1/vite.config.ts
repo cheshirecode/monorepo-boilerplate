@@ -8,11 +8,8 @@ import Unocss from '@unocss/vite';
 import unocssConfig from './unocss.config';
 
 // https://vitejs.dev/config/
-export default defineConfig({
-  plugins: [
-    Unocss({}, unocssConfig ),
-    react()
-  ],
+export default defineConfig((config) => ({
+  plugins: [Unocss({}, unocssConfig), react()],
   resolve: {
     alias: {
       '@': resolve(__dirname, './src')
@@ -41,11 +38,11 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
-    setupFiles: ['./src/test/setup.js'],
+    setupFiles: ['./src/services/test/setup.js'],
     include: ['**/*(*.)?{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     exclude: [...configDefaults.exclude, 'src/test/**/*'],
     coverage: {
       reporter: ['text', 'lcov']
     }
   }
-});
+}));
