@@ -65,6 +65,7 @@ export const logger =
       },
       config
     );
+logger.stdoutMessagePrefix = 'SWR Request:';
 
 export const createHeaderMiddleware: <T>(headers: RequestInit['headers']) => SWRMiddleware<T> =
   <T>(headers: RequestInit['headers']) =>
