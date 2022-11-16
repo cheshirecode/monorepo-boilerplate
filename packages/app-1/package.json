@@ -6,11 +6,12 @@
     "node": ">= 14"
   },
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
+    "typecheck": "tsc",
     "build": "vite build",
-    "test": "vitest",
-    "coverage": "vitest run --coverage",
-    "preview": "vite preview",
+    "preview": "vite preview --host",
+    "test": "vitest --no-threads",
+    "coverage": "vitest run --coverage --no-threads",
     "format": "prettier --write {**/*,*}.{js,ts,jsx,tsx} --ignore-path .gitignore",
     "lint": "eslint --fix {**/*,*}.{js,ts,jsx,tsx} --ignore-path .gitignore"
   },
