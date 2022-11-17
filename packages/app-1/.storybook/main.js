@@ -89,9 +89,7 @@ const config = {
           'memoizerific',
           'react > react-is',
           'uuid-browser',
-          'history',
-          'preact',
-          '@mdx-js/preact',
+          '@mdx-js/react',
           '@storybook/addon-docs/blocks'
         ],
         entries: [`${relative(root, resolve(__dirname, '../src'))}/**/*.stories.tsx`]
