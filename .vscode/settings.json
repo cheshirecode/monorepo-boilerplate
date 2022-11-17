@@ -1,4 +1,10 @@
 {
   "typescript.tsdk": "node_modules\\typescript\\lib",
-  "unocss.root": "packages/app-1"
+  "unocss.root": "packages/app-1",
+  "search.exclude": {
+    "**/common/temp/**": true
+  },
+  "files.watcherExclude": {
+    "**/common/temp/**": true
+  }
 }

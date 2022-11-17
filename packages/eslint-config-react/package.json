@@ -17,6 +17,7 @@
     "test": "tap --reporter=list",
     "test:watch": "tap -w --reporter=list",
     "test:lcov": "nyc --reporter=lcov tap",
+    "format": "prettier --write index.js",
     "lint": "eslint --fix --no-eslintrc -c index.js"
   },
   "dependencies": {

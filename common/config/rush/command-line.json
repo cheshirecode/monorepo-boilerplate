@@ -185,6 +185,16 @@
       "ignoreMissingScript": true,
       "ignoreDependencyOrder": true,
       "allowWarningsInSuccessfulBuild": true
+    },
+    {
+      "name": "format",
+      "commandKind": "bulk",
+      "summary": "Run formatter on each package",
+      "description": "Iterates through each package in the monorepo and runs the 'format' script",
+      "enableParallelism": true,
+      "ignoreMissingScript": true,
+      "ignoreDependencyOrder": true,
+      "allowWarningsInSuccessfulBuild": true
     }
   ],
 
