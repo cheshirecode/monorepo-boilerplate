@@ -68,15 +68,29 @@ const Sections: FC<SectionsProps> = ({
       // eslint-disable-next-line no-console
       console.info('Sections - stickyNav requires a fixed height to work');
     }
-    if (inferHash) {
-      const hash = window?.location?.hash?.slice(1); // #abc > abc
+    if (!window || !window.location) {
+      return;
+    }
+    const {
+      location: { search },
+      addEventListener
+    } = window;
+    let isListenToHashChange = false;
+    const updateIndexByHash = () => {
+      const hash = window.location.hash?.slice(1); // #abc > abc
       const indexFromHash = items.findIndex((x) => x.id === hash);
-      if (indexFromHash >= 0 && indexFromHash !== activeIndex) {
+      if (indexFromHash >= 0 && indexFromHash !== currentIndex) {
         setCurrentIndex(indexFromHash);
       }
+    };
+    if (inferHash) {
+      isListenToHashChange = true;
+      // Bind the event listener
+      addEventListener('hashchange', updateIndexByHash);
+      updateIndexByHash();
     }
     if (inferQueryParams) {
-      const queryParams = new URLSearchParams(window?.location?.search);
+      const queryParams = new URLSearchParams(search);
       let hash = queryParams.get('sectionHash') ?? '';
       hash = decodeURIComponent(hash) !== hash ? decodeURIComponent(hash) : hash;
       const indexFromHash = items.findIndex((x) => x.id === hash);
@@ -84,6 +98,10 @@ const Sections: FC<SectionsProps> = ({
         setCurrentIndex(indexFromHash);
       }
     }
+    return () => {
+      // Unbind the event listener on clean up
+      isListenToHashChange && window.removeEventListener('hashchange', updateIndexByHash);
+    };
   }, []);
   return (
     <section
