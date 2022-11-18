@@ -1,7 +1,8 @@
+import '@unocss/reset/tailwind.css';
 import '../src/styles/reset.css';
 import '../src/styles/index.css';
 // uno
-import 'virtual:uno.css';
+import 'uno.css';
 
 export const parameters = {
   actions: { argTypesRegex: '^on[A-Z].*' },
