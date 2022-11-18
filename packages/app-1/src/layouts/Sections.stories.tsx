@@ -13,7 +13,7 @@ export default {
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
 // @ts-expect-error
 const Template: ComponentStory<typeof Sections> = ({ Extra, ...args }) => (
-  <section className="flex flex-col">
+  <section className="flex flex-col border shadow-lg bg-lime-50">
     {Extra ? Extra : null}
     <Sections {...args} />
   </section>
@@ -61,4 +61,17 @@ StickyNavWithStyle.args = {
   style: {
     height: '25rem'
   }
+};
+
+
+export const StickyNavWithInferredHash = Template.bind({});
+// More on args: https://storybook.js.org/docs/react/writing-stories/args
+StickyNavWithInferredHash.args = {
+  stickyNav: true,
+  activeIndex: 1,
+  className: 'h-100',
+  contentClassName: 'h-[1000px]',
+  inferHash: true,
+  // @ts-expect-error
+  Extra: <code>open with #section-2 in URL hash</code>
 };
