@@ -21,14 +21,14 @@ export interface SectionsProps extends BaseProps, HTMLAttributes<HTMLElement> {
 export const dummyItems: ItemsType = [
   {
     id: 'section-1',
-    name: 'section 1',
-    content: <div className="w-full h-20 bg-red-7"></div>
+    name: 'section 1 is short',
+    content: <div className="w-full h-10 bg-red"></div>
   },
   {
     id: 'section-2',
-    name: 'section 2 is particularly troublesome',
+    name: 'section 2 has long name and height',
     content: (
-      <div className="w-full h-[1000px] bg-cyan-dark">
+      <div className="w-full h-full bg-slate-100">
         <div className="w-full h-1/2 bg-black"></div>
       </div>
     )
@@ -36,17 +36,17 @@ export const dummyItems: ItemsType = [
   {
     id: 'section-3',
     name: 'section 3',
-    content: <div className="w-full h-60 bg-yellow-100"></div>
+    content: <div className="w-full h-60 bg-yellow"></div>
   },
   {
     id: 'section-4',
     name: 'section 4',
-    content: <div className="w-full h-60 bg-blue-700"></div>
+    content: <div className="w-full h-60 bg-blue"></div>
   },
   {
     id: 'section-5',
     name: 'section 5',
-    content: <div className="w-full h-60 bg-blend-hard-light"></div>
+    content: <div className="w-full h-60 bg-green"></div>
   }
 ];
 
@@ -108,7 +108,7 @@ const Sections: FC<SectionsProps> = ({
       className={cx(
         'w-full',
         !className?.includes('h-') && 'h-full',
-        'flex flex-wrap overflow-auto',
+        'flex flex-wrap lg:(flex-row) overflow-overlay',
         className
       )}
       {...(style ? { style } : {})}
@@ -120,7 +120,7 @@ const Sections: FC<SectionsProps> = ({
           'lg:(w-60 h-full)',
           'list-none',
           'flex flex-gap-2 flex-wrap items-stretch',
-          'lg:(flex-col  border-r-1 border-gray-400)',
+          'lg:(flex-col)',
           stickyNav && 'lg:(sticky top-0)',
           navClassName
         )}
@@ -135,8 +135,8 @@ const Sections: FC<SectionsProps> = ({
                 'w-auto lg:(w-full) break-words',
                 'py-2 px-4',
                 'leading-normal no-underline',
-                currentIndex !== i && 'text-blue-4 hover:(text-blue-700 underline)',
-                currentIndex === i && 'text-[#ddc706] bg-[#6405c4] disabled'
+                currentIndex !== i && 'hover:(bg-gray)',
+                currentIndex === i && 'lt-lg:border-b-orange lg:border-r-orange disabled'
               )}
             >
               {name}
@@ -150,6 +150,7 @@ const Sections: FC<SectionsProps> = ({
           'border border-gray-400',
           'shadow-lg',
           'w-full lg:(w-auto flex-1 mx-4 p-2)',
+          !contentClassName?.includes('h-') && 'h-inherit xl:(h-full)',
           contentClassName
         )}
       >
