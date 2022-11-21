@@ -8,7 +8,15 @@ import alias from './alias';
 
 // https://vitejs.dev/config/
 export default defineConfig((config) => ({
-  plugins: [Unocss({}, unocssConfig), react()],
+  plugins: [
+    Unocss({}, unocssConfig),
+    react({
+      jsxImportSource: '@emotion/react',
+      babel: {
+        plugins: ['@emotion/babel-plugin']
+      }
+    })
+  ],
   resolve: {
     alias
   },

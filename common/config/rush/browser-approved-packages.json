@@ -11,6 +11,14 @@
       "allowedCategories": [ "tools" ]
     },
     {
+      "name": "@emotion/react",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "@emotion/styled",
+      "allowedCategories": [ "production" ]
+    },
+    {
       "name": "@fieryeagle/eslint-config-react",
       "allowedCategories": [ "production" ]
     },
@@ -88,6 +96,10 @@
     },
     {
       "name": "@unocss/preset-wind",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "@unocss/reset",
       "allowedCategories": [ "production" ]
     },
     {
