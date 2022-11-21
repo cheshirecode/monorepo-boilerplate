@@ -1,10 +1,10 @@
 import { ComponentMeta, ComponentStory } from '@storybook/react';
-import Sections from './Sections';
+import Sections from './';
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
-  title: 'layouts/Sections',
+  title: 'components/Sections',
   component: Sections,
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
   argTypes: {}
@@ -16,21 +16,46 @@ const Template: ComponentStory<typeof Sections> = ({ Extra, ...args }) => (
   <section className="flex flex-col border shadow-lg bg-lime-50">
     {Extra ? Extra : null}
     <Sections {...args} />
+    <p>block after sections</p>
   </section>
 );
 
 export const Basic = Template.bind({});
-// More on args: https://storybook.js.org/docs/react/writing-stories/args
 Basic.args = {};
 
+export const WithItems = Template.bind({});
+WithItems.args = {
+  items: [
+    {
+      id: 'custom-section-1',
+      name: '1 is very short',
+      content: <div className="w-full h-10 bg-red-7"></div>
+    },
+    {
+      id: 'custom-section-2',
+      name: '2 has long name and big height',
+      content: (
+        <div className="w-full h-full bg-turquoise-40">
+          <div className="w-full h-1/2 bg-black"></div>
+        </div>
+      )
+    }
+  ],
+  stickyNav: true,
+  activeIndex: 0,
+  className: 'h-100',
+  contentClassName: 'h-[1000px]',
+  inferHash: true,
+  // @ts-expect-error
+  Extra: <code>open with #custom-section-2 in URL hash</code>
+};
+
 export const DifferentIndex = Template.bind({});
-// More on args: https://storybook.js.org/docs/react/writing-stories/args
 DifferentIndex.args = {
   activeIndex: 2
 };
 
 export const InferHash = Template.bind({});
-// More on args: https://storybook.js.org/docs/react/writing-stories/args
 InferHash.args = {
   inferHash: true,
   // @ts-expect-error
@@ -38,7 +63,6 @@ InferHash.args = {
 };
 
 export const InferQueryParams = Template.bind({});
-// More on args: https://storybook.js.org/docs/react/writing-stories/args
 InferQueryParams.args = {
   inferQueryParams: true,
   // @ts-expect-error
@@ -46,26 +70,26 @@ InferQueryParams.args = {
 };
 
 export const StickyNav = Template.bind({});
-// More on args: https://storybook.js.org/docs/react/writing-stories/args
 StickyNav.args = {
   stickyNav: true,
   activeIndex: 1,
-  className: 'h-100'
+  className: 'h-100',
+  // @ts-expect-error
+  Extra: <code>scroll on lengthy items to see nav stick to top</code>
 };
 
 export const StickyNavWithStyle = Template.bind({});
-// More on args: https://storybook.js.org/docs/react/writing-stories/args
 StickyNavWithStyle.args = {
   stickyNav: true,
   activeIndex: 1,
   style: {
     height: '25rem'
-  }
+  },
+  // @ts-expect-error
+  Extra: <code>scroll on lengthy items to see nav stick to top</code>
 };
 
-
 export const StickyNavWithInferredHash = Template.bind({});
-// More on args: https://storybook.js.org/docs/react/writing-stories/args
 StickyNavWithInferredHash.args = {
   stickyNav: true,
   activeIndex: 1,
@@ -74,4 +98,28 @@ StickyNavWithInferredHash.args = {
   inferHash: true,
   // @ts-expect-error
   Extra: <code>open with #section-2 in URL hash</code>
+};
+
+export const WithScrollTopCallback = Template.bind({});
+WithScrollTopCallback.args = {
+  stickyNav: true,
+  activeIndex: 1,
+  className: 'h-100',
+  contentClassName: 'h-[1000px]',
+  // eslint-disable-next-line no-console
+  cbScrollTop: (x) => console.log('cbScrollTop', x),
+  contentOffset: '100px',
+  // @ts-expect-error
+  Extra: <code>scroll then check console log</code>
+};
+
+export const WithScrollOnIndexChange = Template.bind({});
+WithScrollOnIndexChange.args = {
+  stickyNav: true,
+  activeIndex: 1,
+  className: 'h-100',
+  contentClassName: 'h-[1000px]',
+  scrollTopOnIndexChange: true,
+  // @ts-expect-error
+  Extra: <code>scroll down, click on a new section link to see auto-scrolling to top</code>
 };
