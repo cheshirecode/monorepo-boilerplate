@@ -80,7 +80,7 @@ describe('@/utils', () => {
     ]);
 
     expect(deepFilter(['oss-tech', 'oss', 'oss-linux'], 'oss-tech')).toEqual(['oss-tech']);
-    expect(deepFilter(['oss-tech', 'bld', 'oss-linux'], 'oss, tech')).toEqual([
+    expect(deepFilter(['oss-tech', 'oss', 'oss-linux'], 'oss, tech')).toEqual([
       'oss-tech',
       'oss',
       'oss-linux'

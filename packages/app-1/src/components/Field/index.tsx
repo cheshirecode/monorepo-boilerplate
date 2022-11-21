@@ -57,7 +57,7 @@ const Field = ({
   );
 
   // ref for clicking outside
-  const fieldRef = useRef<HTMLLabelElement>(null);
+  const fieldRef = useRef<HTMLDivElement>(null);
 
   // if clicking outside the , set flag to hide
   useClickOutside(fieldRef, () => setIsEditing(false));

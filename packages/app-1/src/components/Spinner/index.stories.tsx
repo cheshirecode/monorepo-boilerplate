@@ -1,5 +1,5 @@
 import { ComponentMeta, ComponentStory } from '@storybook/react';
-import Spinner from './Spinner';
+import Spinner from './';
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 // eslint-disable-next-line import/no-anonymous-default-export

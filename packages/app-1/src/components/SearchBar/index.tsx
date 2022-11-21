@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import type { FC, ChangeEvent, MouseEvent /* , KeyboardEvent */ } from 'react';
+import type { FC, ChangeEvent, MouseEvent } from 'react';
 import cx from 'classnames';
 import { noop, isUndefined, isFunction, throttle } from 'lodash-es';
 
@@ -34,12 +34,7 @@ const SearchBar: FC<
       ),
     [update]
   );
-  // const onEnter = (e: KeyboardEvent<HTMLInputElement>) => {
-  //   const v = e.currentTarget?.value;
-  //   if (!isUndefined(v) && e.key === 'Enter' && isFunction(submit)) {
-  //     submit(v);
-  //   }
-  // };
+
   const onClick = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (isFunction(submit)) {
@@ -75,7 +70,6 @@ const SearchBar: FC<
         aria-label="Search"
         aria-describedby="--poc-button-search"
         onChange={onChange}
-        // onKeyUp={onEnter}
         value={value}
       />
       {searchButtonText?.length > 0 && (

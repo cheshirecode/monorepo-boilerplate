@@ -1,8 +1,13 @@
+import type { FC } from 'react';
 import cx from 'classnames';
 
-const Spinner: FC<Props & { borderColor?: string }> = ({ className, borderColor, ...props }) => (
+const Spinner: FC<BaseProps & { borderColor?: string }> = ({
+  className,
+  borderColor,
+  ...props
+}) => (
   <i
-        uno-border="0 t-5 solid black"
+    uno-border="0 t-5 solid black"
     className={cx(
       'w-10 h-10',
       'rounded-t-3xl',

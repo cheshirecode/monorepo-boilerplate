@@ -119,7 +119,7 @@ export const getPageSizeOptions = (arr: number[], maxSize = 10, n = 3) => {
   if (n === 1) {
     return [maxSize];
   }
-  let r;
+  let r: number[];
   if (arr.length > 0) {
     const newArr = [...new Set(arr.concat(maxSize))];
     newArr.sort((a, b) => a - b);

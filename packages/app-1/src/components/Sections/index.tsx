@@ -110,13 +110,13 @@ const Sections: FC<SectionsProps> = ({
     () =>
       throttle(
         () => {
-          if (ref?.current?.scrollTop >= 0) {
+          if (ref?.current) {
             if (isFunction(cbScrollTop)) {
-              cbScrollTop(ref?.current?.scrollTop);
+              cbScrollTop(ref.current.scrollTop);
             }
             if (contentOffset) {
               setContentOffsetStyle({
-                marginTop: `min(${ref?.current?.scrollTop}px, ${contentOffset})`
+                marginTop: `min(${ref.current.scrollTop}px, ${contentOffset})`
               });
             }
           }
