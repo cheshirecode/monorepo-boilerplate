@@ -1,5 +1,8 @@
 # rushmonorepo-boilerplate
 
+## add package
+`rush add -p <Package>` in current project
+
 ## change
 
 `rush change`
