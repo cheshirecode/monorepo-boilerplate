@@ -2,6 +2,18 @@
   "name": "@fieryeagle/eslint-config-react",
   "entries": [
     {
+      "version": "0.1.1",
+      "tag": "@fieryeagle/eslint-config-react_v0.1.1",
+      "date": "Tue, 22 Nov 2022 03:18:05 GMT",
+      "comments": {
+        "patch": [
+          {
+            "comment": "minor fixes"
+          }
+        ]
+      }
+    },
+    {
       "version": "0.1.0",
       "tag": "@fieryeagle/eslint-config-react_v0.1.0",
       "date": "Tue, 22 Nov 2022 02:57:54 GMT",
