@@ -11,6 +11,10 @@
       "allowedCategories": [ "tools" ]
     },
     {
+      "name": "@emotion/babel-plugin",
+      "allowedCategories": [ "production" ]
+    },
+    {
       "name": "@emotion/react",
       "allowedCategories": [ "production" ]
     },
@@ -180,6 +184,10 @@
     },
     {
       "name": "eslint-plugin-react-hooks",
+      "allowedCategories": [ "tools" ]
+    },
+    {
+      "name": "eslint-plugin-unused-imports",
       "allowedCategories": [ "tools" ]
     },
     {
