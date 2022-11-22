@@ -1,7 +1,7 @@
 import { defineConfig, presetAttributify, presetUno, transformerVariantGroup } from 'unocss';
 import type { UserConfig } from 'unocss';
 
-import { MAX_GRID_SIZE, MAX_REM_UNITS, breakpoints, lineHeight } from './src/styles/tokens';
+import { breakpoints, lineHeight, MAX_GRID_SIZE, MAX_REM_UNITS } from './src/styles/tokens';
 
 const extraSizes = Array(MAX_REM_UNITS)
   .fill(0)
@@ -23,6 +23,8 @@ const extraGridTemplates: Record<number, string> = Array(MAX_GRID_SIZE)
     {}
   );
 
+const convertUnitsToRem = (n: string) => (~~n == Number(n) ? `${~~n / 4}rem` : n);
+
 const safelist = Object.keys(breakpoints)
   .concat('')
   .flatMap((x) =>
@@ -35,6 +37,7 @@ const config: UserConfig = defineConfig({
   safelist,
   theme: {
     screens: breakpoints,
+    breakpoints,
     colors: {
       blue: {
         'dark-moderate': '#3a649e' // https://www.colorhexa.com/3a649e
@@ -107,23 +110,86 @@ const config: UserConfig = defineConfig({
     })
   ],
   transformers: [transformerVariantGroup()],
-  shortcuts: {
-    btn: [
-      'text-white text-center uppercase bold',
-      'bg-blue-dark-moderate py-1 px-4 font-semibold rounded-md',
-      'hover:(shadow-md shadow-gray-700)'
-    ].join(' '),
-    'btn-secondary': 'text-black bg-white',
-    disabled: 'focus:outline-none cursor-auto pointer-events-none hover:(shadow-none)',
-    link: 'text-white hover:text-blue-700',
-    'responsive-page': ['max-w-custom', 'mx-auto', 'lt-lg:px-4'].join(' '),
-    'responsive-content-layout': [
-      'flex',
-      'lt-xs:justify-start',
-      'lt-medium:justify-center',
-      'justify-start'
-    ].join(' ')
-  }
+  rules: [
+    /* 
+      grid-cols-auto-(40) -> 
+        grid-template-columns: repeat(auto-fill,minmax(40rem,1fr));
+        grid-auto-flow: column;
+        grid-auto-columns: minmax(40rem,1fr); 
+    */
+    [
+      /^grid-cols-fill-(\d+)$/,
+      (match) => ({
+        'grid-template-columns': `repeat(auto-fill,minmax(${convertUnitsToRem(match[1])},1fr))`,
+        'grid-auto-flow': 'column',
+        'grid-auto-columns': `minmax(${convertUnitsToRem(match[1])},1fr)`
+      })
+    ],
+    [
+      /^grid-cols-max-(\d+)-(\d+)$/,
+      (match) => ({
+        'grid-template-columns': `repeat(auto-fill,max(${
+          ~~match[1] / 4
+        }rem, calc(100%/${~~match[2]}) ))`,
+        'grid-auto-flow': 'row',
+        'grid-auto-columns': `max(${convertUnitsToRem(match[1])}, calc(100%/${~~match[2]}) )`
+      })
+    ],
+    [
+      /^grid-cols-min-(\d+)-(\d+)$/,
+      (match) => ({
+        'grid-template-columns': `repeat(auto-fill,min(${
+          ~~match[1] / 4
+        }rem, calc(100%/${~~match[2]}) ))`,
+        'grid-auto-flow': 'row',
+        'grid-auto-columns': `min(${convertUnitsToRem(match[1])}, calc(100%/${~~match[2]}) )`
+      })
+    ]
+  ],
+  shortcuts: [
+    {
+      btn: [
+        'text-white text-center uppercase bold',
+        'bg-blue-dark-moderate py-1 px-4 font-semibold rounded-md',
+        'hover:(shadow-md shadow-gray-700)'
+      ].join(' '),
+      'btn-secondary': 'text-black bg-white',
+      disabled: 'focus:outline-none cursor-auto pointer-events-none hover:(shadow-none)',
+      link: 'text-white hover:text-blue-700',
+      'responsive-page': ['max-w-custom', 'mx-auto', 'lt-lg:px-4'].join(' '),
+      'responsive-content-layout': [
+        'flex',
+        'lt-xs:justify-start',
+        'lt-md:justify-center',
+        'justify-start'
+      ].join(' '),
+      'responsive-grid': ['grid grid-cols-1']
+        .concat(Object.keys(breakpoints).map((x, i) => `${x}:grid-cols-${i + 2}`))
+        .join(' ')
+    },
+    /* 
+      responsive-grid-max-10 -> 
+        grid-cols-max-10-1
+        xs:grid-cols-max-10-2
+        sm:grid-cols-max-10-3
+        md:grid-cols-max-10-3
+        ...
+    */
+    [
+      /^responsive-grid-max-(\d+)$/,
+      (match) =>
+        [`grid grid-cols-max-${match[1]}-1`]
+          .concat(Object.keys(breakpoints).map((x, i) => `${x}:grid-cols-max-${match[1]}-${i + 2}`))
+          .join(' ')
+    ],
+    [
+      /^responsive-grid-min-(\d+)$/,
+      (match) =>
+        [`grid grid-cols-min-${match[1]}-1`]
+          .concat(Object.keys(breakpoints).map((x, i) => `${x}:grid-cols-min-${match[1]}-${i + 2}`))
+          .join(' ')
+    ]
+  ]
 });
 
 export default config;
