@@ -13,6 +13,7 @@ jobs:
     uses: ./.github/workflows/base.yml
     with:
       package-name: app-1
+      storybook: true
   eslint-config-react:
     needs: [base]
     uses: ./.github/workflows/base.yml
