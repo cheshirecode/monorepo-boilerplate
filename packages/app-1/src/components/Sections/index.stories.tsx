@@ -1,6 +1,7 @@
 import { ComponentMeta, ComponentStory } from '@storybook/react';
+import { useState } from 'react';
 
-import Sections from './';
+import Sections, { dummyItems } from './';
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 // eslint-disable-next-line import/no-anonymous-default-export
@@ -13,13 +14,27 @@ export default {
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
 // @ts-expect-error
-const Template: ComponentStory<typeof Sections> = ({ Extra, ...args }) => (
-  <section className="flex flex-col border shadow-lg bg-lime-50">
-    {Extra ? Extra : null}
-    <Sections {...args} />
-    <p>block after sections</p>
-  </section>
-);
+const Template: ComponentStory<typeof Sections> = ({ Extra, cbScrollTop, ...args }) => {
+  const [showHeading, setShowHeading] = useState(true);
+  const fn = (x) => {
+    if (cbScrollTop) {
+      cbScrollTop(x);
+      setShowHeading(x === 0);
+    }
+  };
+  return (
+    <section className="flex flex-col border shadow-lg bg-lime-50 w-full h-full overflow-hidden">
+      {showHeading && (
+        <div className="h-30">
+          <p>static heading </p>
+          {Extra ? Extra : null}
+        </div>
+      )}
+      <Sections {...args} cbScrollTop={fn} />
+      <p>block after sections</p>
+    </section>
+  );
+};
 
 export const Basic = Template.bind({});
 Basic.args = {};
@@ -109,7 +124,7 @@ WithScrollTopCallback.args = {
   contentClassName: 'h-[1000px]',
   // eslint-disable-next-line no-console
   cbScrollTop: (x) => console.log('cbScrollTop', x),
-  contentOffset: '100px',
+  contentOffset: '7.5rem',
   // @ts-expect-error
   Extra: <code>scroll then check console log</code>
 };
@@ -123,4 +138,56 @@ WithScrollOnIndexChange.args = {
   scrollTopOnIndexChange: true,
   // @ts-expect-error
   Extra: <code>scroll down, click on a new section link to see auto-scrolling to top</code>
+};
+
+export const FullyEnabledWithTenItems = Template.bind({});
+FullyEnabledWithTenItems.args = {
+  items: Array<typeof dummyItems>(2)
+    .fill(dummyItems)
+    .flatMap((x, i) =>
+      x.map((y, j) => ({
+        ...y,
+        id: `${i * dummyItems.length + j}-${y.id}`,
+        name: `${i * dummyItems.length + j}-${y.name}`
+      }))
+    ),
+  stickyNav: true,
+  activeIndex: 2,
+  className: 'h-[800px]',
+  navClassName: 'h-[100px]',
+  // contentClassName: 'h-[600px]',
+  scrollTopOnIndexChange: true,
+  // eslint-disable-next-line no-console
+  cbScrollTop: (x) => console.log('cbScrollTop', x),
+  contentOffset: '7.5rem',
+  inferHash: true,
+  inferQueryParams: true,
+  // @ts-expect-error
+  Extra: <code>play with it</code>
+};
+
+export const FullyEnabledWithManyItems = Template.bind({});
+FullyEnabledWithManyItems.args = {
+  items: Array<typeof dummyItems>(50)
+    .fill(dummyItems)
+    .flatMap((x, i) =>
+      x.map((y, j) => ({
+        ...y,
+        id: `${i * dummyItems.length + j}-${y.id}`,
+        name: `${i * dummyItems.length + j}-${y.name}`
+      }))
+    ),
+  stickyNav: true,
+  activeIndex: 2,
+  className: 'h-[800px]',
+  navClassName: 'h-[100px]',
+  // contentClassName: 'h-[600px]',
+  scrollTopOnIndexChange: true,
+  // eslint-disable-next-line no-console
+  cbScrollTop: (x) => console.log('cbScrollTop', x),
+  contentOffset: '7.5rem',
+  inferHash: true,
+  inferQueryParams: true,
+  // @ts-expect-error
+  Extra: <code>play with it</code>
 };

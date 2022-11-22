@@ -1,7 +1,7 @@
 import cx from 'classnames';
 import { isFunction, throttle } from 'lodash-es';
+import type { HTMLAttributes, ReactNode } from 'react';
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import type { FC, HTMLAttributes, ReactNode } from 'react';
 
 export type ItemsType = {
   id: string;
@@ -58,9 +58,9 @@ export const dummyItems: ItemsType = [
   },
   {
     id: 'section-2',
-    name: 'section 2 has long name and big height',
+    name: 'section 2 has long name and has longform content',
     content: (
-      <div className="w-full h-[60rem] bg-turquoise-40">
+      <div className="w-full bg-red h-[60rem]">
         <div className="w-full h-1/2 bg-black"></div>
       </div>
     )
@@ -82,7 +82,7 @@ export const dummyItems: ItemsType = [
   }
 ];
 
-const Sections: FC<SectionsProps> = ({
+const Sections = ({
   items = dummyItems,
   className,
   navClassName,
@@ -95,7 +95,7 @@ const Sections: FC<SectionsProps> = ({
   contentOffset = '',
   scrollTopOnIndexChange = false,
   ...props
-}) => {
+}: SectionsProps) => {
   const [currentIndex, setCurrentIndex] = useState(activeIndex);
   const updateIndexByHash = useCallback(() => {
     const hash = window.location.hash?.slice(1); // #abc > abc
@@ -110,13 +110,14 @@ const Sections: FC<SectionsProps> = ({
     () =>
       throttle(
         () => {
-          if (ref?.current) {
+          const st = ref?.current?.scrollTop;
+          if (st >= 0) {
             if (isFunction(cbScrollTop)) {
-              cbScrollTop(ref.current.scrollTop);
+              cbScrollTop(st);
             }
             if (contentOffset) {
               setContentOffsetStyle({
-                marginTop: `min(${ref.current.scrollTop}px, ${contentOffset})`
+                marginTop: `min(${st}px, ${contentOffset})`
               });
             }
           }
@@ -188,41 +189,38 @@ const Sections: FC<SectionsProps> = ({
       {...(cbScrollTop ? { onScroll: checkOnScroll } : {})}
       {...props}
     >
-      <ul
+      <nav
         className={cx(
-          'm-0 p-0',
-          'w-full',
-          'xl:(w-60 h-full children:(w-full))',
+          'm-0 p-0 list-none w-full overflow-hidden',
           !navClassName?.includes('bg-') && 'bg-white',
-          'list-none',
-          'flex flex-gap-2 flex-wrap items-stretch',
-          'xl:(flex-col)',
+          items.length > 5 && `lt-xl:(grid gap-2 grid-cols-fill-60 overflow-x-auto)`,
+          items.length <= 5 && `lt-xl:(flex flex-gap-2 flex-wrap)`,
+          'xl:(w-60 h-full children:(w-full) flex flex-gap-2 flex-col overflow-y-auto)',
           !navClassName?.includes('border') &&
-            'border-1 border-transparent lt-xl:border-b-gray-400  xl:border-r-gray-400 shadow-lg',
+            'border-1 border-transparent lt-xl:border-b-gray-500 xl:border-r-gray-500 shadow-lg',
           stickyNav && 'sticky top-0',
           navClassName
         )}
       >
         {items.map(({ name, id }, i) => (
-          <li key={id} className="">
-            <a
-              href={`#${id}`}
-              {...(inferHash ? {} : { onClick: () => setCurrentIndex(i) })}
-              className={cx(
-                'inline-block',
-                'w-auto xl:(w-full) break-words',
-                'py-2 px-4',
-                'leading-normal no-underline',
-                'border-2 border-transparent',
-                currentIndex !== i && 'hover:(bg-gray-20)',
-                currentIndex === i && 'lt-xl:border-b-orange-50 xl:border-r-orange-50 disabled'
-              )}
-            >
-              {name}
-            </a>
-          </li>
+          <a
+            key={id}
+            href={`#${id}`}
+            {...(inferHash ? {} : { onClick: () => setCurrentIndex(i) })}
+            className={cx(
+              'inline-block',
+              'xl:(w-full) break-words',
+              'py-2 px-4',
+              'leading-normal no-underline',
+              'border-2 border-transparent',
+              currentIndex !== i && 'hover:(bg-gray-200)',
+              currentIndex === i && 'lt-xl:border-b-orange-500 xl:border-r-orange-500 disabled'
+            )}
+          >
+            {name}
+          </a>
         ))}
-      </ul>
+      </nav>
       <div
         className={cx(
           !contentClassName?.includes('bg-') && 'bg-white',
