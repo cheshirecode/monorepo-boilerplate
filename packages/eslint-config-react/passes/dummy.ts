@@ -1,5 +1,5 @@
-const dummyFn = (a: string) => {
-  a += `${a}-1`;
-  return dummyFn;
+const dummyFn: (x: string) => string = (x) => {
+  x += `${x}-1`;
+  return x;
 };
 export default dummyFn;

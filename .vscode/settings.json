@@ -1,5 +1,5 @@
 {
-  "typescript.tsdk": "node_modules\\typescript\\lib",
+  "typescript.tsdk": "../packages/eslint-config-react/node_modules/typescript/lib",
   "unocss.root": "packages/app-1",
   "search.exclude": {
     "**/common/temp/**": true
