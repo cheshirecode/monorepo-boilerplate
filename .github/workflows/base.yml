@@ -74,4 +74,4 @@ jobs:
           inputs.package-name != null && inputs.storybook
         working-directory: ${{ inputs.package-path }}/${{ inputs.package-name }}
         run: |
-          rushx build-storybook
+          node $GITHUB_WORKSPACE/common/scripts/install-run-rushx.js build-storybook
