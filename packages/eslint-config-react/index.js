@@ -12,12 +12,15 @@ module.exports = {
     browser: true,
     'shared-node-browser': true
   },
-  plugins: ['prettier', 'react', '@typescript-eslint', 'jsx-a11y', 'unused-imports'],
+  plugins: ['prettier', '@typescript-eslint', 'react', 'react-hooks', 'jsx-a11y', 'unused-imports'],
   extends: [
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
-    'prettier',
-    'react-app',
+    'plugin:prettier/recommended',
+    'plugin:react/recommended',
+    'plugin:react/jsx-runtime',
+    'plugin:react-hooks/recommended',
+    'plugin:jsx-a11y/recommended',
     'plugin:import/recommended',
     'plugin:import/typescript'
   ],
