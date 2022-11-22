@@ -1,10 +1,11 @@
 /// <reference types="vitest" />
-import { configDefaults } from 'vitest/config';
+import Unocss from '@unocss/vite';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
-import Unocss from '@unocss/vite';
-import unocssConfig from './unocss.config';
+import { configDefaults } from 'vitest/config';
+
 import alias from './alias';
+import unocssConfig from './unocss.config';
 
 // https://vitejs.dev/config/
 export default defineConfig((config) => ({
@@ -33,7 +34,7 @@ export default defineConfig((config) => ({
       output: {
         manualChunks: (id) => {
           if (id.includes('node_modules')) {
-            const vendorModules = ['react', 'lodash', '@emotion', '@gs-ux-uitoolkit'];
+            const vendorModules = ['react', 'lodash', '@emotion'];
             const m = vendorModules.find((x) => id.includes(x)) ?? '';
             return `vendor${m ? `-${m}` : ''}`;
           }

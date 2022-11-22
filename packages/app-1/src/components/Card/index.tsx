@@ -1,6 +1,6 @@
-import cx from 'classnames';
-import type { ReactNode, FC } from 'react';
 import styled from '@emotion/styled';
+import cx from 'classnames';
+import type { FC, ReactNode } from 'react';
 
 type CardProps = BaseProps & {
   ['uno-bg']?: string; // set background color

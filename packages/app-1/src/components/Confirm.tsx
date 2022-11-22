@@ -1,5 +1,5 @@
-import type { FC, MouseEvent } from 'react';
 import cx from 'classnames';
+import type { FC, MouseEvent } from 'react';
 
 const Confirm: FC<BaseProps & { onClick?: (e: MouseEvent<SVGElement>) => void }> = ({
   className,

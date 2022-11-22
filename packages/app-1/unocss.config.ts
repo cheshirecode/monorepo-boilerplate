@@ -1,6 +1,7 @@
-import { defineConfig, transformerVariantGroup, presetAttributify, presetUno } from 'unocss';
-import { MAX_REM_UNITS, MAX_GRID_SIZE, breakpoints, lineHeight } from './src/styles/tokens';
+import { defineConfig, presetAttributify, presetUno, transformerVariantGroup } from 'unocss';
 import type { UserConfig } from 'unocss';
+
+import { MAX_GRID_SIZE, MAX_REM_UNITS, breakpoints, lineHeight } from './src/styles/tokens';
 
 const extraSizes = Array(MAX_REM_UNITS)
   .fill(0)

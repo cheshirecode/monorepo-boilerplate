@@ -1,7 +1,7 @@
-import useSWR from 'swr';
-import type { SWRConfiguration, Key, SWRResponse, SWRHook } from 'swr';
-import fetch from 'unfetch';
 import { merge } from 'lodash-es';
+import useSWR from 'swr';
+import type { Key, SWRConfiguration, SWRHook, SWRResponse } from 'swr';
+import fetch from 'unfetch';
 
 export type Fetcher = <T>(url: string, options?: RequestInit) => Promise<T>;
 export type SWRMiddleware<T> = (

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import type { FC, ReactElement, ImgHTMLAttributes } from 'react';
+import type { FC, ImgHTMLAttributes, ReactElement } from 'react';
 
 type IconProps = BaseProps &
   ImgHTMLAttributes<HTMLImageElement> & {

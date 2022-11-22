@@ -1,11 +1,12 @@
 import { describe, expect, it } from 'vitest';
+
 import {
+  deepFilter,
+  getPageSizeOptions,
+  getRoundedToNearest,
   pascalToSeparatedWords,
   splitAlphanumeric,
-  toCamel,
-  deepFilter,
-  getRoundedToNearest,
-  getPageSizeOptions
+  toCamel
 } from './';
 
 describe('@/utils', () => {

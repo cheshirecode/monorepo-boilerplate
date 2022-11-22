@@ -1,9 +1,10 @@
 import cx from 'classnames';
+import { isUndefined, throttle } from 'lodash-es';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import type { ChangeEvent, KeyboardEvent, ReactElement } from 'react';
+
 import Icon from '@/components/Icon';
-import { useCallback, useMemo, useRef, useState, useEffect } from 'react';
-import type { ChangeEvent, ReactElement, KeyboardEvent } from 'react';
 import useClickOutside from '@/services/hooks/useClickOutside';
-import { throttle, isUndefined } from 'lodash-es';
 
 export type FieldProps = BaseProps & {
   value?: string;

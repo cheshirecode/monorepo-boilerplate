@@ -1,5 +1,5 @@
 import cx from 'classnames';
-import type { ReactNode, MouseEvent } from 'react';
+import type { MouseEvent, ReactNode } from 'react';
 import { forwardRef } from 'react';
 import './blockquote.css';
 

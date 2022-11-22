@@ -1,5 +1,6 @@
+import { ComponentMeta, ComponentStory } from '@storybook/react';
 import { useState } from 'react';
-import { ComponentStory, ComponentMeta } from '@storybook/react';
+
 import Pagination from './';
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export

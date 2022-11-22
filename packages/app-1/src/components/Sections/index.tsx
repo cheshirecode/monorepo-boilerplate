@@ -1,7 +1,7 @@
-import { useState, useRef, useMemo, useEffect, useLayoutEffect, useCallback } from 'react';
-import type { FC, ReactNode, HTMLAttributes } from 'react';
-import { throttle, isFunction } from 'lodash-es';
 import cx from 'classnames';
+import { isFunction, throttle } from 'lodash-es';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import type { FC, HTMLAttributes, ReactNode } from 'react';
 
 export type ItemsType = {
   id: string;

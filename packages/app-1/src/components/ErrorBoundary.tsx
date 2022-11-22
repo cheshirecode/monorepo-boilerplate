@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import type { ErrorInfo, ReactNode, PropsWithChildren } from 'react';
+import type { ErrorInfo, PropsWithChildren, ReactNode } from 'react';
 
 // nearly impossible to reliably test unless throwing errors explicitly inside component tree
 /* c8 ignore next 50 */

@@ -1,7 +1,7 @@
-import { useMemo } from 'react';
-import type { FC, ChangeEvent, MouseEvent } from 'react';
 import cx from 'classnames';
-import { noop, isUndefined, isFunction, throttle } from 'lodash-es';
+import { isFunction, isUndefined, noop, throttle } from 'lodash-es';
+import { useMemo } from 'react';
+import type { ChangeEvent, FC, MouseEvent } from 'react';
 
 const SearchBar: FC<
   BaseProps & {
