@@ -12,7 +12,7 @@ module.exports = {
     browser: true,
     'shared-node-browser': true
   },
-  plugins: ['prettier', 'react', '@typescript-eslint', 'jsx-a11y'],
+  plugins: ['prettier', 'react', '@typescript-eslint', 'jsx-a11y', 'unused-imports'],
   extends: [
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
@@ -24,7 +24,15 @@ module.exports = {
   rules: {
     'prettier/prettier': 'error',
     'no-unreachable': 'error',
-    'no-console': 'error'
+    'no-console': 'error',
+    '@typescript-eslint/ban-ts-comment': 'off',
+    'no-unused-vars': 'off',
+    '@typescript-eslint/no-unused-vars': [
+      'warn',
+      { vars: 'all', varsIgnorePattern: '^_', args: 'after-used', argsIgnorePattern: '^_' }
+    ],
+    'react-hooks/rules-of-hooks': 'error', // Checks rules of Hooks
+    'react-hooks/exhaustive-deps': 'warn' // Checks effect dependencies
   },
   settings: {
     react: {
@@ -32,6 +40,9 @@ module.exports = {
     },
     'import/parsers': {
       '@typescript-eslint/parser': ['.ts', '.tsx']
+    },
+    'import/resolver': {
+      typescript: {}
     }
   }
 };
