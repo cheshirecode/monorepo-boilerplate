@@ -9,8 +9,9 @@ export default {
   component: Pagination,
   args: {
     itemsPerPage: 5,
-    itemClassName: 'cursor-pointer hover:underline',
-    activeItemClassName: 'bg-blue-50 text-white disabled',
+    className: 'flex flex-gap-2',
+    itemClassName: 'p-4 hover:underline',
+    activeItemClassName: 'bg-blue-500 text-white disabled',
     count: 20
   }
 } as ComponentMeta<typeof Pagination>;

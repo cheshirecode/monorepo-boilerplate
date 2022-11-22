@@ -1,8 +1,6 @@
 import cx from 'classnames';
 import { useCallback, useState } from 'react';
-import type { FC, KeyboardEvent, MouseEvent } from 'react';
-
-type EitherMouseOrKeyboardEvent<T> = MouseEvent<T> | KeyboardEvent<T>;
+import type { FC, MouseEvent } from 'react';
 
 export type PaginationProps = BaseProps & {
   itemsPerPage: number;
@@ -12,18 +10,13 @@ export type PaginationProps = BaseProps & {
   disabledItemClassName?: string;
   isRollover?: boolean;
   onChange?: (
-    e: EitherMouseOrKeyboardEvent<HTMLLIElement>,
+    e: MouseEvent<HTMLButtonElement>,
     params: {
       page: number;
       last: number;
       first: number;
     }
   ) => void;
-};
-
-const isUpdateEvent = (e: EitherMouseOrKeyboardEvent<HTMLLIElement>) => {
-  const key = (e as KeyboardEvent<HTMLLIElement>)?.key;
-  return !key || key === 'Enter';
 };
 
 export const usePagination = (
@@ -46,7 +39,7 @@ export const usePagination = (
     .map((_v, i) => i + 1);
 
   const updateParams = useCallback(
-    (e: EitherMouseOrKeyboardEvent<HTMLLIElement>, page: number) => {
+    (e: MouseEvent<HTMLButtonElement>, page: number) => {
       const last = page * itemsPerPage;
       const first = last - itemsPerPage;
       const params = { page, first, last };
@@ -59,29 +52,19 @@ export const usePagination = (
   );
 
   const onPageNumberClick = useCallback(
-    (e: EitherMouseOrKeyboardEvent<HTMLLIElement>) => {
-      if (isUpdateEvent(e)) {
-        updateParams(e, Number(e.currentTarget.dataset.id));
-      }
-    },
+    (e: MouseEvent<HTMLButtonElement>) => updateParams(e, Number(e.currentTarget.dataset.id)),
     [updateParams]
   );
 
   const onPrevClick = useCallback(
-    (e: EitherMouseOrKeyboardEvent<HTMLLIElement>) => {
-      if (isUpdateEvent(e)) {
-        updateParams(e, params.page <= 1 ? total : params.page - 1);
-      }
-    },
+    (e: MouseEvent<HTMLButtonElement>) =>
+      updateParams(e, params.page <= 1 ? total : params.page - 1),
     [params.page, total, updateParams]
   );
 
   const onNextClick = useCallback(
-    (e: EitherMouseOrKeyboardEvent<HTMLLIElement>) => {
-      if (isUpdateEvent(e)) {
-        updateParams(e, params.page >= total ? 1 : params.page + 1);
-      }
-    },
+    (e: MouseEvent<HTMLButtonElement>) =>
+      updateParams(e, params.page >= total ? 1 : params.page + 1),
     [params.page, total, updateParams]
   );
 
@@ -105,6 +88,7 @@ const Pagination: FC<PaginationProps> = ({
   count,
   onChange,
   isRollover = true,
+  disabledItemClassName,
   ...props
 }) => {
   const {
@@ -123,41 +107,35 @@ const Pagination: FC<PaginationProps> = ({
   });
 
   return (
-    <ul className={cx('', className)} {...props}>
-      <li
+    <div className={cx('', className)} {...props}>
+      <button
         key="prev"
-        role="button"
-        tabIndex="0"
+        tabIndex={0}
         onClick={onPrevClick}
-        onKeyUp={onPrevClick}
         className={cx('', !isRollover && page === 1 && disabledItemClassName, itemClassName)}
       >
         Prev
-      </li>
+      </button>
       {pageNumbers.map((v) => (
-        <li
+        <button
           key={v}
-          role="button"
-          tabIndex="0"
+          tabIndex={0}
           data-id={v}
           onClick={onPageNumberClick}
-          onKeyUp={onPageNumberClick}
           className={cx('', v === page && activeItemClassName, itemClassName)}
         >
           {v}
-        </li>
+        </button>
       ))}
-      <li
+      <button
         key="next"
-        role="button"
-        tabIndex="0"
+        tabIndex={0}
         onClick={onNextClick}
-        onKeyUp={onNextClick}
         className={cx('', !isRollover && page === total && disabledItemClassName, itemClassName)}
       >
         Next
-      </li>
-    </ul>
+      </button>
+    </div>
   );
 };
 

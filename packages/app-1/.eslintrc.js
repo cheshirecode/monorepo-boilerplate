@@ -6,13 +6,18 @@ const baseConfig = require('@fieryeagle/eslint-config-react');
 module.exports = {
   extends: ['@fieryeagle/eslint-config-react'],
   parserOptions: {
-    ...baseConfig.parserOptions
+    ...baseConfig.parserOptions,
+    tsconfigRootDir: __dirname
   },
   settings: {
     ...baseConfig.settings,
+    'import/resolver': {
+      typescript: {}
+    },
     'import/core-modules': ['virtual:uno.css']
   },
   rules: {
-    ...baseConfig.rules
+    ...baseConfig.rules,
+    'react/no-unknown-property': ['error', { ignore: ['uno-border'] }]
   }
 };
