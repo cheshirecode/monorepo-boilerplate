@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const esbuild = require('esbuild');
-const { resolve } = require('path');
-const { unlinkSync } = require('fs');
 const { execSync } = require('child_process');
+const { unlinkSync } = require('fs');
+const { resolve } = require('path');
+
+const esbuild = require('esbuild');
 
 module.exports = (filePath, cleanup = false) => {
-  const outdir = resolve(__dirname, '../temp/__esmTocjs__');
+  const outdir = resolve(__dirname, '../temp/');
   const outFilePath = `${outdir}/${filePath}`.split('.').slice(0, -1).concat('js').join('.');
   const workingDir = resolve(__dirname, '..');
   esbuild.buildSync({
