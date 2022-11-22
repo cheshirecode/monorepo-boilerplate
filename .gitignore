@@ -113,3 +113,4 @@ common/autoinstallers/*/.npmrc
 # Common toolchain intermediate files
 lib
 temp
+storybook-static
