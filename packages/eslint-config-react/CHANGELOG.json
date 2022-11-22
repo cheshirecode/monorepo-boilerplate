@@ -2,6 +2,18 @@
   "name": "@fieryeagle/eslint-config-react",
   "entries": [
     {
+      "version": "0.1.0",
+      "tag": "@fieryeagle/eslint-config-react_v0.1.0",
+      "date": "Tue, 22 Nov 2022 02:57:54 GMT",
+      "comments": {
+        "minor": [
+          {
+            "comment": "add import sorting for linting"
+          }
+        ]
+      }
+    },
+    {
       "version": "0.0.12",
       "tag": "@fieryeagle/eslint-config-react_v0.0.12",
       "date": "Wed, 02 Nov 2022 03:29:15 GMT",

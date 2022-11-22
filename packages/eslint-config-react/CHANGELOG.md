@@ -1,6 +1,13 @@
 # Change Log - @fieryeagle/eslint-config-react
 
-This log was last generated on Wed, 02 Nov 2022 03:29:15 GMT and should not be manually modified.
+This log was last generated on Tue, 22 Nov 2022 02:57:54 GMT and should not be manually modified.
+
+## 0.1.0
+Tue, 22 Nov 2022 02:57:54 GMT
+
+### Minor changes
+
+- add import sorting for linting
 
 ## 0.0.12
 Wed, 02 Nov 2022 03:29:15 GMT
