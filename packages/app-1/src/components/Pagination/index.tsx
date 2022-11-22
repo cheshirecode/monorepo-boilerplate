@@ -1,6 +1,6 @@
 import cx from 'classnames';
 import { useCallback, useState } from 'react';
-import type { FC, MouseEvent, KeyboardEvent } from 'react';
+import type { FC, KeyboardEvent, MouseEvent } from 'react';
 
 type EitherMouseOrKeyboardEvent<T> = MouseEvent<T> | KeyboardEvent<T>;
 

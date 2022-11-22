@@ -1,7 +1,8 @@
 /* eslint-disable import/export */
 import { cleanup, render } from '@testing-library/react';
-import { afterEach } from 'vitest';
 import { SWRConfig } from 'swr';
+import { afterEach } from 'vitest';
+
 import ErrorBoundary from '@/components/ErrorBoundary';
 
 afterEach(() => {
