@@ -2,6 +2,18 @@
   "name": "@fieryeagle/eslint-config-react",
   "entries": [
     {
+      "version": "0.2.1",
+      "tag": "@fieryeagle/eslint-config-react_v0.2.1",
+      "date": "Tue, 22 Nov 2022 07:27:06 GMT",
+      "comments": {
+        "patch": [
+          {
+            "comment": "eslint sort-imports to ignore case"
+          }
+        ]
+      }
+    },
+    {
       "version": "0.2.0",
       "tag": "@fieryeagle/eslint-config-react_v0.2.0",
       "date": "Tue, 22 Nov 2022 06:26:29 GMT",
