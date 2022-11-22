@@ -10,7 +10,7 @@
   "eslint.packageManager": "npm",
   "eslint.workingDirectories": [
     {
-      "mode": "location"
+      "mode": "auto"
     }
   ],
 }
