@@ -1,5 +1,5 @@
 import cx from 'classnames';
-import { isFunction, throttle } from 'lodash-es';
+import { isFunction, isUndefined, throttle } from 'lodash-es';
 import type { HTMLAttributes, ReactNode } from 'react';
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 
@@ -48,6 +48,10 @@ export interface SectionsProps extends BaseProps, HTMLAttributes<HTMLElement> {
    * default - false. set to scroll content back to top whenever index changes
    */
   scrollTopOnIndexChange?: boolean;
+  /**
+   * default - false. set to allow items to take as much width as needed for content
+   */
+  itemFitContent?: boolean;
 }
 
 export const dummyItems: ItemsType = [
@@ -58,7 +62,7 @@ export const dummyItems: ItemsType = [
   },
   {
     id: 'section-2',
-    name: 'section 2 has long name and has longform content',
+    name: 'section 2 has long name and has longform content. name stays on 1 line if itemFitContent=true',
     content: (
       <div className="w-full bg-red h-[60rem]">
         <div className="w-full h-1/2 bg-black"></div>
@@ -94,6 +98,7 @@ const Sections = ({
   cbScrollTop,
   contentOffset = '',
   scrollTopOnIndexChange = false,
+  itemFitContent = false,
   ...props
 }: SectionsProps) => {
   const [currentIndex, setCurrentIndex] = useState(activeIndex);
@@ -111,7 +116,7 @@ const Sections = ({
       throttle(
         () => {
           const st = ref?.current?.scrollTop;
-          if (st >= 0) {
+          if (!isUndefined(st) && st >= 0) {
             if (isFunction(cbScrollTop)) {
               cbScrollTop(st);
             }
@@ -182,7 +187,7 @@ const Sections = ({
       className={cx(
         'w-full',
         !className?.includes('h-') && 'h-full',
-        'flex flex-wrap xl:(flex-row) overflow-overlay',
+        'flex flex-wrap xl:(flex-row) overflow-auto',
         className
       )}
       ref={ref}
@@ -191,14 +196,16 @@ const Sections = ({
     >
       <nav
         className={cx(
-          'm-0 p-0 list-none w-full overflow-hidden',
+          'm-0 p-0 list-none overflow-auto',
+          'flex ',
+          !itemFitContent && 'lt-xl:(children:(max-w-60))',
+          'xl:(max-w-60 h-full flex-col)',
+          itemFitContent && 'lt-xl:(children:(min-w-fit))',
+          itemFitContent && 'xl:(min-w-fit)',
+          stickyNav && 'sticky top-0',
           !navClassName?.includes('bg-') && 'bg-white',
-          items.length > 5 && `lt-xl:(grid gap-2 grid-cols-fill-60 overflow-x-auto)`,
-          items.length <= 5 && `lt-xl:(flex flex-gap-2 flex-wrap)`,
-          'xl:(w-60 h-full children:(w-full) flex flex-gap-2 flex-col overflow-y-auto)',
           !navClassName?.includes('border') &&
             'border-1 border-transparent lt-xl:border-b-gray-500 xl:border-r-gray-500 shadow-lg',
-          stickyNav && 'sticky top-0',
           navClassName
         )}
       >
@@ -209,7 +216,7 @@ const Sections = ({
             {...(inferHash ? {} : { onClick: () => setCurrentIndex(i) })}
             className={cx(
               'inline-block',
-              'xl:(w-full) break-words',
+              'break-words',
               'py-2 px-4',
               'leading-normal no-underline',
               'border-2 border-transparent',
