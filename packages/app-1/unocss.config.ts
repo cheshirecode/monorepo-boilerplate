@@ -24,6 +24,7 @@ const extraGridTemplates: Record<number, string> = Array(MAX_GRID_SIZE)
   );
 
 const convertUnitsToRem = (n: string) => (~~n == Number(n) ? `${~~n / 4}rem` : n);
+const minMax = (x: string, y: string) => `minmax( min(${x},${y}), max(${x},${y}) )`;
 
 const safelist = Object.keys(breakpoints)
   .concat('')
@@ -128,21 +129,32 @@ const config: UserConfig = defineConfig({
     [
       /^grid-cols-max-(\d+)-(\d+)$/,
       (match) => ({
-        'grid-template-columns': `repeat(auto-fill,max(${
-          ~~match[1] / 4
-        }rem, calc(100%/${~~match[2]}) ))`,
-        'grid-auto-flow': 'row',
-        'grid-auto-columns': `max(${convertUnitsToRem(match[1])}, calc(100%/${~~match[2]}) )`
-      })
-    ],
-    [
-      /^grid-cols-min-(\d+)-(\d+)$/,
-      (match) => ({
         'grid-template-columns': `repeat(auto-fill,min(${
           ~~match[1] / 4
         }rem, calc(100%/${~~match[2]}) ))`,
         'grid-auto-flow': 'row',
         'grid-auto-columns': `min(${convertUnitsToRem(match[1])}, calc(100%/${~~match[2]}) )`
+      })
+    ],
+    [
+      /^grid-cols-min-(\d+)-(\d+)$/,
+      (match) => ({
+        'grid-template-columns': `repeat(auto-fill,max(${
+          ~~match[1] / 4
+        }rem, calc(100%/${~~match[2]}) ))`,
+        'grid-auto-flow': 'col',
+        'grid-auto-columns': `max(${convertUnitsToRem(match[1])}, calc(100%/${~~match[2]}) )`
+      })
+    ],
+    [
+      /^grid-cols-fluid-(\d+)-(\d+)$/,
+      (match) => ({
+        'grid-template-columns': `repeat(auto-fill,${minMax(
+          convertUnitsToRem(match[1]),
+          `calc(100%/${~~match[2]})`
+        )})`,
+        'grid-auto-flow': 'row',
+        'grid-auto-columns': minMax(convertUnitsToRem(match[1]), `calc(100%/${~~match[2]})`)
       })
     ]
   ],
@@ -187,6 +199,15 @@ const config: UserConfig = defineConfig({
       (match) =>
         [`grid grid-cols-min-${match[1]}-1`]
           .concat(Object.keys(breakpoints).map((x, i) => `${x}:grid-cols-min-${match[1]}-${i + 2}`))
+          .join(' ')
+    ],
+    [
+      /^responsive-grid-fluid-(\d+)$/,
+      (match) =>
+        [`grid grid-cols-fluid-${match[1]}-1`]
+          .concat(
+            Object.keys(breakpoints).map((x, i) => `${x}:grid-cols-fluid-${match[1]}-${i + 2}`)
+          )
           .join(' ')
     ]
   ]

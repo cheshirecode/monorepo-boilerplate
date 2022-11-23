@@ -4,7 +4,10 @@ import cx from 'classnames';
 const Sample = ({ className, desc, ...props }: BaseProps & { desc: string }) => (
   <section>
     <pre className="p-4">{desc}</pre>
-    <section className={cx('bg-amber text-black shadow-lg w-full h-full', className)} {...props}>
+    <section
+      className={cx('children:(bg-amber) text-black shadow-lg w-full h-full', className)}
+      {...props}
+    >
       {Array(20)
         .fill(0)
         .map((_x, i) => (
@@ -29,6 +32,30 @@ const Template: ComponentStory<typeof Sample> = (args) => <Sample {...args} />;
 export const Basic = Template.bind({});
 Basic.args = {};
 
+export const GridFiller = Template.bind({});
+GridFiller.args = {
+  desc: '1 liner of grid with 2.5rem per item, ',
+  className: 'grid grid-cols-fill-10'
+};
+
+export const GridColMax = Template.bind({});
+GridColMax.args = {
+  desc: 'grid with max(2.5rem, 25%) per item',
+  className: 'grid grid-cols-max-10-4'
+};
+
+export const GridColMin = Template.bind({});
+GridColMin.args = {
+  desc: 'grid with min(2.5rem, 25%) per item',
+  className: 'grid grid-cols-min-10-4'
+};
+
+export const GridColFluid = Template.bind({});
+GridColFluid.args = {
+  desc: 'grid with min. 15rem width per item but no more than 25%',
+  className: 'grid grid-cols-fluid-60-4'
+};
+
 export const ResponsiveGrid = Template.bind({});
 ResponsiveGrid.args = {
   desc: 'resize viewport for responsiveness',
@@ -37,30 +64,18 @@ ResponsiveGrid.args = {
 
 export const ResponsiveMinGrid = Template.bind({});
 ResponsiveMinGrid.args = {
-  desc: 'resize viewport for responsiveness, min 60rem per item',
-  className: 'responsive-grid-min-60'
+  desc: 'resize viewport for responsiveness, min 20rem per item',
+  className: 'responsive-grid-min-80'
 };
 
 export const ResponsiveMaxGrid = Template.bind({});
 ResponsiveMaxGrid.args = {
-  desc: 'resize viewport for responsiveness, max 40rem per item',
-  className: 'responsive-grid-max-40'
+  desc: 'resize viewport for responsiveness, max 20rem per item',
+  className: 'responsive-grid-max-80'
 };
 
-export const CustomGridFill = Template.bind({});
-CustomGridFill.args = {
-  desc: '1 liner of grid with 2.5rem per item, ',
-  className: 'grid grid-cols-fill-10'
-};
-
-export const CustomGridColMax = Template.bind({});
-CustomGridColMax.args = {
-  desc: 'grid with max(2.5rem, 25%) per item',
-  className: 'grid grid-cols-max-10-4'
-};
-
-export const CustomGridColMin = Template.bind({});
-CustomGridColMin.args = {
-  desc: 'rid with min(2.5rem, 25%) per item',
-  className: 'grid grid-cols-min-10-4'
+export const ResponsiveFluidGrid = Template.bind({});
+ResponsiveFluidGrid.args = {
+  desc: 'resize viewport for responsiveness, (20rem...desirable %) per item',
+  className: 'responsive-grid-fluid-80'
 };
