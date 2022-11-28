@@ -190,8 +190,8 @@ FullyEnabledWithOverlappedSiblings.args = {
   // @ts-expect-error
   Extra: (
     <code className="sticky top-0 h-40 w-40 bg-cyan z-1 ">
-      this is atop Sections&apos; nav menu due to z-index 1. set Sections&apos; z-index to &gt; 1 to
-      reverse this
+      this is atop Sections&apos; nav menu due to z-index 1. set Sections&apos; z-index to &gt;= 1
+      to reverse this
     </code>
   ),
   className: cx(FullyEnabledWithManyItems.args.className, 'z-0'),

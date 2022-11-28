@@ -198,9 +198,10 @@ const Sections = ({
         className={cx(
           'm-0 p-0 list-none overflow-auto',
           'flex ',
+          'lt-xl:(w-full)',
           !itemFitContent && 'lt-xl:(children:(max-w-60))',
-          'xl:(max-w-60 h-full flex-col)',
           itemFitContent && 'lt-xl:(children:(min-w-fit))',
+          'xl:(max-w-60 h-full flex-col)',
           itemFitContent && 'xl:(min-w-fit)',
           stickyNav && 'sticky top-0',
           !navClassName?.includes('bg-') && 'bg-white',
