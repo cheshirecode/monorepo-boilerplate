@@ -1,21 +1,22 @@
-import { useEffect, useState } from 'react';
-import type { FC, ImgHTMLAttributes, ReactElement } from 'react';
+import type { ImgHTMLAttributes, ReactElement } from 'react';
+import { memo, useEffect, useState } from 'react';
 
 type IconProps = BaseProps &
   ImgHTMLAttributes<HTMLImageElement> & {
     name: string;
   };
-const Icon: FC<IconProps> = (props) => {
-  const { name, ...rest } = props;
-  const [output, setOutput] = useState<ReactElement>();
+const Icon = (props: IconProps) => {
+  const [output, setOutput] = useState<ReactElement>(null);
   useEffect(() => {
+    const { name, ...rest } = props;
     const fn = async () => {
       const src = await import(`../assets/icon-${name}.svg`);
       setOutput(<img src={src.default} alt={name} {...rest} />);
     };
     fn();
-  }, [name, rest]);
-  return output === undefined ? null : output;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props]);
+  return output;
 };
 
-export default Icon;
+export default memo(Icon);

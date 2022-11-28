@@ -1,55 +1,117 @@
 import cx from 'classnames';
-import { useCallback, useState } from 'react';
-import type { FC, MouseEvent } from 'react';
+import type { MouseEvent } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 export type PaginationProps = BaseProps & {
   itemsPerPage: number;
+  /**
+   *  how many items in the list
+   */
   count: number;
+  /**
+   * first page to select, or can be used to subsequently change page
+   */
+  initialPage?: number;
+  /**
+   *  index 1 for display,  first page to select, or can be used to subsequently change page
+   */
+  page: number;
+  /**
+   *  index 0 for array's beginning index
+   */
+  last: number;
+  /**
+   *  index 0 for array's end index. remember to do Array.slice(first, last + 1) to include the last element
+   */
+  first: number;
+  /**
+   *  max page number
+   */
+  total: number;
+  /**
+   * helper array with 1..total
+   */
+  pageNumbers: number;
   itemClassName?: string;
   activeItemClassName?: string;
   disabledItemClassName?: string;
+  /**
+   * default - true. clicking next/prev will go over the range.
+   */
   isRollover?: boolean;
-  onChange?: (
-    e: MouseEvent<HTMLButtonElement>,
-    params: {
-      page: number;
-      last: number;
-      first: number;
-    }
-  ) => void;
+  /**
+   * default - true. displays nothing if there's only 1 page.
+   */
+  isHiddenIfOnePage?: boolean;
+  /**
+   *
+   * @param e
+   * @param params
+   * @returns
+   */
+  onChange?: (e: MouseEvent<HTMLButtonElement>, params: PaginationProps) => void;
 };
 
-export const usePagination = (
-  props: Pick<PaginationProps, 'itemsPerPage' | 'count' | 'onChange'>
-) => {
-  const { itemsPerPage, count, onChange } = props ?? {};
-  if (itemsPerPage !== ~~itemsPerPage || count !== ~~count) {
-    throw TypeError('invalid props, both itemsPerPage and count need to be provided as numbers');
+export const createNewParams = ({ page, count, itemsPerPage }: PaginationProps) => {
+  if (itemsPerPage !== ~~itemsPerPage || count !== ~~count || itemsPerPage <= 0 || count < 0) {
+    // eslint-disable-next-line no-console
+    console.error('itemsPerPage', itemsPerPage, 'count', count);
+    throw RangeError('invalid props, both itemsPerPage and count need to be integers');
   }
-  const [params, setParams] = useState({
-    page: 1,
-    first: 0,
-    last: itemsPerPage
-  });
+  const total = Math.max(Math.ceil(count / itemsPerPage), 1);
+  const newPage = Math.max(Math.min(page, total), 1);
+  const first = Math.min((newPage - 1) * itemsPerPage, count);
+  const last = Math.max(Math.min(count, first + itemsPerPage) - 1, total ? 1 : 0);
+  return {
+    page: newPage,
+    last,
+    first,
+    total,
+    pageNumbers: Array(total)
+      .fill(0)
+      .map((_v, i) => i + 1)
+  };
+};
 
-  const total = Math.ceil(count / itemsPerPage);
-  // page numbers
-  const pageNumbers = Array(total)
-    .fill(0)
-    .map((_v, i) => i + 1);
+export const DEFAULT_PROPS: PaginationProps = {
+  count: 0,
+  itemsPerPage: 1
+};
 
+export const usePagination = (props: PaginationProps) => {
+  const { itemsPerPage, count, onChange, initialPage = 1 } = props ?? {};
+  if (itemsPerPage !== ~~itemsPerPage || count !== ~~count || itemsPerPage <= 0 || count < 0) {
+    // eslint-disable-next-line no-console
+    console.error('itemsPerPage', itemsPerPage, 'count', count);
+    throw RangeError('invalid props, both itemsPerPage and count need to be integers');
+  }
+
+  const [params, setParams] = useState(
+    createNewParams({
+      page: initialPage,
+      count,
+      itemsPerPage
+    })
+  );
   const updateParams = useCallback(
     (e: MouseEvent<HTMLButtonElement>, page: number) => {
-      const last = page * itemsPerPage;
-      const first = last - itemsPerPage;
-      const params = { page, first, last };
+      const params = createNewParams({
+        page,
+        count,
+        itemsPerPage
+      });
       setParams(params);
       if (typeof onChange === 'function') {
         onChange(e, params);
       }
     },
-    [itemsPerPage, onChange]
+    [count, itemsPerPage, onChange]
   );
+
+  useEffect(() => {
+    updateParams(null, initialPage);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialPage, count, itemsPerPage]);
 
   const onPageNumberClick = useCallback(
     (e: MouseEvent<HTMLButtonElement>) => updateParams(e, Number(e.currentTarget.dataset.id)),
@@ -58,28 +120,26 @@ export const usePagination = (
 
   const onPrevClick = useCallback(
     (e: MouseEvent<HTMLButtonElement>) =>
-      updateParams(e, params.page <= 1 ? total : params.page - 1),
-    [params.page, total, updateParams]
+      updateParams(e, params.page <= 1 ? params.total : params.page - 1),
+    [params.page, params.total, updateParams]
   );
 
   const onNextClick = useCallback(
     (e: MouseEvent<HTMLButtonElement>) =>
-      updateParams(e, params.page >= total ? 1 : params.page + 1),
-    [params.page, total, updateParams]
+      updateParams(e, params.page >= params.total ? 1 : params.page + 1),
+    [params.page, params.total, updateParams]
   );
 
   return {
     params,
     setParams,
-    pageNumbers,
-    total,
     onPageNumberClick,
     onPrevClick,
     onNextClick
   } as const;
 };
 
-const Pagination: FC<PaginationProps> = ({
+const Pagination = ({
   className,
   itemClassName,
   activeItemClassName,
@@ -89,22 +149,27 @@ const Pagination: FC<PaginationProps> = ({
   onChange,
   isRollover = true,
   disabledItemClassName,
+  initialPage,
+  pageNumbers: _pageNumbers,
+  isHiddenIfOnePage = true,
   ...props
-}) => {
+}: PaginationProps) => {
   const {
-    params: { page },
+    params: { page, pageNumbers, total },
     setParams: _setParams,
-    pageNumbers,
-    total,
     onPageNumberClick,
     onPrevClick,
     onNextClick
   } = usePagination({
     ...props,
+    initialPage,
     itemsPerPage,
     count,
     onChange
   });
+  if (isHiddenIfOnePage && total <= 1) {
+    return null;
+  }
 
   return (
     <div className={cx('', className)} {...props}>
