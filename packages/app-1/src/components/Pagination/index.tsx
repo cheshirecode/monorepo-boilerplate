@@ -1,21 +1,33 @@
 import cx from 'classnames';
 import type { MouseEvent } from 'react';
-import { useCallback, useEffect, useState } from 'react';
 
-export type PaginationProps = BaseProps & {
-  itemsPerPage: number;
+import { usePagination } from './hooks';
+
+export type PaginationInputs = {
   /**
    *  how many items in the list
    */
   count: number;
   /**
-   * first page to select, or can be used to subsequently change page
-   */
-  initialPage?: number;
-  /**
    *  index 1 for display,  first page to select, or can be used to subsequently change page
    */
   page: number;
+  /**
+   * provide number of items per page based on other params or can be passed in to override
+   */
+  pageSize: number | boolean;
+  /**
+   *
+   * change callback(PAGINATION_PARAMS) whenever pagination happens
+   */
+  onChange?: (params: Partial<PaginationInputs>) => void;
+  /**
+   * default - true. clicking next/prev will go over the range.
+   */
+  isRollover?: boolean;
+};
+
+export type PaginationParams = PaginationInputs & {
   /**
    *  index 0 for array's beginning index
    */
@@ -27,147 +39,97 @@ export type PaginationProps = BaseProps & {
   /**
    *  max page number
    */
-  total: number;
+  maxPage: number;
   /**
-   * helper array with 1..total
+   * helper array with 1..maxPage
    */
-  pageNumbers: number;
-  itemClassName?: string;
-  activeItemClassName?: string;
-  disabledItemClassName?: string;
+  pageNumbers: number[];
+  /**
+   * page size options
+   */
+  pageSizes: number[];
+  /**
+   * setter for other params
+   * @param params
+   * @returns
+   */
+};
+
+export type PaginationHookResults = PaginationParams & {
+  /**
+   *
+   * change callback(PAGINATION_PARAMS) whenever pagination happens
+   */
+  onChange?: (params: Partial<PaginationInputs>) => void;
   /**
    * default - true. clicking next/prev will go over the range.
    */
   isRollover?: boolean;
+  setParams: (params: Partial<PaginationInputs>) => void;
   /**
-   * default - true. displays nothing if there's only 1 page.
+   * helper callback to render custom paginator
    */
-  isHiddenIfOnePage?: boolean;
+  onPageNumberClick: (e: MouseEvent<HTMLElement>) => void;
   /**
-   *
-   * @param e
-   * @param params
-   * @returns
+   * go back
    */
-  onChange?: (e: MouseEvent<HTMLButtonElement>, params: PaginationProps) => void;
+  goPrevious: () => void;
+  /**
+   * go next
+   */
+  goNext: () => void;
+  /**
+   * go to page
+   */
+  goTo: (n: number) => void;
+  /**
+   * set how many items on a page
+   */
+  setPageSize: (n: number) => void;
+  /**
+   * indicate whether next page is possible
+   */
+  isNextPossible: boolean;
+  /**
+   * indicate whether prev page is possible
+   */
+  isPrevPossible: boolean;
 };
 
-export const createNewParams = ({ page, count, itemsPerPage }: PaginationProps) => {
-  if (itemsPerPage !== ~~itemsPerPage || count !== ~~count || itemsPerPage <= 0 || count < 0) {
-    // eslint-disable-next-line no-console
-    console.error('itemsPerPage', itemsPerPage, 'count', count);
-    throw RangeError('invalid props, both itemsPerPage and count need to be integers');
-  }
-  const total = Math.max(Math.ceil(count / itemsPerPage), 1);
-  const newPage = Math.max(Math.min(page, total), 1);
-  const first = Math.min((newPage - 1) * itemsPerPage, count);
-  const last = Math.max(Math.min(count, first + itemsPerPage) - 1, total ? 1 : 0);
-  return {
-    page: newPage,
-    last,
-    first,
-    total,
-    pageNumbers: Array(total)
-      .fill(0)
-      .map((_v, i) => i + 1)
+export type PaginationProps = BaseProps &
+  PaginationHookResults & {
+    itemClassName?: string;
+    activeItemClassName?: string;
+    disabledItemClassName?: string;
   };
-};
 
-export const DEFAULT_PROPS: PaginationProps = {
-  count: 0,
-  itemsPerPage: 1
-};
-
-export const usePagination = (props: PaginationProps) => {
-  const { itemsPerPage, count, onChange, initialPage = 1 } = props ?? {};
-  if (itemsPerPage !== ~~itemsPerPage || count !== ~~count || itemsPerPage <= 0 || count < 0) {
-    // eslint-disable-next-line no-console
-    console.error('itemsPerPage', itemsPerPage, 'count', count);
-    throw RangeError('invalid props, both itemsPerPage and count need to be integers');
-  }
-
-  const [params, setParams] = useState(
-    createNewParams({
-      page: initialPage,
-      count,
-      itemsPerPage
-    })
-  );
-  const updateParams = useCallback(
-    (e: MouseEvent<HTMLButtonElement>, page: number) => {
-      const params = createNewParams({
-        page,
-        count,
-        itemsPerPage
-      });
-      setParams(params);
-      if (typeof onChange === 'function') {
-        onChange(e, params);
-      }
-    },
-    [count, itemsPerPage, onChange]
-  );
-
-  useEffect(() => {
-    updateParams(null, initialPage);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialPage, count, itemsPerPage]);
-
-  const onPageNumberClick = useCallback(
-    (e: MouseEvent<HTMLButtonElement>) => updateParams(e, Number(e.currentTarget.dataset.id)),
-    [updateParams]
-  );
-
-  const onPrevClick = useCallback(
-    (e: MouseEvent<HTMLButtonElement>) =>
-      updateParams(e, params.page <= 1 ? params.total : params.page - 1),
-    [params.page, params.total, updateParams]
-  );
-
-  const onNextClick = useCallback(
-    (e: MouseEvent<HTMLButtonElement>) =>
-      updateParams(e, params.page >= params.total ? 1 : params.page + 1),
-    [params.page, params.total, updateParams]
-  );
-
-  return {
-    params,
-    setParams,
-    onPageNumberClick,
-    onPrevClick,
-    onNextClick
-  } as const;
-};
-
-const Pagination = ({
+export const PlainPagination = ({
+  // skip those from internal hook
+  children: _children,
+  pageSize: _pageSize,
+  count: _count,
+  onChange: _onChange,
+  isRollover: _isRollover,
+  goTo: _goTo,
+  setParams: _setParams,
+  setPageSize: _setPageSize,
+  // necessary props
   className,
   itemClassName,
   activeItemClassName,
-  children: _children,
-  itemsPerPage,
-  count,
-  onChange,
-  isRollover = true,
   disabledItemClassName,
-  initialPage,
-  pageNumbers: _pageNumbers,
-  isHiddenIfOnePage = true,
+  page,
+  pageNumbers,
+  maxPage,
+  onPageNumberClick,
+  isPrevPossible,
+  goPrevious,
+  isNextPossible,
+  goNext,
+  // DOM-only props
   ...props
 }: PaginationProps) => {
-  const {
-    params: { page, pageNumbers, total },
-    setParams: _setParams,
-    onPageNumberClick,
-    onPrevClick,
-    onNextClick
-  } = usePagination({
-    ...props,
-    initialPage,
-    itemsPerPage,
-    count,
-    onChange
-  });
-  if (isHiddenIfOnePage && total <= 1) {
+  if (maxPage <= 1) {
     return null;
   }
 
@@ -176,8 +138,8 @@ const Pagination = ({
       <button
         key="prev"
         tabIndex={0}
-        onClick={onPrevClick}
-        className={cx('', !isRollover && page === 1 && disabledItemClassName, itemClassName)}
+        onClick={goPrevious}
+        className={cx('', !isPrevPossible && disabledItemClassName, itemClassName)}
       >
         Prev
       </button>
@@ -195,13 +157,19 @@ const Pagination = ({
       <button
         key="next"
         tabIndex={0}
-        onClick={onNextClick}
-        className={cx('', !isRollover && page === total && disabledItemClassName, itemClassName)}
+        onClick={goNext}
+        className={cx('', !isNextPossible && disabledItemClassName, itemClassName)}
       >
         Next
       </button>
     </div>
   );
+};
+
+const Pagination = (props: PaginationProps) => {
+  const extraProps = usePagination(props);
+
+  return <PlainPagination {...props} {...extraProps} />;
 };
 
 export default Pagination;

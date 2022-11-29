@@ -1,7 +1,9 @@
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 import { useState } from 'react';
 
-import Pagination from './';
+import { usePagination } from './hooks';
+
+import Pagination, { PlainPagination } from './';
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
@@ -14,10 +16,10 @@ const Template: ComponentStory<typeof Pagination> = (args) => <Pagination {...ar
 
 export const Basic = Template.bind({});
 Basic.args = {
-  itemsPerPage: 7,
+  pageSize: 7,
   className: 'flex flex-gap-2',
   itemClassName: 'p-4 hover:underline',
-  activeItemClassName: 'bg-blue-70 text-white disabled',
+  activeItemClassName: 'bg-blue-70 bg-blue-700 text-white disabled',
   count: 50
 };
 
@@ -25,12 +27,7 @@ export const ExternalCallback: ComponentStory<typeof Pagination> = (props) => {
   const [params, setParams] = useState({});
   return (
     <section className="">
-      <Pagination
-        onChange={(_e, params) => {
-          setParams(params);
-        }}
-        {...props}
-      />
+      <Pagination onChange={setParams} {...props} />
       <div className="">
         <pre>{JSON.stringify(props, null, 2)}</pre>
         <pre>{JSON.stringify(params, null, 2)}</pre>
@@ -40,12 +37,18 @@ export const ExternalCallback: ComponentStory<typeof Pagination> = (props) => {
 };
 ExternalCallback.args = {
   ...Basic.args,
-  initialPage: 2
+  page: 2
 };
 
-export const ZeroItems = ExternalCallback.bind({});
+export const ZeroItems: ComponentStory<typeof Pagination> = (props) => (
+  <>
+    <pre>isHiddenIfOnePage=true to force-display paginator</pre>
+    <ExternalCallback {...props} />
+  </>
+);
 ZeroItems.args = {
   ...ExternalCallback.args,
+  isHiddenIfOnePage: false,
   count: 0
 };
 
@@ -53,23 +56,32 @@ export const TwoItems = ExternalCallback.bind({});
 TwoItems.args = {
   ...ExternalCallback.args,
   count: 2,
-  itemsPerPage: 1
+  pageSize: 1
 };
 
 export const MultiplePaginators: ComponentStory<typeof Pagination> = (props) => {
   const [params, setParams] = useState(props);
-  const setter = (_e, params) => {
-    setParams((v) => ({
-      ...v,
-      ...params,
-      initialPage: params.initialPage ?? params.page
-    }));
-  };
 
   return (
     <section className="flex flex-col">
-      <Pagination onChange={setter} {...params} />
-      <Pagination onChange={setter} {...params} />
+      <Pagination
+        onChange={(params) => {
+          setParams((v) => ({
+            ...v,
+            ...params
+          }));
+        }}
+        {...params}
+      />
+      <Pagination
+        onChange={(params) => {
+          setParams((v) => ({
+            ...v,
+            ...params
+          }));
+        }}
+        {...params}
+      />
       <div className="">
         <pre>{JSON.stringify(props, null, 2)}</pre>
         <pre>{JSON.stringify(params, null, 2)}</pre>
@@ -79,5 +91,69 @@ export const MultiplePaginators: ComponentStory<typeof Pagination> = (props) => 
 };
 MultiplePaginators.args = {
   ...Basic.args,
-  initialPage: 2
+  page: 2
+};
+
+export const UsePagination: ComponentStory<typeof Pagination> = (props) => {
+  const [counter, setCounter] = useState(0);
+  const extraProps = usePagination({
+    ...props,
+    onChange: () => setCounter((v) => ++v)
+  });
+
+  return (
+    <section className="flex flex-col">
+      <PlainPagination {...props} {...extraProps} />
+      <div className="">
+        <pre>perform filtering or pagination to see counter go up - {counter}</pre>
+        <pre>returned props from hook</pre>
+        <pre>{JSON.stringify(extraProps, null, 2)}</pre>
+      </div>
+    </section>
+  );
+};
+UsePagination.args = {
+  ...Basic.args,
+  page: 2
+};
+
+export const UsePaginationWithPageSizes: ComponentStory<typeof Pagination> = (props) => {
+  const [counter, setCounter] = useState(0);
+  const extraProps = usePagination({
+    ...props,
+    onChange: () => setCounter((v) => ++v)
+  });
+
+  return (
+    <section className="flex flex-col">
+      {props.pageSize && (
+        <div>
+          <label htmlFor="pageSize">page size</label>
+          <select
+            id="pageSize"
+            value={Number(extraProps.pageSize)}
+            onChange={(e) => extraProps.setPageSize(Number(e.currentTarget.value))}
+          >
+            {extraProps.pageSizes.map((x) => (
+              <option key={x} value={x}>
+                {x}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+      <PlainPagination {...props} {...extraProps} />
+      <div className="">
+        <pre>perform filtering or pagination to see counter go up - {counter}</pre>
+        <pre>returned props from hook</pre>
+        <pre>{JSON.stringify(extraProps, null, 2)}</pre>
+      </div>
+    </section>
+  );
+};
+UsePaginationWithPageSizes.args = {
+  ...Basic.args,
+  page: 2,
+  count: 50000,
+  pageSize: 9999
 };

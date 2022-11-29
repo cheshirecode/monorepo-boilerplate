@@ -11,7 +11,7 @@ export const toCamel = (str = '') => str.replace(/[-_]([a-z])/g, (x) => x[1].toU
 
 export const splitAlphanumeric = (str: unknown = '') => String(str).match(/[^-_ \d]+|\d+/g);
 
-type StringOrAny = string | string[] | { [key: string]: StringOrAny };
+export type StringOrAny = (string | number) | (string | number)[] | { [key: string]: StringOrAny };
 interface NestedObject {
   [key: string]: StringOrAny;
 }
@@ -25,7 +25,7 @@ export const SEARCH_KEYWORD_SEPARATORS = [',', ' '];
  * @param str string representing 1..n keyword(s) as comma- or space-separated list. abc | ab-c | ab_c are all treated of 1 keyword. 'abc,cd' > abc | cd. 'abc cd' > abc | cd
  * @returns filtered list
  */
-export const deepFilter = <T>(list: Array<StringOrAny>, str?: string) => {
+export const deepFilter = (list: StringOrAny[], str?: string) => {
   const included = (obj: Valueof<NestedObject>, str1?: string): boolean => {
     if (typeof str1 !== 'string') {
       return false;
@@ -40,7 +40,7 @@ export const deepFilter = <T>(list: Array<StringOrAny>, str?: string) => {
       return obj.some((x) => included(x, str1));
     }
     if (typeof obj === 'object') {
-      return Object.keys(obj as { [key: string]: StringOrAny }).some((k) => included(obj[k], str1));
+      return Object.keys(obj).some((k) => included(obj[k], str1));
     }
     if (typeof obj === 'string') {
       const splits =
@@ -51,7 +51,7 @@ export const deepFilter = <T>(list: Array<StringOrAny>, str?: string) => {
     }
     return false;
   };
-  return list?.filter((d) => included(d, str)) as T;
+  return list?.filter((d) => included(d, str));
 };
 /**
  * expect(getRoundedToNearest(12)).toEqual(20);
@@ -78,6 +78,9 @@ export const getRoundedToNearest = (
     console.error('getRoundedToNearest expect int for n. received', n);
     throw new TypeError('getRoundedToNearest - invalid n');
   }
+  if (n === 0) {
+    return 0;
+  }
   const absN = Math.abs(n);
   const maxDigits = String(Math.ceil(absN)).length;
   const d = Math.min(
@@ -89,37 +92,41 @@ export const getRoundedToNearest = (
 };
 
 /**
- * try to get the fitting options matching the maximum size based on params
+ * clamped integer intervals between 0..n
  *
- * getPageSizeOptions([1, 10, 20, 50], 11) === [1, 11]
- * getPageSizeOptions([1, 10, 20, 50, 100, 250], 51) === [20, 51]
- * getPageSizeOptions([1, 10, 20, 50, 100, 250], 501) === [100, 250, 501]
+ * getIntervals([1, 10, 20, 50], 11) === [1, 11]
+ * getIntervals([1, 10, 20, 50, 100, 250], 51) === [20, 51]
+ * getIntervals([1, 10, 20, 50, 100, 250], 501) === [100, 250, 501]
  *
- * @param arr number[] initial numbers. pass [] to seed automatically
- * @param maxSize number maximum size
- * @param n number entries (including maximum size)
- * @returns number[] pagination options based on given params
+ * @param arr number[] - initial numbers. pass [] to seed automatically
+ * @param maxSize number - default - 10. maximum size
+ * @param n number - default - 3. how many entries inc. maximum size
+ *
+ * @returns number[] - range of numbers up to n
  */
-export const getPageSizeOptions = (arr: number[], maxSize = 10, n = 3) => {
+export const getIntervals = (arr: number[], maxSize = 10, n = 3): number[] => {
   if (!Array.isArray(arr) || !arr.every((x) => x === ~~x)) {
     // eslint-disable-next-line no-console
-    console.error('getPageSizeOptions - expect int[] for arr. received ', arr);
-    throw new TypeError('getPageSizeOptions - invalid arr');
+    console.error('getIntervals - expect int[] for arr. received ', arr);
+    throw new TypeError('getIntervals - invalid arr');
   }
-  if (n <= 0 || n !== ~~n) {
+  if (n < 0 || n !== ~~n) {
     // eslint-disable-next-line no-console
-    console.error('getPageSizeOptions - expect int for n. received ', n);
-    throw new TypeError('getPageSizeOptions - invalid n');
+    console.error('getIntervals - expect int for n. received ', n);
+    throw new TypeError('getIntervals - invalid n');
   }
-  if (maxSize <= 0 || maxSize !== ~~maxSize) {
+  if (maxSize < 0 || maxSize !== ~~maxSize) {
     // eslint-disable-next-line no-console
-    console.error('getPageSizeOptions - expect int for maxSize. received ', maxSize);
-    throw new TypeError('getPageSizeOptions - invalid maxSize');
+    console.error('getIntervals - expect int for maxSize. received ', maxSize);
+    throw new TypeError('getIntervals - invalid maxSize');
   }
   if (n === 1) {
     return [maxSize];
   }
-  let r: number[];
+  if (maxSize === 0) {
+    return [];
+  }
+  let r;
   if (arr.length > 0) {
     const newArr = [...new Set(arr.concat(maxSize))];
     newArr.sort((a, b) => a - b);
@@ -132,7 +139,7 @@ export const getPageSizeOptions = (arr: number[], maxSize = 10, n = 3) => {
     r = r.concat(filteredArr.slice(index + 1, index + 1 + n - r.length)).slice(-1 * n);
   } else {
     const niceMaxSize = getRoundedToNearest(maxSize, 0, false);
-    r = getPageSizeOptions(
+    r = getIntervals(
       Array(n - 1)
         .fill(0)
         .map((_x, i) => Math.ceil(niceMaxSize / Math.pow(2, n - 1 - i)))

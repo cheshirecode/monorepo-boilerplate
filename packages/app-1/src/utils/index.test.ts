@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
   deepFilter,
-  getPageSizeOptions,
+  getIntervals,
   getRoundedToNearest,
   pascalToSeparatedWords,
   splitAlphanumeric,
@@ -80,36 +80,46 @@ describe('@/utils', () => {
       }
     ]);
 
-    expect(deepFilter(['oss-tech', 'oss', 'oss-linux'], 'oss-tech')).toEqual(['oss-tech']);
-    expect(deepFilter(['oss-tech', 'oss', 'oss-linux'], 'oss, tech')).toEqual([
-      'oss-tech',
-      'oss',
-      'oss-linux'
+    expect(deepFilter(['bld-tech', 'bld', 'bld-linux'], 'bld-tech')).toEqual(['bld-tech']);
+    expect(deepFilter(['bld-tech', 'bld', 'bld-linux'], 'bld, tech')).toEqual([
+      'bld-tech',
+      'bld',
+      'bld-linux'
     ]);
   });
 
   it('getRoundedToNearest', () => {
+    expect(getRoundedToNearest(0)).toEqual(0);
     expect(getRoundedToNearest(12)).toEqual(20);
     expect(getRoundedToNearest(105)).toEqual(200);
     expect(getRoundedToNearest(105, 2)).toEqual(110);
     expect(getRoundedToNearest(105, 4)).toEqual(200);
     expect(getRoundedToNearest(105, 4, false)).toEqual(100);
-    expect(getRoundedToNearest(105, null, false)).toEqual(100);
+    expect(getRoundedToNearest(105, 0, false)).toEqual(100);
     expect(getRoundedToNearest(105)).toEqual(200);
     expect(getRoundedToNearest(-12, 2, false)).toEqual(-10);
   });
 
-  it('getPageSizeOptions', () => {
-    expect(getPageSizeOptions([1, 10, 20, 50], 11)).toEqual([1, 11]);
-    expect(getPageSizeOptions([10, 20, 50], 11)).toEqual([11]);
-    expect(getPageSizeOptions([1, 10, 20, 50, 100, 250], 51)).toEqual([10, 20, 51]);
-    expect(getPageSizeOptions([1, 17, 20, 22, 50, 100, 250], 51)).toEqual([17, 22, 51]);
-    expect(getPageSizeOptions([1, 10, 20, 50, 100, 250], 501)).toEqual([100, 250, 501]);
-    expect(getPageSizeOptions([10, 20, 250], 501, 2)).toEqual([250, 501]);
-    expect(getPageSizeOptions([10, 26, 27, 28, 29, 30, 31], 100)).toEqual([10, 31, 100]);
-    expect(getPageSizeOptions([], 1)).toEqual([1]);
-    expect(getPageSizeOptions([], 10)).toEqual([3, 5, 10]);
-    expect(getPageSizeOptions([], 100)).toEqual([25, 50, 100]);
-    expect(getPageSizeOptions([], 101)).toEqual([25, 50, 101]);
+  it('getIntervals', () => {
+    expect(getIntervals([], 0)).toEqual([]);
+    expect(getIntervals([1, 10, 20, 50], 11)).toEqual([1, 11]);
+    expect(getIntervals([1, 10, 20, 50], 11, 1)).toEqual([11]);
+    expect(getIntervals([], 11, 2)).toEqual([5, 11]);
+    expect(getIntervals([10, 20, 50], 11)).toEqual([11]);
+    expect(getIntervals([1, 10, 20, 50, 100, 250], 51)).toEqual([10, 20, 51]);
+    expect(getIntervals([1, 17, 20, 22, 50, 100, 250], 51)).toEqual([17, 22, 51]);
+    expect(getIntervals([1, 10, 20, 50, 100, 250], 501)).toEqual([100, 250, 501]);
+    expect(getIntervals([10, 20, 250], 501, 2)).toEqual([250, 501]);
+    expect(getIntervals([10, 26, 27, 28, 29, 30, 31], 100)).toEqual([10, 31, 100]);
+    expect(getIntervals([], 1)).toEqual([1]);
+    expect(getIntervals([], 10)).toEqual([3, 5, 10]);
+    expect(getIntervals([], 19)).toEqual([3, 5, 19]);
+    expect(getIntervals([], 21)).toEqual([5, 10, 21]);
+    expect(getIntervals([], 100)).toEqual([25, 50, 100]);
+    expect(getIntervals([], 101)).toEqual([25, 50, 101]);
+    expect(getIntervals([], 700)).toEqual([175, 350, 700]);
+    expect(getIntervals([], 800)).toEqual([200, 400, 800]);
+    expect(getIntervals([], 900)).toEqual([225, 450, 900]);
+    expect(getIntervals([], 1000)).toEqual([250, 500, 1000]);
   });
 });
