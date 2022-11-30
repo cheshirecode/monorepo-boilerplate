@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { getIntervals } from '@/utils';
 
-import type { PaginationHookResults, PaginationInputs, PaginationParams } from './';
+import type { PaginationHookResults, PaginationInputs, PaginationParams } from '.';
 
 export const DEFAULT_PAGINATION_THRESHOLD = 10;
 const createNewParams: (
@@ -10,7 +10,8 @@ const createNewParams: (
 ) => PaginationParams & Required<Pick<PaginationInputs, 'page'>> = ({
   page,
   count,
-  pageSize = false
+  pageSize = DEFAULT_PAGINATION_THRESHOLD,
+  _pageSize
 }) => {
   if (count < 0) {
     // eslint-disable-next-line no-console
@@ -31,7 +32,7 @@ const createNewParams: (
   // compute page size options for easy references
   const pageSizes =
     pageSize === Math.abs(~~pageSize)
-      ? [...new Set(intervals.concat(pageSize).filter((x) => !!x))]
+      ? [...new Set(intervals.concat(pageSize, Number(_pageSize)).filter((x) => !!x))]
       : intervals;
   pageSizes.sort((a, b) => a - b);
 
@@ -54,27 +55,31 @@ const createNewParams: (
   } as const;
 };
 
-export const usePagination: (p: PaginationInputs) => PaginationHookResults = (props) => {
+const usePagination: (p: PaginationInputs) => PaginationHookResults = (props) => {
   const { page: initialPage = 1, pageSize, count, onChange, isRollover = true } = props ?? {};
   const [params, _setParams] = useState(
     createNewParams({
       page: initialPage,
       count,
-      pageSize
+      pageSize,
+      _pageSize: pageSize
     })
   );
   const setParams = useCallback<PaginationHookResults['setParams']>(
-    (p) => {
-      const newParams = createNewParams({
-        ...params,
-        ...p
+    (params) => {
+      _setParams((p) => {
+        const newParams = createNewParams({
+          ...p,
+          ...params,
+          _pageSize: pageSize
+        });
+        if (typeof onChange === 'function') {
+          onChange(newParams);
+        }
+        return newParams;
       });
-      _setParams(newParams);
-      if (typeof onChange === 'function') {
-        onChange(newParams);
-      }
     },
-    [onChange, params]
+    [onChange, pageSize]
   );
 
   const helpers: PaginationHookResults = useMemo(
@@ -111,3 +116,5 @@ export const usePagination: (p: PaginationInputs) => PaginationHookResults = (pr
 
   return helpers;
 };
+
+export default usePagination;
