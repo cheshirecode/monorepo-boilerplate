@@ -23,6 +23,10 @@
       "allowedCategories": [ "production" ]
     },
     {
+      "name": "@faker-js/faker",
+      "allowedCategories": [ "production" ]
+    },
+    {
       "name": "@fieryeagle/eslint-config-react",
       "allowedCategories": [ "production" ]
     },
@@ -76,6 +80,10 @@
     },
     {
       "name": "@storybook/testing-library",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "@tanstack/react-table",
       "allowedCategories": [ "production" ]
     },
     {

@@ -1,7 +1,7 @@
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 import { useState } from 'react';
 
-import { usePagination } from './hooks';
+import usePagination from './usePagination';
 
 import Pagination, { PlainPagination } from './';
 
@@ -48,7 +48,6 @@ export const ZeroItems: ComponentStory<typeof Pagination> = (props) => (
 );
 ZeroItems.args = {
   ...ExternalCallback.args,
-  isHiddenIfOnePage: false,
   count: 0
 };
 

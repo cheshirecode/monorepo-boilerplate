@@ -1,7 +1,7 @@
 import cx from 'classnames';
 import type { MouseEvent } from 'react';
 
-import { usePagination } from './hooks';
+import usePagination from './usePagination';
 
 export type PaginationInputs = {
   /**
@@ -16,6 +16,10 @@ export type PaginationInputs = {
    * provide number of items per page based on other params or can be passed in to override
    */
   pageSize: number | boolean;
+  /**
+   * original page size
+   */
+  _pageSize?: number | boolean;
   /**
    *
    * change callback(PAGINATION_PARAMS) whenever pagination happens
