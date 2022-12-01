@@ -7,13 +7,12 @@ import { useReducer } from 'react';
 // import './integrated.css';
 import useTable from './useTable';
 
-const Table = <T extends Record<string, unknown>>(
-  props: BaseProps & {
-    params: Required<Pick<TableOptions<T>, 'data'>> & Partial<Omit<TableOptions<T>, 'data'>>;
-  }
-) => {
+export type TableProps<T> = Required<Pick<TableOptions<T>, 'data'>> &
+  Partial<Omit<TableOptions<T>, 'data'>>;
+
+const Table = <T extends Record<string, unknown>>(props: BaseProps & { table: TableProps<T> }) => {
   const {
-    params: { data, enableColumnResizing = true, ...p },
+    table: { data, enableColumnResizing = false, enableRowSelection = false, ...p },
     className
   } = props;
   const rerender = useReducer(() => ({}), {})[1];
@@ -21,6 +20,7 @@ const Table = <T extends Record<string, unknown>>(
   const { table, sorting } = useTable({
     data,
     enableColumnResizing,
+    enableRowSelection,
     columnResizeMode: 'onChange',
     debugTable: true,
     debugHeaders: true,
