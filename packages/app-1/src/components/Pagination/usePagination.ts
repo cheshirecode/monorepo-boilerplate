@@ -32,7 +32,7 @@ const createNewParams: (
   // compute page size options for easy references
   const pageSizes =
     pageSize === Math.abs(~~pageSize)
-      ? [...new Set(intervals.concat(pageSize, Number(_pageSize)).filter((x) => !!x))]
+      ? [...new Set(intervals.concat(pageSize, Number(_pageSize)).filter((x) => !!x && x <= count))]
       : intervals;
   pageSizes.sort((a, b) => a - b);
 

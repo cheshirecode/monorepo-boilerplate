@@ -117,6 +117,7 @@ export const PlainPagination = ({
   goTo: _goTo,
   setParams: _setParams,
   setPageSize: _setPageSize,
+  pageSizes: _pageSizes,
   // necessary props
   className,
   itemClassName,
