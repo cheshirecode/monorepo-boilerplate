@@ -1,25 +1,36 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
-import type { PaginationProps } from '@/components/Pagination';
+import type { PaginationInputs, PaginationProps } from '@/components/Pagination';
 import { PlainPagination } from '@/components/Pagination';
 
-import Table from './Table';
+import Table, { TableProps } from './Table';
 import useList from './useList';
 
-const Integrated = <T extends Record<string, unknown>>(props: PaginationProps & { data: T[] }) => {
-  const { data } = props;
+const Integrated = <T extends Record<string, unknown>>(
+  props: BaseProps & {
+    pagination: Partial<Omit<PaginationProps, keyof BaseProps>> & PaginationInputs;
+    data: T[];
+    table: Omit<TableProps<T>, 'data'>;
+  }
+) => {
+  const { data, table, pagination } = props;
   const [f, setF] = useState('');
   const [counter, setCounter] = useState(0);
-  const listProps = useList(data.slice(0, props.count), {
+  const listProps = useList(data.slice(0, pagination.count), {
     filter: {
       str: '',
       onChange: setF
     },
     pagination: {
-      pageSize: props.pageSize,
+      pageSize: pagination.pageSize,
       onChange: () => setCounter((v) => ++v)
     }
   });
+
+  const tableProps = useMemo(
+    () => ({ ...table, data: listProps.paginated }),
+    [listProps.paginated, table]
+  );
 
   return (
     <section className="flex flex-col">
@@ -48,7 +59,7 @@ const Integrated = <T extends Record<string, unknown>>(props: PaginationProps & 
             </option>
           ))}
         </select>
-        <PlainPagination {...props} {...listProps.pagination} />
+        <PlainPagination {...pagination} {...listProps.pagination} />
       </div>
       <div className="">
         <h3>list</h3>
@@ -65,7 +76,7 @@ const Integrated = <T extends Record<string, unknown>>(props: PaginationProps & 
       <div className="flex flex-col">
         <h3>table</h3>
         {/* <pre>{JSON.stringify(tableProps.table.getRowModel().rows, null, 2)}</pre> */}
-        <Table<T> params={{ data: listProps.paginated }} />
+        <Table<T> table={tableProps} />
       </div>
     </section>
   );

@@ -9,6 +9,8 @@ const useTable = <T extends Record<string, unknown>>(
   >
 ) => {
   const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnVisibility, setColumnVisibility] = useState({});
+
   const { data = [] } = params;
   const columns = useMemo<ColumnDef<T>[]>(
     () =>
@@ -33,9 +35,11 @@ const useTable = <T extends Record<string, unknown>>(
     ...params,
     columns,
     state: {
-      sorting
+      sorting,
+      columnVisibility
     },
     onSortingChange: setSorting,
+    onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel<T>(),
     getSortedRowModel: getSortedRowModel<T>()
     // debugTable: true,

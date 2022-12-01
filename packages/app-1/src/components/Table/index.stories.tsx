@@ -13,29 +13,28 @@ export default {
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 } as ComponentMeta<typeof Table<Person>>;
 
-const smallMock = makeData(1000);
-
 export const WrappedTable: ComponentStory<typeof Table<Person>> = (args) => (
   <div className="w-full">
-    <Table {...args} />
+    <Table {...args} table={{ data: makeData(1000) }} />
   </div>
 );
-WrappedTable.args = {
-  params: {
-    data: smallMock
-  }
-};
+WrappedTable.args = {};
 
-export const LargeList: ComponentStory<typeof Integrated<Person>> = (args) => (
+export const IntegratedHooks: ComponentStory<typeof Integrated<Person>> = (args) => (
   <div className="w-full">
-    <Integrated {...args} data={makeData(args.count)} />
+    <Integrated {...args} data={makeData(args.pagination.count)} />
   </div>
 );
-LargeList.args = {
+IntegratedHooks.args = {
   className: 'flex flex-gap-2',
-  itemClassName: 'p-4 hover:underline',
-  activeItemClassName: 'bg-blue-70 bg-blue-700 text-white disabled',
-  page: 2,
-  pageSize: 200,
-  count: 999
+  pagination: {
+    itemClassName: 'p-4 hover:underline',
+    activeItemClassName: 'bg-blue-70 bg-blue-700 text-white disabled',
+    page: 2,
+    pageSize: 301,
+    count: 3999
+  },
+  table: {
+    enableColumnResizing: true
+  }
 };
