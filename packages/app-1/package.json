@@ -27,8 +27,7 @@
     "unfetch": "^4.2.0",
     "@emotion/react": "~11.10.5",
     "@emotion/styled": "~11.10.5",
-    "@tanstack/react-table": "~8.7.0",
-    "react-virtual": "~2.10.4"
+    "@tanstack/react-table": "~8.7.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.2",
