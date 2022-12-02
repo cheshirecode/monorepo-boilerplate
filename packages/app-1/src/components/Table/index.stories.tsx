@@ -50,8 +50,9 @@ Custom.args = {
     }
   },
   classNameGetters: {
-    header(props) {
-      return `text-left header-${props.id}`;
-    }
+    header: (props) => `text-left header-${props.id}`,
+    cell: (props) =>
+      `text-right border border-blue-70 border-blue-700 cell-${props.id} animate-fade-in-slow`,
+    row: (props) => `border-2 border-black row-${props.id}`
   }
 };

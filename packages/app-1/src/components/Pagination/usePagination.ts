@@ -25,14 +25,18 @@ const createNewParams: (
    * pageSize !== false and not +ve integer, take the 1st page size option
    * */
   const threshold = Math.max(count, DEFAULT_PAGINATION_THRESHOLD);
-  const intervals = getIntervals([], threshold);
+  const intervals = getIntervals(
+    getIntervals([], threshold).concat(Number(pageSize), Number(_pageSize)),
+    threshold
+  );
+  intervals.sort((a, b) => a - b);
   const n = (
     pageSize === false || pageSize === Math.abs(~~pageSize) ? [~~pageSize || threshold] : intervals
   )[0];
   // compute page size options for easy references
   const pageSizes =
     pageSize === Math.abs(~~pageSize)
-      ? [...new Set(intervals.concat(pageSize, Number(_pageSize)).filter((x) => !!x && x <= count))]
+      ? [...new Set(intervals.concat(n, Number(_pageSize)).filter((x) => !!x))]
       : intervals;
   pageSizes.sort((a, b) => a - b);
 

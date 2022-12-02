@@ -94,13 +94,7 @@ const config: UserConfig = defineConfig({
       roman: 'upper-roman'
     },
     animation: {
-      fade: 'fadeOut 2s normal forwards ease-in-out'
-    },
-    keyframes: {
-      fadeOut: {
-        '0%': { opacity: 1 },
-        '100%': { opacity: 0 }
-      }
+      'fade-in-slow': 'fade-in 2s ease 1s'
     }
   },
   presets: [

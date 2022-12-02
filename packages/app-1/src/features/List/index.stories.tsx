@@ -28,6 +28,7 @@ ToTable.args = {
     count: 3999
   },
   table: {
-    enableColumnResizing: true
+    enableColumnResizing: true,
+    debugAll: true
   }
 };
