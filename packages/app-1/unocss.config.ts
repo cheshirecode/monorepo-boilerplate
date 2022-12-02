@@ -1,5 +1,5 @@
-import { defineConfig, presetAttributify, presetUno, transformerVariantGroup } from 'unocss';
 import type { UserConfig } from 'unocss';
+import { defineConfig, presetAttributify, presetUno, transformerVariantGroup } from 'unocss';
 
 import { breakpoints, lineHeight, MAX_GRID_SIZE, MAX_REM_UNITS } from './src/styles/tokens';
 
@@ -161,8 +161,8 @@ const config: UserConfig = defineConfig({
   shortcuts: [
     {
       btn: [
-        'text-white text-center uppercase bold',
-        'bg-blue-dark-moderate py-1 px-4 font-semibold rounded-md',
+        'text-white text-center',
+        'bg-blue-70 bg-blue-700 py-1 px-4 rounded-md',
         'hover:(shadow-md shadow-gray-700)'
       ].join(' '),
       'btn-secondary': 'text-black bg-white',
