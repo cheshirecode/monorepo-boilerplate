@@ -1,40 +1,57 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 
-import Integrated from './Integrated';
-import type { Person } from './mock';
-import { makeData } from './mock';
-import Table from './Table';
+import type { Person } from '@/services/api/mock';
+import { makeData } from '@/services/api/mock';
+
+import Table from './';
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
   title: 'components/Table',
-  component: Integrated
+  component: Table
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 } as ComponentMeta<typeof Table<Person>>;
 
-export const WrappedTable: ComponentStory<typeof Table<Person>> = (args) => (
+export const Basic: ComponentStory<typeof Table<Person>> = (args) => (
   <div className="w-full">
-    <Table {...args} table={{ data: makeData(1000) }} />
+    <Table<Person> {...args} data={makeData(50)} />
   </div>
 );
-WrappedTable.args = {};
+Basic.args = {
+  className: '',
+  enableColumnResizing: true,
+  debugAll: true
+};
 
-export const IntegratedHooks: ComponentStory<typeof Integrated<Person>> = (args) => (
+export const Custom: ComponentStory<typeof Table<Person>> = (args) => (
   <div className="w-full">
-    <Integrated {...args} data={makeData(args.pagination.count)} />
+    <Table<Person> {...args} data={makeData(50)} />
   </div>
 );
-IntegratedHooks.args = {
-  className: 'flex flex-gap-2',
-  pagination: {
-    itemClassName: 'p-4 hover:underline',
-    activeItemClassName: 'bg-blue-70 bg-blue-700 text-white disabled',
-    page: 2,
-    pageSize: 301,
-    count: 3999
+
+Custom.args = {
+  ...Basic.args,
+  extra: {
+    customColumnDef(cols, helper) {
+      cols.push(
+        helper.display({
+          id: 'actions',
+          header: ' actions',
+          cell(props) {
+            return `props.row - ${JSON.stringify(props?.row).length} chars`;
+          }
+        })
+      );
+      return cols;
+    },
+    cellRenderer(_props, v) {
+      return <span>c - {v}</span>;
+    }
   },
-  table: {
-    enableColumnResizing: true
+  classNameGetters: {
+    header(props) {
+      return `text-left header-${props.id}`;
+    }
   }
 };

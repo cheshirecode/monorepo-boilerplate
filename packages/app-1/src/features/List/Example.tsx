@@ -1,22 +1,16 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 
-import type { PaginationInputs, PaginationProps } from '@/components/Pagination';
 import { PlainPagination } from '@/components/Pagination';
+import Table from '@/components/Table';
 
-import Table, { TableProps } from './Table';
+import type { ListProps } from './typings';
 import useList from './useList';
 
-const Integrated = <T extends Record<string, unknown>>(
-  props: BaseProps & {
-    pagination: Partial<Omit<PaginationProps, keyof BaseProps>> & PaginationInputs;
-    data: T[];
-    table: Omit<TableProps<T>, 'data'>;
-  }
-) => {
-  const { data, table, pagination } = props;
+const Example = <T extends Record<string, unknown>>(props: ListProps<T>) => {
+  const { data, pagination, table } = props;
   const [f, setF] = useState('');
   const [counter, setCounter] = useState(0);
-  const listProps = useList(data.slice(0, pagination.count), {
+  const listProps = useList(data, {
     filter: {
       str: '',
       onChange: setF
@@ -26,11 +20,6 @@ const Integrated = <T extends Record<string, unknown>>(
       onChange: () => setCounter((v) => ++v)
     }
   });
-
-  const tableProps = useMemo(
-    () => ({ ...table, data: listProps.paginated }),
-    [listProps.paginated, table]
-  );
 
   return (
     <section className="flex flex-col">
@@ -75,11 +64,11 @@ const Integrated = <T extends Record<string, unknown>>(
 
       <div className="flex flex-col">
         <h3>table</h3>
-        {/* <pre>{JSON.stringify(tableProps.table.getRowModel().rows, null, 2)}</pre> */}
-        <Table<T> table={tableProps} />
+        {/* <pre>{JSON.stringify(InternalTableProps.table.getRowModel().rows, null, 2)}</pre> */}
+        <Table<T> data={listProps.paginated} {...table} />
       </div>
     </section>
   );
 };
 
-export default Integrated;
+export default Example;
