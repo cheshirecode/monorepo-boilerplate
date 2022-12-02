@@ -1,0 +1,33 @@
+import type {
+  Cell,
+  CellContext,
+  ColumnDef,
+  ColumnHelper,
+  Header,
+  Row,
+  TableOptions
+} from '@tanstack/react-table';
+import type { ReactNode } from 'react';
+
+export type InternalTableProps<T extends Record<string, unknown>> = Partial<TableOptions<T>> &
+  Pick<TableOptions<T>, 'data'>;
+
+export type ExtraInternalTableProps<T extends Record<string, unknown>> = {
+  cellRenderer?: (props: CellContext<T, unknown>, v: string | null) => ReactNode;
+  customColumnDef?: (cols: ColumnDef<T>[], helper: ColumnHelper<T>) => ColumnDef<T>[];
+};
+
+export type TableHookParams = Omit<
+  TableOptions<T>,
+  'columns' | 'state' | 'onSortingChange' | 'getCoreRowModel' | 'getSortedRowModel'
+>;
+
+export type TableProps<T extends Record<string, unknown>> = BaseProps &
+  InternalTableProps<T> & {
+    extra?: ExtraInternalTableProps<T>;
+    classNameGetters?: {
+      header?: (props: Header<T, unknown>) => string;
+      row?: (props: Row<T>) => string;
+      cell?: (props: Cell<T, unknown>) => string;
+    };
+  };

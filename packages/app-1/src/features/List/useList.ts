@@ -1,10 +1,9 @@
 import { useMemo, useState } from 'react';
 
-import type { PaginationInputs } from '@/components/Pagination';
-import usePagination from '@/components/Pagination/usePagination';
+import usePagination, { DEFAULT_PAGINATION_THRESHOLD } from '@/components/Pagination/usePagination';
 import { deepFilter } from '@/utils';
 
-export const DEFAULT_PAGINATION_THRESHOLD = 10;
+import type { ListParams } from './typings';
 
 /**
  * data manipulation - takes a list of items with what's needed and returns abstracted getters/setters to help render a filtered and paginated list
@@ -19,41 +18,34 @@ const useList = (
   // TODO - fix generics later
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   arr: any[],
-  params?: {
-    filter?: {
-      str: string;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      fn?: (arr: any[], str: string) => any[];
-      onChange?: (str: string) => void;
-    };
-    pagination?: Partial<PaginationInputs>;
-  }
+  params?: ListParams
 ) => {
-  const [filterStr, setFilterStr] = useState(params?.filter?.str ?? '');
+  const { filter: filterParams, pagination: paginationParams } = params ?? {};
+  const [filterStr, setFilterStr] = useState(filterParams?.str ?? '');
   const filter = useMemo(
     () => ({
       str: filterStr,
       set: (str: string) => {
         setFilterStr(str);
-        if (typeof params?.filter?.onChange === 'function') {
-          params?.filter?.onChange(str);
+        if (typeof filterParams?.onChange === 'function') {
+          filterParams?.onChange(str);
         }
       }
     }),
-    [filterStr, params?.filter]
+    [filterStr, filterParams]
   );
   const [filtered, count] = useMemo(() => {
-    const filtered = (params?.filter?.fn ?? deepFilter)(arr, filterStr);
+    const filtered = (filterParams?.fn ?? deepFilter)(arr, filterStr);
     const count = filtered.length;
     // pageSize comes from params
 
     return [filtered, count];
-  }, [arr, filterStr, params?.filter?.fn]);
+  }, [arr, filterStr, filterParams?.fn]);
 
   const pagination = usePagination({
-    ...(params?.pagination ?? {}),
-    page: params?.pagination?.page ?? 1,
-    pageSize: params?.pagination?.pageSize ?? DEFAULT_PAGINATION_THRESHOLD,
+    ...(paginationParams ?? {}),
+    page: paginationParams?.page ?? 1,
+    pageSize: paginationParams?.pageSize ?? DEFAULT_PAGINATION_THRESHOLD,
     count
   });
 

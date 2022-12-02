@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { getIntervals } from '@/utils';
 
-import type { PaginationHookResults, PaginationInputs, PaginationParams } from '.';
+import type { PaginationHookResults, PaginationInputs, PaginationParams } from './typings';
 
 export const DEFAULT_PAGINATION_THRESHOLD = 10;
 const createNewParams: (
