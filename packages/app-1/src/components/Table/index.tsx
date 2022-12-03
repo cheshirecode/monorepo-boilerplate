@@ -7,7 +7,7 @@ import { useReducer } from 'react';
 import { TableProps } from './typings';
 import useTable from './useTable';
 
-const Table = <T extends Record<string, unknown>>(props: TableProps<T>) => {
+const Table = <T,>(props: TableProps<T>) => {
   const {
     data,
     enableColumnResizing = false,

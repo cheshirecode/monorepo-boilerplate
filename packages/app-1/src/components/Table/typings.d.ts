@@ -9,10 +9,9 @@ import type {
 } from '@tanstack/react-table';
 import type { ReactNode } from 'react';
 
-export type InternalTableProps<T extends Record<string, unknown>> = Partial<TableOptions<T>> &
-  Pick<TableOptions<T>, 'data'>;
+export type InternalTableProps<T> = Partial<TableOptions<T>> & Pick<TableOptions<T>, 'data'>;
 
-export type ExtraInternalTableProps<T extends Record<string, unknown>> = {
+export type ExtraInternalTableProps<T> = {
   cellRenderer?: (props: CellContext<T, unknown>, v: string | null) => ReactNode;
   customColumnDef?: (cols: ColumnDef<T>[], helper: ColumnHelper<T>) => ColumnDef<T>[];
 };
@@ -22,7 +21,7 @@ export type TableHookParams = Omit<
   'columns' | 'state' | 'onSortingChange' | 'getCoreRowModel' | 'getSortedRowModel'
 >;
 
-export type TableProps<T extends Record<string, unknown>> = BaseProps &
+export type TableProps<T> = BaseProps &
   InternalTableProps<T> & {
     extra?: ExtraInternalTableProps<T>;
     classNameGetters?: {

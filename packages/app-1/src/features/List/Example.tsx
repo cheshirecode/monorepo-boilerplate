@@ -6,7 +6,7 @@ import Table from '@/components/Table';
 import type { ListProps } from './typings';
 import useList from './useList';
 
-const Example = <T extends Record<string, unknown>>(props: ListProps<T>) => {
+const Example = <T,>(props: ListProps<T>) => {
   const { data, pagination, table } = props;
   const [f, setF] = useState('');
   const [counter, setCounter] = useState(0);

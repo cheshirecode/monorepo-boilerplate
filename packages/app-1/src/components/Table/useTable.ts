@@ -9,10 +9,7 @@ import { useMemo, useState } from 'react';
 
 import { ExtraInternalTableProps, TableHookParams } from './typings';
 
-const useTable = <T extends Record<string, unknown>>(
-  params: TableHookParams,
-  extra?: ExtraInternalTableProps<T>
-) => {
+const useTable = <T>(params: TableHookParams, extra?: ExtraInternalTableProps<T>) => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState({});
   const columnHelper = createColumnHelper<T>();
