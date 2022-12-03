@@ -11,7 +11,7 @@ export type ListParams = {
   pagination: Partial<PaginationInputs>;
 };
 
-export type ListProps<T extends Record<string, unknown>> = BaseProps & {
+export type ListProps<T> = BaseProps & {
   pagination: PaginationStyleProps & ListParams['pagination'];
   data: T[];
 } & {
