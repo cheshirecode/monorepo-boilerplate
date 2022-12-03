@@ -13,7 +13,8 @@ export type InternalTableProps<T> = Partial<TableOptions<T>> & Pick<TableOptions
 
 export type ExtraInternalTableProps<T> = {
   cellRenderer?: (props: CellContext<T, unknown>, v: string | null) => ReactNode;
-  customColumnDef?: (cols: ColumnDef<T>[], helper: ColumnHelper<T>) => ColumnDef<T>[];
+  subRowRenderer?: (props: Row<T>) => ReactNode;
+  createColumnDefs?: (colDefs: ColumnDef<T>[], helper: ColumnHelper<T>) => ColumnDef<T>[];
 };
 
 export type TableHookParams = Omit<

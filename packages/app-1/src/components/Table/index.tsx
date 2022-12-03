@@ -1,7 +1,7 @@
 /* eslint-disable no-unreachable */
 import { flexRender } from '@tanstack/react-table';
 import cx from 'classnames';
-import { useReducer } from 'react';
+import { Fragment, useReducer } from 'react';
 
 // import './integrated.css';
 import { TableProps } from './typings';
@@ -25,9 +25,6 @@ const Table = <T,>(props: TableProps<T>) => {
       enableColumnResizing,
       enableRowSelection,
       columnResizeMode: 'onChange',
-      debugTable: true,
-      debugHeaders: true,
-      debugColumns: true,
       ...p
     },
     extra
@@ -88,19 +85,27 @@ const Table = <T,>(props: TableProps<T>) => {
         </thead>
         <tbody>
           {table.getRowModel().rows.map((row) => (
-            <tr key={row.id} className={cx(classNameGetters?.row?.(row))}>
-              {row.getVisibleCells().map((cell) => (
-                <td
-                  key={cell.id}
-                  style={{
-                    ...(enableColumnResizing ? { width: cell.column.getSize() } : {})
-                  }}
-                  className={cx(classNameGetters?.cell?.(cell))}
-                >
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              ))}
-            </tr>
+            <Fragment key={row.id}>
+              <tr className={cx(classNameGetters?.row?.(row))}>
+                {row.getVisibleCells().map((cell) => (
+                  <td
+                    key={cell.id}
+                    style={{
+                      ...(enableColumnResizing ? { width: cell.column.getSize() } : {})
+                    }}
+                    className={cx(classNameGetters?.cell?.(cell))}
+                  >
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </td>
+                ))}
+              </tr>
+              {row.getIsExpanded() && extra?.subRowRenderer && (
+                <tr>
+                  {/* https://github.com/TanStack/table/blob/main/examples/react/sub-components/src/main.tsx#L161 */}
+                  <td colSpan={row.getVisibleCells().length}>{extra.subRowRenderer(row)}</td>
+                </tr>
+              )}
+            </Fragment>
           ))}
         </tbody>
       </table>
