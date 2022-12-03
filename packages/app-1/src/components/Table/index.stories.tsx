@@ -1,5 +1,5 @@
-/* eslint-disable jsx-a11y/no-static-element-interactions */
 import { ComponentMeta, ComponentStory } from '@storybook/react';
+import cx from 'classnames';
 
 import type { Person } from '@/services/api/mock';
 import { makeData } from '@/services/api/mock';
@@ -24,17 +24,17 @@ Basic.args = {
   debugAll: true
 };
 
-export const Custom: ComponentStory<typeof Table<Person>> = (args) => (
+export const CustomStyle: ComponentStory<typeof Table<Person>> = (args) => (
   <div className="w-full">
     <Table<Person> {...args} data={makeData(50)} />
   </div>
 );
 
-Custom.args = {
+CustomStyle.args = {
   ...Basic.args,
   extra: {
-    customColumnDef(cols, helper) {
-      cols.push(
+    createColumnDefs(colDefs, helper) {
+      colDefs.push(
         helper.display({
           id: 'actions',
           header: ' actions',
@@ -43,16 +43,67 @@ Custom.args = {
           }
         })
       );
-      return cols;
+      return colDefs;
     },
     cellRenderer(_props, v) {
       return <span>c - {v}</span>;
     }
   },
   classNameGetters: {
-    header: (props) => `text-left header-${props.id}`,
-    cell: (props) =>
-      `text-right border border-blue-70 border-blue-700 cell-${props.id} animate-fade-in-slow`,
+    header: (props) =>
+      cx(
+        'text-left',
+        `header-${props.id}`,
+        props.column.id === 'id' && 'bg-lime-600',
+        props.column.id === 'createdAt' && 'bg-gray-600 text-light-400'
+      ),
+    cell: (props) => `text-right border border-blue-70 border-blue-700 cell-${props.id}`,
     row: (props) => `border-2 border-black row-${props.id}`
+  }
+};
+
+export const ExpandableRow: ComponentStory<typeof Table<Person>> = (args) => (
+  <div className="w-full">
+    <Table<Person> {...args} data={makeData(50)} />
+  </div>
+);
+
+ExpandableRow.args = {
+  ...CustomStyle.args,
+  getRowCanExpand: () => true,
+  extra: {
+    ...CustomStyle.args.extra,
+    createColumnDefs(colDefs, helper) {
+      const newColDefs = [
+        helper.display({
+          id: 'expander',
+          header: () => null,
+          size: 10,
+          cell: ({ row }) =>
+            row.getCanExpand() ? (
+              <button onClick={row.getToggleExpandedHandler()}>
+                {row.getIsExpanded() ? '👇' : '👉'}
+              </button>
+            ) : (
+              '🔵'
+            )
+        })
+      ].concat(colDefs);
+      return newColDefs;
+    },
+    subRowRenderer: (row) => (
+      <pre>
+        <code>{JSON.stringify(row.original, null, 2)}</code>
+      </pre>
+    )
+  },
+  classNameGetters: {
+    ...CustomStyle.args.classNameGetters,
+    cell: (props) =>
+      cx(
+        props.column.id !== 'expander' && 'text-right',
+        'border border-blue-70 border-blue-700',
+        `cell-${props.id}`
+      )
   }
 };

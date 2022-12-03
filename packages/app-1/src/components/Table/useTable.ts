@@ -15,11 +15,12 @@ const useTable = <T>(params: TableHookParams, extra?: ExtraInternalTableProps<T>
   const columnHelper = createColumnHelper<T>();
 
   const { data = [] } = params;
-  const { cellRenderer, customColumnDef } = extra ?? {};
+  const { cellRenderer, createColumnDefs } = extra ?? {};
   const columns = useMemo<ColumnDef<T>[]>(() => {
-    const baseColumns = Object.keys(data[0] ?? {}).map((x) =>
+    const keys = Object.keys(data[0] ?? {}).filter((x) => x !== 'subRows');
+    const baseColumns = keys.map((x) => {
       // @ts-expect-error
-      columnHelper.accessor(x, {
+      return columnHelper.accessor(x, {
         // accessorKey: x,
         // header: x,
         cell: (info) => {
@@ -35,8 +36,8 @@ const useTable = <T>(params: TableHookParams, extra?: ExtraInternalTableProps<T>
           })();
           return cellRenderer ? cellRenderer?.(info, str) : str;
         }
-      })
-    );
+      });
+    });
     // https://tanstack.com/table/v8/docs/guide/column-defs#column-helpers for more column types
     // columnHelper.display({
     //   id: 'actions',
@@ -44,8 +45,8 @@ const useTable = <T>(params: TableHookParams, extra?: ExtraInternalTableProps<T>
     //   footer: 'actions',
     //   cell: (props) => 'actions'
     // })
-    return customColumnDef ? customColumnDef(baseColumns, columnHelper) : baseColumns;
-  }, [cellRenderer, columnHelper, customColumnDef, data]);
+    return createColumnDefs ? createColumnDefs(baseColumns, columnHelper) : baseColumns;
+  }, [cellRenderer, columnHelper, createColumnDefs, data]);
 
   const table = useReactTable({
     ...params,
