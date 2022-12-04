@@ -1,4 +1,7 @@
 import cx from 'classnames';
+import { Fragment, useMemo } from 'react';
+
+import Field from '@/components/Field';
 
 import type { PaginationProps } from './typings';
 import usePagination from './usePagination';
@@ -10,7 +13,6 @@ export const PlainPagination = ({
   count: _count,
   onChange: _onChange,
   isRollover: _isRollover,
-  goTo: _goTo,
   setParams: _setParams,
   setPageSize: _setPageSize,
   pageSizes: _pageSizes,
@@ -27,43 +29,88 @@ export const PlainPagination = ({
   goPrevious,
   isNextPossible,
   goNext,
+  goTo,
+  showAllPages = false,
   // DOM-only props
   ...props
 }: PaginationProps) => {
-  if (maxPage <= 1) {
-    return null;
-  }
+  const callbacks = useMemo(
+    () => ({
+      goFirst: () => goTo(1),
+      goLast: () => goTo(maxPage),
+      set: (v: unknown) => {
+        const newV = pageNumbers.find((x) => x === Number(v)) ?? pageNumbers[0];
+        goTo(newV);
+        return newV;
+      }
+    }),
+    [goTo, maxPage, pageNumbers]
+  );
 
   return (
-    <div className={cx('', className)} {...props}>
-      <button
-        key="prev"
-        tabIndex={0}
-        onClick={goPrevious}
-        className={cx('', !isPrevPossible && disabledItemClassName, itemClassName)}
-      >
-        Prev
-      </button>
-      {pageNumbers.map((v) => (
-        <button
-          key={v}
-          tabIndex={0}
-          data-id={v}
-          onClick={onPageNumberClick}
-          className={cx('', v === page && activeItemClassName, itemClassName)}
-        >
-          {v}
-        </button>
-      ))}
-      <button
-        key="next"
-        tabIndex={0}
-        onClick={goNext}
-        className={cx('', !isNextPossible && disabledItemClassName, itemClassName)}
-      >
-        Next
-      </button>
-    </div>
+    <Fragment>
+      {maxPage <= 1 && null}
+      {maxPage > 1 && (
+        <div className={cx('', className)} {...props}>
+          <button
+            key="first"
+            tabIndex={0}
+            onClick={callbacks.goFirst}
+            className={cx('', !isPrevPossible && disabledItemClassName, itemClassName)}
+          >
+            {'<<'}
+          </button>
+          <button
+            key="prev"
+            tabIndex={0}
+            onClick={goPrevious}
+            className={cx('', !isPrevPossible && disabledItemClassName, itemClassName)}
+          >
+            {'<'}
+          </button>
+          {!showAllPages && (
+            <Field
+              name="--pagination-page"
+              value={page}
+              title={`Choose 1..${maxPage}`}
+              displayValue={(v) => `${v} / ${maxPage}`}
+              set={callbacks.set}
+              className="inline-block my-auto w-fit"
+              inputClassName=""
+              readOnlyClassName=""
+            />
+          )}
+          {showAllPages &&
+            pageNumbers.map((v) => (
+              <button
+                key={v}
+                tabIndex={0}
+                data-id={v}
+                onClick={onPageNumberClick}
+                className={cx('', v === page && activeItemClassName, itemClassName)}
+              >
+                {v}
+              </button>
+            ))}
+          <button
+            key="next"
+            tabIndex={0}
+            onClick={goNext}
+            className={cx('', !isNextPossible && disabledItemClassName, itemClassName)}
+          >
+            {'>'}
+          </button>
+          <button
+            key="last"
+            tabIndex={0}
+            onClick={callbacks.goLast}
+            className={cx('', !isNextPossible && disabledItemClassName, itemClassName)}
+          >
+            {'>>'}
+          </button>
+        </div>
+      )}
+    </Fragment>
   );
 };
 

@@ -62,10 +62,6 @@ export type PaginationHookResults = PaginationParams & {
    * change callback(PAGINATION_PARAMS) whenever pagination happens
    */
   onChange?: (params: Partial<PaginationInputs>) => void;
-  /**
-   * default - true. clicking next/prev will go over the range.
-   */
-  isRollover?: boolean;
   setParams: (params: Partial<PaginationInputs>) => void;
   /**
    * helper callback to render custom paginator
@@ -88,11 +84,11 @@ export type PaginationHookResults = PaginationParams & {
    */
   setPageSize: (n: number) => void;
   /**
-   * indicate whether next page is possible
+   * flag - next page is possible
    */
   isNextPossible: boolean;
   /**
-   * indicate whether prev page is possible
+   * flag - prev page is possible
    */
   isPrevPossible: boolean;
 };
@@ -103,4 +99,11 @@ export type PaginationStyleProps = {
   disabledItemClassName?: string;
 };
 
-export type PaginationProps = BaseProps & PaginationHookResults & PaginationStyleProps;
+export type PaginationProps = BaseProps &
+  PaginationHookResults &
+  PaginationStyleProps & {
+    /**
+     * flag - default - false. TRUE to show all pages, FALSE to show current / max
+     */
+    showAllPages?: boolean;
+  };

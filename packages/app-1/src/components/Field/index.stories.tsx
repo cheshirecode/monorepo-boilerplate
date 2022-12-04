@@ -35,8 +35,9 @@ BigIcon.args = {
   value: 'big icon',
   // eslint-disable-next-line no-console
   set: (v) => console.log(v),
-  iconClassName: 'h-10 w-10',
-  className: 'h-10 font-gs-body01 outline outline-solid',
+  iconClassName: 'lh-20 w-10',
+  className: 'h-20 font-gs-body01 outline outline-solid',
+  readOnlyClassName: 'lh-20',
   readonly: false
 };
 
