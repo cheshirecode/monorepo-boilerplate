@@ -13,19 +13,34 @@ export default {
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 } as ComponentMeta<typeof Example<Person>>;
 
+export const Params: ComponentStory<typeof Example<Person>> = (args) => (
+  <div className="w-full">
+    <Example<Person> {...args} data={makeData(Number(args.pagination.count))} />
+  </div>
+);
+Params.args = {
+  className: '',
+  pagination: {
+    itemClassName: 'p-4 hover:underline',
+    activeItemClassName: 'bg-blue-70 bg-blue-700 text-white disabled',
+    disabledItemClassName: 'text-gray-200 text-gray-20 disabled',
+    page: 2,
+    pageSize: 1000,
+    count: 100000
+  }
+};
+
 export const ToTable: ComponentStory<typeof Example<Person>> = (args) => (
   <div className="w-full">
     <Example<Person> {...args} data={makeData(Number(args.pagination.count))} />
   </div>
 );
 ToTable.args = {
-  className: 'flex flex-gap-2',
+  ...Params.args,
   pagination: {
-    itemClassName: 'p-4 hover:underline',
-    activeItemClassName: 'bg-blue-70 bg-blue-700 text-white disabled',
-    page: 2,
-    pageSize: 301,
-    count: 3999
+    ...Params.args.pagination,
+    pageSize: 100,
+    count: 1000
   },
   table: {
     enableColumnResizing: true,
