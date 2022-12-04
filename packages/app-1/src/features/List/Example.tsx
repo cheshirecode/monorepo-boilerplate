@@ -23,7 +23,7 @@ const Example = <T,>(props: ListProps<T>) => {
 
   return (
     <section className="flex flex-col">
-      <fieldset>
+      <fieldset className="children:(px-2)">
         <label htmlFor="filter">filter</label>
         <input
           id="filter"
@@ -34,8 +34,6 @@ const Example = <T,>(props: ListProps<T>) => {
           }}
           className="border border-blue"
         />
-      </fieldset>
-      <div>
         <label htmlFor="pageSize">page size</label>
         <select
           id="pageSize"
@@ -49,24 +47,27 @@ const Example = <T,>(props: ListProps<T>) => {
           ))}
         </select>
         <PlainPagination {...pagination} {...listProps.pagination} />
-      </div>
-      <div className="">
-        <h3>list</h3>
-        <pre>filter string - {f}</pre>
-        <pre>perform filtering or pagination to see counter go up - {counter}</pre>
-        <pre>filter</pre>
-        <pre>{JSON.stringify(listProps.filter, null, 2)}</pre>
-        <pre>filtered - {listProps.filtered.length}</pre>
-        <pre>pagination</pre>
-        <pre>{JSON.stringify(listProps.pagination, null, 2)}</pre>
-        <pre>paginated - {listProps.paginated.length}</pre>
-      </div>
+      </fieldset>
+      {!table && (
+        <div className="">
+          <h3>before table</h3>
+          <pre>filter string - {f}</pre>
+          <pre>perform filtering or pagination to see counter go up - {counter}</pre>
+          <pre>filter</pre>
+          <pre>{JSON.stringify(listProps.filter, null, 2)}</pre>
+          <pre>filtered - {listProps.filtered.length}</pre>
+          <pre>pagination</pre>
+          <pre>{JSON.stringify(listProps.pagination, null, 2)}</pre>
+          <pre>paginated - {listProps.paginated.length}</pre>
+        </div>
+      )}
 
-      <div className="flex flex-col">
-        <h3>table</h3>
-        {/* <pre>{JSON.stringify(InternalTableProps.table.getRowModel().rows, null, 2)}</pre> */}
-        <Table<T> data={listProps.paginated} {...table} />
-      </div>
+      {table && (
+        <div className="flex flex-col">
+          <h3>table</h3>
+          <Table<T> data={listProps.paginated} {...table} />
+        </div>
+      )}
     </section>
   );
 };
