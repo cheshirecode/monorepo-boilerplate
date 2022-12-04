@@ -60,7 +60,7 @@ const createNewParams: (
 };
 
 const usePagination: (p: PaginationInputs) => PaginationHookResults = (props) => {
-  const { page: initialPage = 1, pageSize, count, onChange, isRollover = true } = props ?? {};
+  const { page: initialPage = 1, pageSize, count, onChange, isRollover = false } = props ?? {};
   const [params, _setParams] = useState(
     createNewParams({
       page: initialPage,
@@ -90,8 +90,8 @@ const usePagination: (p: PaginationInputs) => PaginationHookResults = (props) =>
     () => ({
       ...params,
       setParams,
-      isNextPossible: isRollover || params.page > 1,
-      isPrevPossible: isRollover || params.page < params.maxPage,
+      isNextPossible: isRollover || params.page < params.maxPage,
+      isPrevPossible: isRollover || params.page > 1,
       isRollover,
       goTo: (page: number) => {
         setParams({ page });

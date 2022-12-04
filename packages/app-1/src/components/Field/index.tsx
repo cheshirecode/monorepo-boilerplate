@@ -1,16 +1,19 @@
 import cx from 'classnames';
 import { isUndefined, throttle } from 'lodash-es';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { ChangeEvent, KeyboardEvent, ReactElement } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import Icon from '@/components/Icon';
 import useClickOutside from '@/services/hooks/useClickOutside';
 
 export type FieldProps = BaseProps & {
-  value?: string;
-  set: (v: string) => void;
+  value: string | number;
+  set: (v: FieldProps['value']) => void | FieldProps['value'];
+  displayValue?: (v: FieldProps['value']) => FieldProps['value'];
+  inputClassName?: string;
+  readOnlyClassName?: string;
   iconClassName?: string;
-  name?: string;
+  name: string;
   title?: string;
   readonly?: boolean;
 };
@@ -18,15 +21,18 @@ export type FieldProps = BaseProps & {
 const Field = ({
   className,
   value,
+  displayValue,
   set,
+  inputClassName,
   iconClassName,
   name,
   title,
   readonly,
+  readOnlyClassName,
   ...props
 }: FieldProps): ReactElement | null => {
   const [isEditing, setIsEditing] = useState(false);
-  const [innerValue, setInnerValue] = useState(value ?? '');
+  const [innerValue, setInnerValue] = useState<FieldProps['value']>(value ?? '');
   const updateValue = useMemo(
     () =>
       throttle(
@@ -43,7 +49,10 @@ const Field = ({
     []
   );
   const setValue = useCallback(() => {
-    set(innerValue);
+    const finalValue = set(innerValue);
+    if (typeof finalValue !== 'undefined' && innerValue !== finalValue) {
+      setInnerValue(finalValue);
+    }
     setIsEditing(false);
   }, [innerValue, set]);
 
@@ -73,12 +82,13 @@ const Field = ({
       {!isEditing ? (
         <div
           className={cx(
-            'w-full',
-            'flex items-center',
+            !className?.includes('w-') && !readOnlyClassName?.includes('w-full') && 'w-full',
+            // 'flex items-center',
             'py-0 px-2',
             'border-1 border-transparent border-solid',
             !readonly && 'cursor-pointer hover:(border-gray-30)',
-            className
+            className,
+            readOnlyClassName
           )}
           {...(readonly
             ? {}
@@ -86,15 +96,24 @@ const Field = ({
           {...props}
         >
           {/* no line height since flexbox handles vertical centering (otherwise use line-height = full height) */}
-          <span className="w-full pre-wrap">{value}</span>
+          <span className="w-full h-full pre-wrap">
+            {displayValue ? displayValue(value) : value}
+          </span>
         </div>
       ) : null}
       {isEditing ? (
-        <div className={cx('relative w-full', className)} ref={fieldRef}>
+        <div
+          className={cx(
+            'relative',
+            !className?.includes('w-') && 'w-full',
+            className,
+            inputClassName
+          )}
+          ref={fieldRef}
+        >
           <input
             id={`--poc-field-${name}`}
             className={cx(
-              'w-full',
               'py-0 pl-2',
               className?.includes('p-') ||
                 className?.includes('pr-') ||
@@ -106,6 +125,7 @@ const Field = ({
             )}
             type="text"
             value={innerValue}
+            placeholder={title}
             onChange={updateValue}
             onKeyUp={onEnter}
           />

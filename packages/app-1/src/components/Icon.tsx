@@ -5,8 +5,10 @@ type IconProps = BaseProps &
   ImgHTMLAttributes<HTMLImageElement> & {
     name: string;
   };
+
+const Null = () => null;
 const Icon = (props: IconProps) => {
-  const [output, setOutput] = useState<ReactElement>(null);
+  const [output, setOutput] = useState<ReactElement>(<Null />);
   useEffect(() => {
     const { name, ...rest } = props;
     const fn = async () => {

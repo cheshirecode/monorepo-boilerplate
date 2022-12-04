@@ -16,11 +16,20 @@ const Template: ComponentStory<typeof Pagination> = (args) => <Pagination {...ar
 
 export const Basic = Template.bind({});
 Basic.args = {
-  pageSize: 7,
   className: 'flex flex-gap-2',
-  itemClassName: 'p-4 hover:underline',
+  itemClassName: 'p-2 hover:underline',
   activeItemClassName: 'bg-blue-70 bg-blue-700 text-white disabled',
-  count: 50
+  disabledItemClassName: 'text-gray-200 text-gray-20 disabled',
+  pageSize: 24,
+  count: 500
+};
+
+export const ShowAllPages = Template.bind({});
+ShowAllPages.args = {
+  ...Basic.args,
+  pageSize: 7,
+  count: 50,
+  showAllPages: true
 };
 
 export const ExternalCallback: ComponentStory<typeof Pagination> = (props) => {
