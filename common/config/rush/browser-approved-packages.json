@@ -132,7 +132,7 @@
     },
     {
       "name": "@vitest/coverage-c8",
-      "allowedCategories": [ "production" ]
+      "allowedCategories": [ "production", "tools" ]
     },
     {
       "name": "babel-loader",

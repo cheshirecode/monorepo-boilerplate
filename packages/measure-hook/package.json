@@ -35,6 +35,6 @@
   "devDependencies": {
     "vite": "latest",
     "vitest": "latest",
-    "@vitest/coverage-c8": "~0.25.4"
+    "@vitest/coverage-c8": "latest"
   }
 }
