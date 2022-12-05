@@ -34,6 +34,7 @@
   "prepublishOnly": "yarn test",
   "devDependencies": {
     "vite": "latest",
-    "vitest": "latest"
+    "vitest": "latest",
+    "@vitest/coverage-c8": "~0.25.4"
   }
 }
