@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 
 import usePagination, { DEFAULT_PAGINATION_THRESHOLD } from '@/components/Pagination/usePagination';
-import { deepFilter } from '@/utils';
+import { deepFilter, StringOrAny } from '@/utils';
 
 import type { ListParams } from './typings';
 
@@ -14,10 +14,9 @@ import type { ListParams } from './typings';
  * @param params
  * @returns filters/pagination params/filtered then paginated list for users to decide
  */
-const useList = (
+const useList = <T>(
   // TODO - fix generics later
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  arr: any[],
+  arr: T[],
   params?: ListParams
 ) => {
   const { filter: filterParams, pagination: paginationParams } = params ?? {};
@@ -35,8 +34,8 @@ const useList = (
     [filterStr, filterParams]
   );
   const [filtered, count] = useMemo(() => {
-    const filtered = (filterParams?.fn ?? deepFilter)(arr, filterStr);
-    const count = filtered.length;
+    const filtered = (filterParams?.fn ?? deepFilter)(arr as StringOrAny[], filterStr) as T[];
+    const count = filtered?.length ?? 0;
     // pageSize comes from params
 
     return [filtered, count];

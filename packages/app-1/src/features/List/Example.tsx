@@ -10,7 +10,7 @@ const Example = <T,>(props: ListProps<T>) => {
   const { data, pagination, table } = props;
   const [f, setF] = useState('');
   const [counter, setCounter] = useState(0);
-  const listProps = useList(data, {
+  const listProps = useList<T>(data, {
     filter: {
       str: '',
       onChange: setF

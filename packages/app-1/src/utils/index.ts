@@ -12,10 +12,6 @@ export const toCamel = (str = '') => str.replace(/[-_]([a-z])/g, (x) => x[1].toU
 export const splitAlphanumeric = (str: unknown = '') => String(str).match(/[^-_ \d]+|\d+/g);
 
 export type StringOrAny = (string | number) | (string | number)[] | { [key: string]: StringOrAny };
-interface NestedObject {
-  [key: string]: StringOrAny;
-}
-type Valueof<T> = T[keyof T];
 
 export const SEARCH_KEYWORD_SEPARATORS = [',', ' '];
 /**
@@ -26,7 +22,7 @@ export const SEARCH_KEYWORD_SEPARATORS = [',', ' '];
  * @returns filtered list
  */
 export const deepFilter = (list: StringOrAny[], str?: string) => {
-  const included = (obj: Valueof<NestedObject>, str1?: string): boolean => {
+  const included = (obj: StringOrAny, str1?: string): boolean => {
     if (typeof str1 !== 'string') {
       return false;
     }
