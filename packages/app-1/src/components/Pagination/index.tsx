@@ -12,7 +12,6 @@ export const PlainPagination = ({
   pageSize: _pageSize,
   count: _count,
   onChange: _onChange,
-  isRollover: _isRollover,
   setParams: _setParams,
   setPageSize: _setPageSize,
   pageSizes: _pageSizes,
@@ -25,6 +24,7 @@ export const PlainPagination = ({
   pageNumbers,
   maxPage,
   onPageNumberClick,
+  isRollover,
   isPrevPossible,
   goPrevious,
   isNextPossible,
@@ -56,7 +56,11 @@ export const PlainPagination = ({
             key="first"
             tabIndex={0}
             onClick={callbacks.goFirst}
-            className={cx('', !isPrevPossible && disabledItemClassName, itemClassName)}
+            className={cx(
+              '',
+              !isRollover && !isPrevPossible && disabledItemClassName,
+              itemClassName
+            )}
           >
             {'<<'}
           </button>
@@ -64,7 +68,11 @@ export const PlainPagination = ({
             key="prev"
             tabIndex={0}
             onClick={goPrevious}
-            className={cx('', !isPrevPossible && disabledItemClassName, itemClassName)}
+            className={cx(
+              '',
+              !isRollover && !isPrevPossible && disabledItemClassName,
+              itemClassName
+            )}
           >
             {'<'}
           </button>
@@ -72,11 +80,11 @@ export const PlainPagination = ({
             <Field
               name="--pagination-page"
               value={page}
-              title={`Choose 1..${maxPage}`}
+              title={`Page 1..${maxPage}`}
               displayValue={(v) => `${v} / ${maxPage}`}
               set={callbacks.set}
               className="inline-block my-auto w-fit"
-              inputClassName=""
+              inputClassName="w-15ch"
               readOnlyClassName=""
             />
           )}
@@ -96,7 +104,11 @@ export const PlainPagination = ({
             key="next"
             tabIndex={0}
             onClick={goNext}
-            className={cx('', !isNextPossible && disabledItemClassName, itemClassName)}
+            className={cx(
+              '',
+              !isRollover && !isNextPossible && disabledItemClassName,
+              itemClassName
+            )}
           >
             {'>'}
           </button>
@@ -104,7 +116,11 @@ export const PlainPagination = ({
             key="last"
             tabIndex={0}
             onClick={callbacks.goLast}
-            className={cx('', !isNextPossible && disabledItemClassName, itemClassName)}
+            className={cx(
+              '',
+              !isRollover && !isNextPossible && disabledItemClassName,
+              itemClassName
+            )}
           >
             {'>>'}
           </button>
