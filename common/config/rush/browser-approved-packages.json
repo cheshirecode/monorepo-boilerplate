@@ -147,6 +147,10 @@
       "allowedCategories": [ "production" ]
     },
     {
+      "name": "coveralls",
+      "allowedCategories": [ "tools" ]
+    },
+    {
       "name": "esbuild",
       "allowedCategories": [ "production" ]
     },
@@ -203,6 +207,10 @@
       "allowedCategories": [ "production" ]
     },
     {
+      "name": "istanbul",
+      "allowedCategories": [ "tools" ]
+    },
+    {
       "name": "jsdom",
       "allowedCategories": [ "production" ]
     },
@@ -235,6 +243,18 @@
       "allowedCategories": [ "tools" ]
     },
     {
+      "name": "tap-nirvana",
+      "allowedCategories": [ "tools" ]
+    },
+    {
+      "name": "tape",
+      "allowedCategories": [ "tools" ]
+    },
+    {
+      "name": "tape-watch",
+      "allowedCategories": [ "tools" ]
+    },
+    {
       "name": "typescript",
       "allowedCategories": [ "tools" ]
     },
@@ -248,11 +268,11 @@
     },
     {
       "name": "vite",
-      "allowedCategories": [ "production" ]
+      "allowedCategories": [ "production", "tools" ]
     },
     {
       "name": "vitest",
-      "allowedCategories": [ "production" ]
+      "allowedCategories": [ "production", "tools" ]
     }
   ]
 }
