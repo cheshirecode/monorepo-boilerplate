@@ -1,8 +1,8 @@
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 import cx from 'classnames';
 
-import type { Person } from '@/services/api/mock';
-import { makeData } from '@/services/api/mock';
+import type { PackageVersion } from '@/services/mocks/mock';
+import { mockPackageVersions } from '@/services/mocks/mock';
 
 import Table from './';
 
@@ -11,22 +11,23 @@ export default {
   title: 'components/Table',
   component: Table
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
-} as ComponentMeta<typeof Table<Person>>;
+} as ComponentMeta<typeof Table<PackageVersion>>;
 
-export const Basic: ComponentStory<typeof Table<Person>> = (args) => (
+export const Basic: ComponentStory<typeof Table<PackageVersion>> = (args) => (
   <div className="w-full">
-    <Table<Person> {...args} data={makeData(50)} />
+    <Table<PackageVersion> {...args} />
   </div>
 );
 Basic.args = {
   className: '',
   enableColumnResizing: true,
-  debugAll: true
+  debugAll: true,
+  data: mockPackageVersions(50, 2)
 };
 
-export const CustomStyle: ComponentStory<typeof Table<Person>> = (args) => (
+export const CustomStyle: ComponentStory<typeof Table<PackageVersion>> = (args) => (
   <div className="w-full">
-    <Table<Person> {...args} data={makeData(50)} />
+    <Table<PackageVersion> {...args} />
   </div>
 );
 
@@ -62,9 +63,9 @@ CustomStyle.args = {
   }
 };
 
-export const ExpandableRow: ComponentStory<typeof Table<Person>> = (args) => (
+export const ExpandableRow: ComponentStory<typeof Table<PackageVersion>> = (args) => (
   <div className="w-full">
-    <Table<Person> {...args} data={makeData(50)} />
+    <Table<PackageVersion> {...args} />
   </div>
 );
 
