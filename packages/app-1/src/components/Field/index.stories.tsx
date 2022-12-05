@@ -31,13 +31,15 @@ Default.args = {
 export const BigIcon = Template.bind({});
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 BigIcon.args = {
+  ...Default,
   name: 'name',
   value: 'big icon',
   // eslint-disable-next-line no-console
   set: (v) => console.log(v),
-  iconClassName: 'lh-20 w-10',
+  iconClassName: 'h-full w-10',
   className: 'h-20 font-gs-body01 outline outline-solid',
-  readOnlyClassName: 'lh-20',
+  inputClassName: 'h-full',
+  readOnlyClassName: '',
   readonly: false
 };
 

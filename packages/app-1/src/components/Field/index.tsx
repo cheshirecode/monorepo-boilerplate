@@ -76,52 +76,66 @@ const Field = ({
     if (isEditing) {
       fieldRef.current?.querySelector('input')?.focus();
     }
-  });
+  }, [isEditing]);
+  // update state if passed in props change
+  useEffect(() => {
+    if (value !== innerValue) setInnerValue(value);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value]);
   return (
     <>
       {!isEditing ? (
         <div
           className={cx(
-            !className?.includes('w-') && !readOnlyClassName?.includes('w-full') && 'w-full',
-            // 'flex items-center',
+            !className?.includes('w-') &&
+              (!readonly || !readOnlyClassName?.includes('w-')) &&
+              'w-full',
+            'relative inline-flex flex-wrap items-center',
             'py-0 px-2',
             'border-1 border-transparent border-solid',
             !readonly && 'cursor-pointer hover:(border-gray-30)',
             className,
-            readOnlyClassName
+            readonly && readOnlyClassName
           )}
           {...(readonly
             ? {}
             : { onClick: () => setIsEditing(true), title: title ?? 'Click to edit this field' })}
           {...props}
         >
-          {/* no line height since flexbox handles vertical centering (otherwise use line-height = full height) */}
-          <span className="w-full h-full pre-wrap">
-            {displayValue ? displayValue(value) : value}
-          </span>
+          {displayValue ? displayValue(value) : value}
+          <span
+            name="confirm"
+            className={cx(
+              'inline-block',
+              'absolute top-0 right-2',
+              iconClassName?.includes('h-') || 'h-6',
+              iconClassName?.includes('w-') || 'w-6',
+              'disabled',
+              iconClassName
+            )}
+          />
+          {/* <input className={cx('block h-0 w-full')} /> */}
         </div>
       ) : null}
       {isEditing ? (
         <div
           className={cx(
-            'relative',
+            'relative children:(my-auto)',
             !className?.includes('w-') && 'w-full',
-            className,
-            inputClassName
+            className
           )}
           ref={fieldRef}
         >
           <input
             id={`--poc-field-${name}`}
             className={cx(
-              'py-0 pl-2',
-              className?.includes('p-') ||
-                className?.includes('pr-') ||
-                className?.includes('px-') ||
+              !['p-', 'pl-', 'py-'].every((x) => ['inputClassName'].every((y) => y.includes(x))) &&
+                'py-0 pl-2',
+              !['p-', 'pr-', 'px-'].every((x) => ['inputClassName'].every((y) => y.includes(x))) &&
                 'pr-8',
               'border-1 border-transparent border-solid',
               'hover:(border-gray-30)',
-              className
+              inputClassName
             )}
             type="text"
             value={innerValue}
