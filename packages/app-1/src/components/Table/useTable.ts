@@ -15,9 +15,15 @@ const useTable = <T>(params: TableHookParams, extra?: ExtraInternalTableProps<T>
   const columnHelper = createColumnHelper<T>();
 
   const { data = [] } = params;
-  const { cellRenderer, createColumnDefs } = extra ?? {};
+  const { cellRenderer, createColumnDefs, skipNonPrimitiveColumns = true } = extra ?? {};
   const columns = useMemo<ColumnDef<T>[]>(() => {
-    const keys = Object.keys(data[0] ?? {}).filter((x) => x !== 'subRows');
+    // for now, drop those non-primitive columns and rely on createColumnDefs
+    const keys = Object.keys(data[0] ?? {}).filter(
+      (x) =>
+        skipNonPrimitiveColumns &&
+        typeof data[0][x] !== 'function' &&
+        typeof data[0][x] !== 'object'
+    );
     const baseColumns = keys.map((x) => {
       // @ts-expect-error
       return columnHelper.accessor(x, {
@@ -46,7 +52,7 @@ const useTable = <T>(params: TableHookParams, extra?: ExtraInternalTableProps<T>
     //   cell: (props) => 'actions'
     // })
     return createColumnDefs ? createColumnDefs(baseColumns, columnHelper) : baseColumns;
-  }, [cellRenderer, columnHelper, createColumnDefs, data]);
+  }, [cellRenderer, columnHelper, createColumnDefs, data, skipNonPrimitiveColumns]);
 
   const table = useReactTable({
     ...params,
