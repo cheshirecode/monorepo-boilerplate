@@ -21,3 +21,9 @@ jobs:
       namespace: '@fieryeagle'
       package-name: eslint-config-react
       lcov: true
+  measure-hook:
+    needs: [base]
+    uses: ./.github/workflows/base.yml
+    with:
+      package-name: measure-hook
+      lcov: true
