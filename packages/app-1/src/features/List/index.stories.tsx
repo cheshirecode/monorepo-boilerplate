@@ -1,8 +1,8 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 
-import type { Person } from '@/services/api/mock';
-import { makeData } from '@/services/api/mock';
+import type { Person } from '@/services/mocks/mock';
+import { makeData } from '@/services/mocks/mock';
 
 import Example from './Example';
 
