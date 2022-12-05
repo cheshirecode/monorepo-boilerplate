@@ -187,7 +187,7 @@ const Sections = ({
       className={cx(
         'w-full',
         !className?.includes('h-') && 'h-full',
-        'flex flex-wrap xl:(flex-row) overflow-auto',
+        'flex flex-wrap xxl:(flex-row) overflow-auto',
         className
       )}
       ref={ref}
@@ -198,15 +198,17 @@ const Sections = ({
         className={cx(
           'm-0 p-0 list-none overflow-auto',
           'flex ',
-          'lt-xl:(w-full)',
-          !itemFitContent && 'lt-xl:(children:(max-w-60))',
-          itemFitContent && 'lt-xl:(children:(min-w-fit))',
-          'xl:(max-w-60 h-full flex-col)',
-          itemFitContent && 'xl:(min-w-fit)',
-          stickyNav && 'sticky top-0',
+          'lt-xxl:(w-full)',
+          'lt-md:(flex-wrap flex-col children:(max-w-full overflow-x-scroll))',
+          !itemFitContent && 'lt-xxl:(children:(max-w-60))',
+          itemFitContent && 'lt-xxl:(children:(min-w-fit))',
+          !navClassName?.includes('max-w') && 'xxl:(max-w-60)',
+          'xxl:(h-full flex-col)',
+          itemFitContent && 'xxl:(min-w-fit)',
+          stickyNav && 'md:(sticky top-0)',
           !navClassName?.includes('bg-') && 'bg-white',
           !navClassName?.includes('border') &&
-            'border-1 border-transparent lt-xl:border-b-gray-500 xl:border-r-gray-500 shadow-lg',
+            'border-1 border-transparent lt-xxl:border-b-gray-500 xxl:border-r-gray-500 shadow-lg',
           navClassName
         )}
       >
@@ -222,23 +224,23 @@ const Sections = ({
               'leading-normal no-underline',
               'border-2 border-transparent',
               currentIndex !== i && 'hover:(bg-gray-200)',
-              currentIndex === i && 'lt-xl:border-b-orange-500 xl:border-r-orange-500 disabled'
+              currentIndex === i && 'lt-xxl:border-b-orange-500 xxl:border-r-orange-500 disabled'
             )}
           >
             {name}
           </a>
         ))}
       </nav>
+      <div className="hidden md:block w-full xxl:w-auto h-px" style={contentOffsetStyle}></div>
       <div
         className={cx(
           !contentClassName?.includes('bg-') && 'bg-white',
           // !contentClassName?.includes('border') &&
-          //   'border-1 border-transparent lt-xl:border-t-gray-400  xl:border-l-gray-400 shadow-lg',
-          'w-full xl:(w-auto flex-1)',
-          !contentClassName?.includes('h-') && 'h-inherit xl:(h-full)',
+          //   'border-1 border-transparent lt-xxl:border-t-gray-400  xxl:border-l-gray-400 shadow-lg',
+          'w-full xxl:(w-auto flex-1)',
+          !contentClassName?.includes('h-') && 'h-inherit xxl:(h-full)',
           contentClassName
         )}
-        style={contentOffsetStyle}
       >
         {items[currentIndex].content}
       </div>

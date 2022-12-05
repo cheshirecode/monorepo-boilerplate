@@ -32,7 +32,7 @@ const Table = <T,>(props: TableProps<T>) => {
 
   return (
     <div className={cx('w-full overflow-x-scroll overflow-y-hidden', className)}>
-      <table className="w-full ">
+      <table className="w-full border-separate border-spacing-0">
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
@@ -45,15 +45,12 @@ const Table = <T,>(props: TableProps<T>) => {
                       ? { position: 'relative', width: header.getSize() }
                       : {})
                   }}
-                  className={cx('group')}
+                  className={cx('group', classNameGetters?.header?.(header))}
                 >
                   {header.isPlaceholder ? null : (
                     // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
                     <div
-                      className={cx(
-                        header.column.getCanSort() && 'cursor-pointer select-none',
-                        classNameGetters?.header?.(header)
-                      )}
+                      className={cx(header.column.getCanSort() && 'cursor-pointer select-none')}
                       onClick={header.column.getToggleSortingHandler()}
                     >
                       {flexRender(header.column.columnDef.header, header.getContext())}

@@ -162,7 +162,10 @@ const config: UserConfig = defineConfig({
       'btn-secondary': 'text-black bg-white',
       disabled: 'focus:outline-none cursor-auto pointer-events-none hover:(shadow-none)',
       link: 'text-white hover:text-blue-700',
-      'responsive-page': ['max-w-custom', 'mx-auto', 'lt-lg:px-4'].join(' '),
+      'responsive-page': ['max-w-custom', 'mx-auto'].join(' '),
+      'px-res': ['px-4 xxl:px-1/10 4xl:px-1/5'].join(' '),
+      'mx-res': ['mx-4 xxl:mx-1/10 4xl:mx-1/5'].join(' '),
+      'mx--res': ['mx--4 xl:mx--1/5 xxl:mx--1/10 4xl:mx--1/5'].join(' '),
       'responsive-content-layout': [
         'flex',
         'lt-xs:justify-start',
