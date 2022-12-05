@@ -54,7 +54,7 @@ jobs:
         if: inputs.lcov != null
         working-directory: ${{ inputs.package-path }}/${{ inputs.package-name }}
         run: |
-          node $GITHUB_WORKSPACE/common/scripts/install-run-rushx.js test:lcov
+          node $GITHUB_WORKSPACE/common/scripts/install-run-rushx.js coverage
           cat ./coverage/lcov.info
         continue-on-error: true        
       - name: Coveralls GitHub Action

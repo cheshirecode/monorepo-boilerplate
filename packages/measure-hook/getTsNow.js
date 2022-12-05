@@ -2,11 +2,12 @@ const NANOSECONDS_PER_MILLISECOND = 1000000;
 const MILLISECONDS_PER_SECOND = 1000;
 const getTsNow = () => {
   try {
-    if (typeof performance === "undefined") {
-      performance = require("perf_hooks").performance; //eslint-disable-line no-global-assign
+    if (typeof performance === 'undefined') {
+      // eslint-disable-next-line no-native-reassign, @typescript-eslint/no-var-requires
+      performance = require('perf_hooks').performance; //eslint-disable-line no-global-assign
     }
 
-    return performance.now(); // eslint-disable-line no-underscore-dangle
+    return performance.now();
   } catch (e) {
     // Node older than 8.5 doesn't have perf_hooks so this should cover
     return process.hrtime()[0] * MILLISECONDS_PER_SECOND;
