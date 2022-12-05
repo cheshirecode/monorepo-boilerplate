@@ -2,25 +2,17 @@ import cx from 'classnames';
 
 export type TagsProps = BaseProps & {
   items: string[];
+  itemClassName?: string;
 };
 
-const Tags = ({ items, className }: TagsProps) => (
-  <section className={cx('flex flex-col', className)}>
-    <ul
-      className={cx(
-        'flex flex-wrap gap-2',
-        'w-full',
-        'pl-0 m-0',
-        'children:(inline-block bg-ultramarine-50 py-1 px-2 rounded-full mix-blend-difference)'
-      )}
-    >
-      {items?.map((p) => (
-        <li key={p} className="">
-          {p}
-        </li>
-      ))}
-    </ul>
-  </section>
+const Tags = ({ items, className, itemClassName }: TagsProps) => (
+  <ul className={cx(!className?.includes('w-') && 'w-full', 'flex flex-wrap gap-2', className)}>
+    {items?.map((p) => (
+      <li key={p} className={cx('inline-block', itemClassName)}>
+        {p}
+      </li>
+    ))}
+  </ul>
 );
 
 export default Tags;

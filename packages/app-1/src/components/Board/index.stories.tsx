@@ -19,7 +19,7 @@ export const Basic = Template.bind({});
 
 Basic.args = {
   className: 'border p-4',
-  itemClassName: 'bg-gray-50',
+  itemClassName: 'bg-blue-50 bg-blue-500 text-white',
   items: Array(22)
     .fill(0)
     .map(() =>
