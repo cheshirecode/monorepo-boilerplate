@@ -1,0 +1,39 @@
+{
+  "name": "measure-hook",
+  "keywords": [
+    "measure",
+    "timing"
+  ],
+  "version": "1.0.2",
+  "description": "Measure how long an op takes, then do a callback to post results, do something else etc",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cheshirecode/rush-monorepo-boilerplate.git/packages/measure-hook"
+  },
+  "author": "cheshireCode <1631630+cheshirecode@users.noreply.github.com>",
+  "license": "UNLICENSE",
+  "private": false,
+  "bugs": {
+    "url": "https://github.com/cheshirecode/measure-hook/issues",
+    "email": "dac4158+github@gmail.com"
+  },
+  "engines": {
+    "npm": ">= 7",
+    "node": ">= 14"
+  },
+  "files": [
+    "!**/*.test.js",
+    "index.js"
+  ],
+  "bin": "index.js",
+  "scripts": {
+    "test": "vitest",
+    "coverage": "vitest run --coverage"
+  },
+  "prepublishOnly": "yarn test",
+  "devDependencies": {
+    "vite": "latest",
+    "vitest": "latest"
+  }
+}
