@@ -22,6 +22,10 @@ on:
         required: false
         type: boolean
         default: false
+      build:
+        required: false
+        type: boolean
+        default: true
 jobs:
   build-package:
     # Operating system to run job on
@@ -56,7 +60,13 @@ jobs:
         run: |
           node $GITHUB_WORKSPACE/common/scripts/install-run-rushx.js coverage
           cat ./coverage/lcov.info
-        continue-on-error: true        
+        continue-on-error: true
+      - name: Update lcov.info
+        if: inputs.lcov != null
+        working-directory: ${{ inputs.package-path }}/${{ inputs.package-name }}
+        run: |
+          sed -E "s/SF:(.+file:(.+))/SF:\2/g" ./coverage/lcov.info > coverage/lcov.new.info
+          mv ./coverage/lcov.new.info ./coverage/lcov.info
       - name: Coveralls GitHub Action
         if: inputs.lcov != null
         uses: coverallsapp/github-action@v1.1.2
@@ -65,7 +75,7 @@ jobs:
           base-path: ${{ github.workspace }}
           path-to-lcov: ${{ inputs.package-path }}/${{ inputs.package-name }}/coverage/lcov.info
       - name: build ${{ inputs.package-name }}
-        if: inputs.package-name != null
+        if: inputs.package-name != null && inputs.build
         working-directory: ${{ inputs.package-path }}/${{ inputs.package-name }}
         run: |
           node $GITHUB_WORKSPACE/common/scripts/install-run-rush.js build --verbose --to ${{ inputs.namespace }}/${{ inputs.package-name }}
