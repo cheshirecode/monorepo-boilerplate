@@ -1,12 +1,11 @@
 import type { PaginationInputs, PaginationStyleProps } from '@/components/Pagination/typings';
 import type { TableProps } from '@/components/Table/typings';
 
-export type ListParams = {
+export type ListParams<T> = {
   filter: {
     str: string;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    fn?: (arr: any[], str: string) => any[];
     onChange?: (str: string) => void;
+    fn?: (arr: T[], str: string) => T[];
   };
   pagination: Partial<PaginationInputs>;
 };

@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { PlainPagination } from '@/components/Pagination';
 import Table from '@/components/Table';
+import { deepFilter } from '@/utils';
 
 import type { ListProps } from './typings';
 import useList from './useList';
@@ -13,6 +14,7 @@ const Example = <T,>(props: ListProps<T>) => {
   const listProps = useList<T>(data, {
     filter: {
       str: '',
+      fn: deepFilter<T>,
       onChange: setF
     },
     pagination: {

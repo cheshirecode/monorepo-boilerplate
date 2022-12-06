@@ -15,13 +15,14 @@ export type StringOrAny = (string | number) | (string | number)[] | { [key: stri
 
 export const SEARCH_KEYWORD_SEPARATORS = [',', ' '];
 /**
- * Deeply filter a recursive array of arrays or objects by given keywords, and return the result. refer to tests for examples
+ * Deeply filter a recursive array of arrays or objects by given keywords and 
+ * return the result. refer to tests for examples
  *
  * @param list Array<T> to filter by keyword(s)
  * @param str string representing 1..n keyword(s) as comma- or space-separated list. abc | ab-c | ab_c are all treated of 1 keyword. 'abc,cd' > abc | cd. 'abc cd' > abc | cd
  * @returns filtered list
  */
-export const deepFilter = (list: StringOrAny[], str?: string) => {
+export const deepFilter = <T>(list: T[], str?: string) => {
   const included = (obj: StringOrAny, str1?: string): boolean => {
     if (typeof str1 !== 'string') {
       return false;
@@ -47,7 +48,8 @@ export const deepFilter = (list: StringOrAny[], str?: string) => {
     }
     return false;
   };
-  return list?.filter((d) => included(d, str));
+
+  return list?.filter((d) => included(d as StringOrAny, str));
 };
 /**
  * expect(getRoundedToNearest(12)).toEqual(20);
