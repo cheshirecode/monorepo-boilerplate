@@ -15,6 +15,8 @@ export const PlainPagination = ({
   setParams: _setParams,
   setPageSize: _setPageSize,
   pageSizes: _pageSizes,
+  first: _first,
+  last: _last,
   // necessary props
   className,
   itemClassName,
@@ -56,7 +58,7 @@ export const PlainPagination = ({
             'my-4',
             'flex flex-gap-2',
             'w-fit mx-auto',
-            'children:(p-2 hover:underline cursor-pointer)',
+            'children:(p-2 cursor-pointer)',
             className
           )}
           {...props}
@@ -94,7 +96,7 @@ export const PlainPagination = ({
               title={`Page 1..${maxPage}`}
               displayValue={(v) => `${v} / ${maxPage}`}
               set={callbacks.set}
-              className="inline-block my-auto w-fit"
+              className={cx('py-0 hover-none inline-block', 'my-auto w-fit')}
               inputClassName="w-15ch"
               readOnlyClassName=""
             />
