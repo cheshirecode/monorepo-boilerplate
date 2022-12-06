@@ -51,14 +51,24 @@ export const PlainPagination = ({
     <Fragment>
       {maxPage <= 1 && null}
       {maxPage > 1 && (
-        <div className={cx('', className)} {...props}>
+        <div
+          className={cx(
+            'my-4',
+            'flex flex-gap-2',
+            'w-fit mx-auto',
+            'children:(p-2 hover:underline cursor-pointer)',
+            className
+          )}
+          {...props}
+        >
           <button
             key="first"
             tabIndex={0}
             onClick={callbacks.goFirst}
+            disabled={!isRollover && !isPrevPossible}
             className={cx(
               '',
-              !isRollover && !isPrevPossible && disabledItemClassName,
+              !isRollover && !isPrevPossible && cx('text-gray-20 disabled', disabledItemClassName),
               itemClassName
             )}
           >
@@ -68,9 +78,10 @@ export const PlainPagination = ({
             key="prev"
             tabIndex={0}
             onClick={goPrevious}
+            disabled={!isRollover && !isPrevPossible}
             className={cx(
               '',
-              !isRollover && !isPrevPossible && disabledItemClassName,
+              !isRollover && !isPrevPossible && cx('text-gray-20 disabled', disabledItemClassName),
               itemClassName
             )}
           >
@@ -95,6 +106,7 @@ export const PlainPagination = ({
                 tabIndex={0}
                 data-id={v}
                 onClick={onPageNumberClick}
+                disabled={v === page}
                 className={cx('', v === page && activeItemClassName, itemClassName)}
               >
                 {v}
@@ -104,9 +116,10 @@ export const PlainPagination = ({
             key="next"
             tabIndex={0}
             onClick={goNext}
+            disabled={!isRollover && !isNextPossible}
             className={cx(
               '',
-              !isRollover && !isNextPossible && disabledItemClassName,
+              !isRollover && !isNextPossible && cx('text-gray-20 disabled', disabledItemClassName),
               itemClassName
             )}
           >
@@ -116,9 +129,10 @@ export const PlainPagination = ({
             key="last"
             tabIndex={0}
             onClick={callbacks.goLast}
+            disabled={!isRollover && !isNextPossible}
             className={cx(
               '',
-              !isRollover && !isNextPossible && disabledItemClassName,
+              !isRollover && !isNextPossible && cx('text-gray-20 disabled', disabledItemClassName),
               itemClassName
             )}
           >

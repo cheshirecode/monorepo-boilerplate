@@ -20,15 +20,20 @@ Basic.args = {
   itemClassName: 'p-2 hover:underline',
   activeItemClassName: 'bg-blue-70 bg-blue-700 text-white disabled',
   disabledItemClassName: 'text-gray-200 text-gray-20 disabled',
-  pageSize: 24,
-  count: 500
+  pageSize: 7,
+  count: 50,
+  isRollover: false
+};
+
+export const IsRollOver = Template.bind({});
+IsRollOver.args = {
+  ...Basic.args,
+  isRollover: true
 };
 
 export const ShowAllPages = Template.bind({});
 ShowAllPages.args = {
   ...Basic.args,
-  pageSize: 7,
-  count: 50,
   showAllPages: true
 };
 
