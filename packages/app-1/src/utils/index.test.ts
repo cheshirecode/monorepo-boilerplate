@@ -1,10 +1,12 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  addWord,
   deepFilter,
   getIntervals,
   getRoundedToNearest,
   pascalToSeparatedWords,
+  removeWord,
   splitAlphanumeric,
   toCamel
 } from './';
@@ -121,5 +123,32 @@ describe('@/utils', () => {
     expect(getIntervals([], 800)).toEqual([200, 400, 800]);
     expect(getIntervals([], 900)).toEqual([225, 450, 900]);
     expect(getIntervals([], 1000)).toEqual([250, 500, 1000]);
+  });
+
+  it('addWord', () => {
+    expect(addWord()).toEqual('');
+    expect(addWord('')).toEqual('');
+    expect(addWord('', '')).toEqual('');
+    expect(addWord('foo bar ', 'foo1')).toContain('foo1');
+    expect([...addWord('foo bar ', 'foo').matchAll(/foo/gi)]).toHaveLength(1);
+  });
+
+  it('addWord', () => {
+    expect(addWord()).toEqual('');
+    expect(addWord('')).toEqual('');
+    expect(addWord('', '')).toEqual('');
+    expect(addWord('foo bar ', 'foo1')).toContain('foo1');
+    expect([...addWord('foo bar ', 'foo').matchAll(/foo/gi)]).toHaveLength(1);
+    expect(addWord('foo bar foo1   bar1 ', 'foo2 ')).toContain('foo2');
+    expect(addWord('foo bar foo1   bar1 ', 'foo2 ')).not.toContain('foo2 ');
+  });
+
+  it('removeWord', () => {
+    expect(removeWord()).toEqual('');
+    expect(removeWord('')).toEqual('');
+    expect(removeWord('', '')).toEqual('');
+    expect(removeWord('foo bar ', 'foo')).not.toContain('foo');
+    expect(removeWord('foo bar ', 'foo1')).not.toContain('foo1');
+    expect(removeWord('foo bar ', 'foo bar')).toEqual('');
   });
 });

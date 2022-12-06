@@ -15,7 +15,7 @@ export type StringOrAny = (string | number) | (string | number)[] | { [key: stri
 
 export const SEARCH_KEYWORD_SEPARATORS = [',', ' '];
 /**
- * Deeply filter a recursive array of arrays or objects by given keywords and 
+ * Deeply filter a recursive array of arrays or objects by given keywords and
  * return the result. refer to tests for examples
  *
  * @param list Array<T> to filter by keyword(s)
@@ -147,4 +147,35 @@ export const getIntervals = (arr: number[], maxSize = 10, n = 3): number[] => {
     );
   }
   return r;
+};
+
+export const addWord = (words = '', newWord = '') => {
+  const splits = String(newWord)
+    .split(' ')
+    .filter((x) => x)
+    .map((x) => x.trim());
+  return [
+    ...new Set(
+      words
+        .split(' ')
+        .concat(splits)
+        .map((x) => x.trim())
+        .filter((x) => x)
+    )
+  ].join(' ');
+};
+export const removeWord = (words = '', wordToRemove = '') => {
+  const splits = String(wordToRemove)
+    .split(' ')
+    .filter((x) => x)
+    .map((x) => x.trim());
+  const arr = [
+    ...new Set(
+      words
+        .split(' ')
+        .map((x) => x.trim())
+        .filter((x) => x && splits.every((y) => x !== y))
+    )
+  ];
+  return arr.join(' ');
 };
