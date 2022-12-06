@@ -1,5 +1,5 @@
-import { Component } from 'react';
 import type { ErrorInfo, PropsWithChildren, ReactNode } from 'react';
+import { Component } from 'react';
 
 // nearly impossible to reliably test unless throwing errors explicitly inside component tree
 /* c8 ignore next 50 */
@@ -22,8 +22,8 @@ export default class ErrorBoundary extends Component<
 
   render: () => ReactNode = () => {
     if (this.state.errorInfo) {
-      return import.meta.env.NODE_ENV === 'development' ? (
-        <details style={{ whiteSpace: 'pre-wrap' }}>
+      return import.meta.env.DEV ? (
+        <details className="pre-wrap">
           {this.state.error && this.state.error.toString()}
           <br />
           {this.state.errorInfo.componentStack}
