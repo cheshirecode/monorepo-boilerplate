@@ -32,6 +32,11 @@ const useList = <T>(
   arr: T[],
   params?: ListParams<T>
 ) => {
+  if (!Array.isArray(arr)) {
+    throw TypeError(`useList - invalid arr type. Received ${typeof arr} instead of Array`, {
+      cause: `${typeof arr} instead of Array`
+    });
+  }
   const { filter: filterParams, pagination: paginationParams } = params ?? {};
   const [filterStr, setFilterStr] = useState(filterParams?.str ?? '');
   const filter = useMemo(
