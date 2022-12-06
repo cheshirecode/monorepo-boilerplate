@@ -1,5 +1,7 @@
 # rushmonorepo-boilerplate
 
+[![Coverage Status](https://coveralls.io/repos/github/cheshirecode/rush-monorepo-boilerplate/badge.svg?branch=main)](https://coveralls.io/github/cheshirecode/rush-monorepo-boilerplate?branch=main)
+
 ## add package
 `rush add -p <Package>` in current project
 

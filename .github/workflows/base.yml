@@ -67,6 +67,7 @@ jobs:
         run: |
           sed -E "s/SF:(.+file:(.+))/SF:\2/g" ./coverage/lcov.info > coverage/lcov.new.info
           mv ./coverage/lcov.new.info ./coverage/lcov.info
+          cat ./coverage/lcov.info
       - name: Coveralls GitHub Action
         if: inputs.lcov != null
         uses: coverallsapp/github-action@v1.1.2
