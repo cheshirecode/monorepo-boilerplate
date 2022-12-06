@@ -31,7 +31,7 @@ const Table = <T,>(props: TableProps<T>) => {
   );
 
   return (
-    <div className={cx('w-full overflow-x-scroll overflow-y-hidden', className)}>
+    <div className={cx('w-full overflow-y-hidden', className)}>
       <table className="w-full border-separate border-spacing-0">
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
