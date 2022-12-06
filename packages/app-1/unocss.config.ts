@@ -1,6 +1,7 @@
 import type { UserConfig } from 'unocss';
 import { defineConfig, presetAttributify, presetUno, transformerVariantGroup } from 'unocss';
 
+import { rules, shortcuts } from './src/styles/grid';
 import { breakpoints, lineHeight, MAX_GRID_SIZE, MAX_REM_UNITS } from './src/styles/tokens';
 
 const extraSizes = Array(MAX_REM_UNITS)
@@ -23,9 +24,6 @@ const extraGridTemplates: Record<number, string> = Array(MAX_GRID_SIZE)
     {}
   );
 
-const convertUnitsToRem = (n: string) => (~~n == Number(n) ? `${~~n / 4}rem` : n);
-const minMax = (x: string, y: string) => `minmax( min(${x},${y}), max(${x},${y}) )`;
-
 const safelist = Object.keys(breakpoints)
   .concat('')
   .flatMap((x) =>
@@ -35,6 +33,7 @@ const safelist = Object.keys(breakpoints)
   );
 
 const config: UserConfig = defineConfig({
+  include: [/\.[jt]sx?$/],
   safelist,
   theme: {
     screens: breakpoints,
@@ -105,63 +104,32 @@ const config: UserConfig = defineConfig({
     })
   ],
   transformers: [transformerVariantGroup()],
-  rules: [
-    /* 
-      grid-cols-auto-(40) -> 
-        grid-template-columns: repeat(auto-fill,minmax(40rem,1fr));
-        grid-auto-flow: column;
-        grid-auto-columns: minmax(40rem,1fr); 
-    */
-    [
-      /^grid-cols-fill-(\d+)$/,
-      (match) => ({
-        'grid-template-columns': `repeat(auto-fill,minmax(${convertUnitsToRem(match[1])},1fr))`,
-        'grid-auto-flow': 'column',
-        'grid-auto-columns': `minmax(${convertUnitsToRem(match[1])},1fr)`
-      })
-    ],
-    [
-      /^grid-cols-max-(\d+)-(\d+)$/,
-      (match) => ({
-        'grid-template-columns': `repeat(auto-fill,min(${
-          ~~match[1] / 4
-        }rem, calc(100%/${~~match[2]}) ))`,
-        'grid-auto-flow': 'row',
-        'grid-auto-columns': `min(${convertUnitsToRem(match[1])}, calc(100%/${~~match[2]}) )`
-      })
-    ],
-    [
-      /^grid-cols-min-(\d+)-(\d+)$/,
-      (match) => ({
-        'grid-template-columns': `repeat(auto-fill,max(${
-          ~~match[1] / 4
-        }rem, calc(100%/${~~match[2]}) ))`,
-        'grid-auto-flow': 'col',
-        'grid-auto-columns': `max(${convertUnitsToRem(match[1])}, calc(100%/${~~match[2]}) )`
-      })
-    ],
-    [
-      /^grid-cols-fluid-(\d+)-(\d+)$/,
-      (match) => ({
-        'grid-template-columns': `repeat(auto-fill,${minMax(
-          convertUnitsToRem(match[1]),
-          `calc(100%/${~~match[2]})`
-        )})`,
-        'grid-auto-flow': 'row',
-        'grid-auto-columns': minMax(convertUnitsToRem(match[1]), `calc(100%/${~~match[2]})`)
-      })
-    ]
+  layers: {
+    preflights: -1,
+    components: 0,
+    default: 1,
+    utilities: 2,
+    rules: 3,
+    shortcuts: 4,
+    o: 5 // custom variant - uno-layer-o:{class} to override the other layers
+  },
+  variants: [
+    // another more powerful override over 3rd party CSS classes
+    (matcher) =>
+      !matcher.startsWith('override:')
+        ? matcher
+        : {
+            matcher: matcher.slice('override:'.length),
+            selector: (s) => `html ${s}`
+          }
   ],
+  rules: [...rules],
   shortcuts: [
+    ...(shortcuts as []),
     {
-      btn: [
-        'text-white text-center',
-        'bg-blue-70 bg-blue-700 py-1 px-4 rounded-md',
-        'hover:(shadow-md shadow-gray-700)'
-      ].join(' '),
-      'btn-secondary': 'text-black bg-white',
-      disabled: 'focus:outline-none cursor-auto pointer-events-none hover:(shadow-none)',
-      link: 'text-white hover:text-blue-700',
+      btn: 'border-0 py-2 px-4 font-semibold rounded-md  cursor-pointer',
+      disabled: 'focus:outline-none cursor-auto pointer-events-none @hover:(shadow-none)',
+      link: 'text-white @hover:text-blue-700',
       'responsive-page': ['max-w-custom', 'mx-auto'].join(' '),
       'px-res': ['px-4 xxl:px-1/10 4xl:px-1/5'].join(' '),
       'mx-res': ['mx-4 xxl:mx-1/10 4xl:mx-1/5'].join(' '),
@@ -174,39 +142,20 @@ const config: UserConfig = defineConfig({
       ].join(' '),
       'responsive-grid': ['grid grid-cols-1']
         .concat(Object.keys(breakpoints).map((x, i) => `${x}:grid-cols-${i + 2}`))
-        .join(' ')
+        .join(' '),
+      'btn-primary':
+        'bg-blue-500 text-white @hover:(bg-blue-700 dark:bg-blue-500) dark:bg-blue-300 dark:text-gray-700',
+      'btn-secondary': 'bg-white text-blue-500 @hover:(bg-gray-200) dark:(bg-gray-900)',
+      'color-primary': 'text-gray-700 dark:text-gray-300',
+      'color-primary-fade': 'text-gray-700:50 dark:text-gray-300:50',
+      'color-secondary': 'text-blue-700 dark:text-blue-400',
+      'bg-primary': 'bg-white dark:(bg-gray-900)',
+      'bg-primary-fade': 'bg-white:50 dark:(bg-gray-900:50)',
+      'bg-secondary': 'bg-gray-300 dark:(bg-gray-600)',
+      'bg-toggle': 'bg-gray-400 dark:(bg-green-400)',
+      'border-primary': 'border-gray-300 dark:(border-gray-600)'
     },
-    /* 
-      responsive-grid-max-10 -> 
-        grid-cols-max-10-1
-        xs:grid-cols-max-10-2
-        sm:grid-cols-max-10-3
-        md:grid-cols-max-10-3
-        ...
-    */
-    [
-      /^responsive-grid-max-(\d+)$/,
-      (match) =>
-        [`grid grid-cols-max-${match[1]}-1`]
-          .concat(Object.keys(breakpoints).map((x, i) => `${x}:grid-cols-max-${match[1]}-${i + 2}`))
-          .join(' ')
-    ],
-    [
-      /^responsive-grid-min-(\d+)$/,
-      (match) =>
-        [`grid grid-cols-min-${match[1]}-1`]
-          .concat(Object.keys(breakpoints).map((x, i) => `${x}:grid-cols-min-${match[1]}-${i + 2}`))
-          .join(' ')
-    ],
-    [
-      /^responsive-grid-fluid-(\d+)$/,
-      (match) =>
-        [`grid grid-cols-fluid-${match[1]}-1`]
-          .concat(
-            Object.keys(breakpoints).map((x, i) => `${x}:grid-cols-fluid-${match[1]}-${i + 2}`)
-          )
-          .join(' ')
-    ]
+    [/^border-(.*)-primary$/, ([, c]) => `border-${c}-gray-300 dark:(border-${c}-gray-600)`]
   ]
 });
 

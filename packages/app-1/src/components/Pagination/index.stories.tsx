@@ -17,9 +17,9 @@ const Template: ComponentStory<typeof Pagination> = (args) => <Pagination {...ar
 export const Basic = Template.bind({});
 Basic.args = {
   className: 'flex flex-gap-2',
-  itemClassName: 'p-2 hover:underline',
-  activeItemClassName: 'bg-blue-70 bg-blue-700 text-white disabled',
-  disabledItemClassName: 'text-gray-200 text-gray-20 disabled',
+  itemClassName: 'btn btn-secondary p-2 transition-all-200',
+  activeItemClassName: 'uno-layer-o:(bg-secondary) disabled',
+  disabledItemClassName: 'opacity-20 disabled',
   pageSize: 7,
   count: 50,
   isRollover: false

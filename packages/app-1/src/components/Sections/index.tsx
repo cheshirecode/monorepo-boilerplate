@@ -54,40 +54,8 @@ export interface SectionsProps extends BaseProps, HTMLAttributes<HTMLElement> {
   itemFitContent?: boolean;
 }
 
-export const dummyItems: ItemsType = [
-  {
-    id: 'section-1',
-    name: 'section 1 is very short',
-    content: <div className="w-full h-10 bg-red-7"></div>
-  },
-  {
-    id: 'section-2',
-    name: 'section 2 has long name and has longform content. name stays on 1 line if itemFitContent=true',
-    content: (
-      <div className="w-full bg-red h-[60rem]">
-        <div className="w-full h-1/2 bg-black"></div>
-      </div>
-    )
-  },
-  {
-    id: 'section-3',
-    name: 'section 3',
-    content: <div className="w-full h-60 bg-yellow-100"></div>
-  },
-  {
-    id: 'section-4',
-    name: 'section 4',
-    content: <div className="w-full h-60 bg-blue-700"></div>
-  },
-  {
-    id: 'section-5',
-    name: 'section 5',
-    content: <div className="w-full h-60 bg-green-50"></div>
-  }
-];
-
 const Sections = ({
-  items = dummyItems,
+  items = [],
   className,
   navClassName,
   contentClassName,
@@ -137,7 +105,7 @@ const Sections = ({
   );
 
   useInitialEffect(() => {
-    if (stickyNav && !className?.includes('h-')) {
+    if (stickyNav) {
       // eslint-disable-next-line no-console
       console.info(
         'Sections - stickyNav needs a fixed height set on either this or direct ancestor'
@@ -185,9 +153,10 @@ const Sections = ({
   return (
     <section
       className={cx(
-        'w-full',
-        !className?.includes('h-') && 'h-full',
+        'w-full h-inherit',
+        'bg-primary color-primary',
         'flex flex-wrap xxl:(flex-row) overflow-auto',
+        'z-1',
         className
       )}
       ref={ref}
@@ -196,19 +165,21 @@ const Sections = ({
     >
       <nav
         className={cx(
-          'm-0 p-0 list-none overflow-auto',
+          'm-0 p-0 overflow-auto',
           'flex ',
           'lt-xxl:(w-full)',
           'lt-md:(flex-wrap flex-col children:(max-w-full overflow-x-scroll))',
+          'xxl:(max-w-60 w-full)',
+          'xxl:(h-full flex-col)',
           !itemFitContent && 'lt-xxl:(children:(max-w-60))',
           itemFitContent && 'lt-xxl:(children:(min-w-fit))',
-          !navClassName?.includes('max-w') && 'xxl:(max-w-60)',
-          'xxl:(h-full flex-col)',
           itemFitContent && 'xxl:(min-w-fit)',
           stickyNav && 'md:(sticky top-0)',
-          !navClassName?.includes('bg-') && 'bg-white',
-          !navClassName?.includes('border') &&
-            'border-1 border-transparent lt-xxl:border-b-gray-500 xxl:border-r-gray-500 shadow-lg',
+          '',
+          'border-primary shadow-lg',
+          'lt-xxl:uno-layer-o:(border-b-1)',
+          'xxl:uno-layer-o:(border-r-1)',
+          'z-2',
           navClassName
         )}
       >
@@ -222,9 +193,11 @@ const Sections = ({
               'break-words',
               'py-2 px-4',
               'leading-normal no-underline',
-              'border-2 border-transparent',
-              currentIndex !== i && 'hover:(bg-gray-200)',
-              currentIndex === i && 'lt-xxl:border-b-orange-500 xxl:border-r-orange-500 disabled'
+              'border-warningAlt',
+              'anchor',
+              currentIndex !== i && '@hover:(bg-secondary)',
+              currentIndex === i &&
+                ['lt-xxl:(border-b-2)', 'xxl:(border-r-2)', 'disabled'].join(' ')
             )}
           >
             {name}
@@ -234,11 +207,10 @@ const Sections = ({
       <div className="hidden md:block w-full xxl:w-auto h-px" style={contentOffsetStyle}></div>
       <div
         className={cx(
-          !contentClassName?.includes('bg-') && 'bg-white',
-          // !contentClassName?.includes('border') &&
-          //   'border-1 border-transparent lt-xxl:border-t-gray-400  xxl:border-l-gray-400 shadow-lg',
+          'm-0 p-0',
+          'bg-transparent',
           'w-full xxl:(w-auto flex-1)',
-          !contentClassName?.includes('h-') && 'h-inherit xxl:(h-full)',
+          'h-inherit xxl:(h-full)',
           contentClassName
         )}
       >

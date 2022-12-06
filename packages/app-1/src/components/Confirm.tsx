@@ -9,7 +9,7 @@ const Confirm: FC<BaseProps & { onClick?: (e: MouseEvent<SVGElement>) => void }>
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 24 24"
     className={cx(
-      'inline-block fill-gray-300 h-6 w-6 cursor-pointer hover:animate-pulse',
+      'inline-block fill-gray-300 h-6 w-6 cursor-pointer @hover:animate-pulse',
       className
     )}
     {...props}

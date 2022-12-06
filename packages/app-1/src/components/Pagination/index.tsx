@@ -70,7 +70,7 @@ export const PlainPagination = ({
             disabled={!isRollover && !isPrevPossible}
             className={cx(
               '',
-              !isRollover && !isPrevPossible && cx('text-gray-20 disabled', disabledItemClassName),
+              !isRollover && !isPrevPossible && cx('', disabledItemClassName),
               itemClassName
             )}
           >
@@ -83,7 +83,7 @@ export const PlainPagination = ({
             disabled={!isRollover && !isPrevPossible}
             className={cx(
               '',
-              !isRollover && !isPrevPossible && cx('text-gray-20 disabled', disabledItemClassName),
+              !isRollover && !isPrevPossible && cx('', disabledItemClassName),
               itemClassName
             )}
           >
@@ -96,8 +96,11 @@ export const PlainPagination = ({
               title={`Page 1..${maxPage}`}
               displayValue={(v) => `${v} / ${maxPage}`}
               set={callbacks.set}
-              className={cx('py-0 hover-none inline-block', 'my-auto w-fit')}
-              inputClassName="w-15ch"
+              className={cx(
+                'uno-layer-o:(py-0 hover-none inline-block)',
+                'uno-layer-o:(my-auto w-fit)'
+              )}
+              inputClassName="uno-layer-o:w-15ch"
               readOnlyClassName=""
             />
           )}
@@ -121,7 +124,7 @@ export const PlainPagination = ({
             disabled={!isRollover && !isNextPossible}
             className={cx(
               '',
-              !isRollover && !isNextPossible && cx('text-gray-20 disabled', disabledItemClassName),
+              !isRollover && !isNextPossible && cx('', disabledItemClassName),
               itemClassName
             )}
           >
@@ -134,7 +137,7 @@ export const PlainPagination = ({
             disabled={!isRollover && !isNextPossible}
             className={cx(
               '',
-              !isRollover && !isNextPossible && cx('text-gray-20 disabled', disabledItemClassName),
+              !isRollover && !isNextPossible && cx('', disabledItemClassName),
               itemClassName
             )}
           >

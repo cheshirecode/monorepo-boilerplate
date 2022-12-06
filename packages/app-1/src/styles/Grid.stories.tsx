@@ -21,7 +21,7 @@ const Sample = ({ className, desc, ...props }: BaseProps & { desc: string }) => 
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
-  title: 'styles/unocss',
+  title: 'styles/Grid',
   component: Sample,
   args: {}
 } as ComponentMeta<typeof Sample>;

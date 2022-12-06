@@ -1,7 +1,7 @@
 import cx from 'classnames';
 import { isFunction, isUndefined, noop, throttle } from 'lodash-es';
-import { useMemo } from 'react';
 import type { ChangeEvent, FC, MouseEvent } from 'react';
+import { useMemo } from 'react';
 
 const SearchBar: FC<
   BaseProps & {
@@ -51,7 +51,7 @@ const SearchBar: FC<
     <form
       className={cx(
         'inline-flex justify-center sm:justify-end items-center children:h-full',
-        className?.includes('w-') || 'w-full',
+        'w-full',
         className
       )}
       {...props}
@@ -74,7 +74,7 @@ const SearchBar: FC<
       />
       {searchButtonText?.length > 0 && (
         <button
-          className="btn search-bar-field border-l-0 rounded-l-none border-1 m-0"
+          className="btn btn-primary search-bar-field border-l-0 rounded-l-none border-1 m-0"
           id="--poc-button-search"
           onClick={onClick}
         >

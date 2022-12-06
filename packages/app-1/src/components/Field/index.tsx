@@ -87,13 +87,11 @@ const Field = ({
       {!isEditing ? (
         <div
           className={cx(
-            !className?.includes('w-') &&
-              (!readonly || !readOnlyClassName?.includes('w-')) &&
-              'w-full',
+            'w-full',
             'relative inline-flex flex-wrap items-center',
             'py-0 px-2',
             'border-1 border-transparent border-solid',
-            !readonly && 'cursor-pointer hover:(border-gray-30)',
+            !readonly && 'cursor-pointer @hover:(border-gray-30)',
             className,
             readonly && readOnlyClassName
           )}
@@ -104,12 +102,11 @@ const Field = ({
         >
           {displayValue ? displayValue(value) : value}
           <span
-            name="confirm"
+            // name="confirm"
             className={cx(
               'inline-block',
               'absolute top-0 right-2',
-              iconClassName?.includes('h-') || 'h-6',
-              iconClassName?.includes('w-') || 'w-6',
+              'h-6 w-6',
               'disabled',
               iconClassName
             )}
@@ -118,23 +115,13 @@ const Field = ({
         </div>
       ) : null}
       {isEditing ? (
-        <div
-          className={cx(
-            'relative children:(my-auto)',
-            !className?.includes('w-') && 'w-full',
-            className
-          )}
-          ref={fieldRef}
-        >
+        <div className={cx('relative children:(my-auto)', 'w-full', className)} ref={fieldRef}>
           <input
             id={`--poc-field-${name}`}
             className={cx(
-              !['p-', 'pl-', 'py-'].every((x) => ['inputClassName'].every((y) => y.includes(x))) &&
-                'py-0 pl-2',
-              !['p-', 'pr-', 'px-'].every((x) => ['inputClassName'].every((y) => y.includes(x))) &&
-                'pr-8',
+              'py-0 pl-2 pr-8',
               'border-1 border-transparent border-solid',
-              'hover:(border-gray-30)',
+              '@hover:(border-gray-30)',
               inputClassName
             )}
             type="text"
@@ -148,9 +135,8 @@ const Field = ({
             className={cx(
               'absolute top-0 right-2',
               'fill-gray-30',
-              iconClassName?.includes('h-') || 'h-6',
-              iconClassName?.includes('w-') || 'w-6',
-              'cursor-pointer hover:animate-pulse',
+              'h-6 w-6',
+              'cursor-pointer @hover:animate-pulse',
               iconClassName
             )}
             onClick={setValue}

@@ -31,13 +31,12 @@ Default.args = {
 export const BigIcon = Template.bind({});
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 BigIcon.args = {
-  ...Default,
+  ...Default.args,
   name: 'name',
   value: 'big icon',
   // eslint-disable-next-line no-console
   set: (v) => console.log(v),
   iconClassName: 'h-full w-10',
-  className: 'h-20 font-gs-body01 outline outline-solid',
   inputClassName: 'h-full',
   readOnlyClassName: '',
   readonly: false
@@ -46,11 +45,11 @@ BigIcon.args = {
 export const Readonly = Template.bind({});
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 Readonly.args = {
+  ...Default.args,
   name: 'name',
   value: 'readonly',
   // eslint-disable-next-line no-console
   set: (v) => console.log(v),
   iconClassName: '',
-  className: 'font-gs-body01 outline outline-solid',
   readonly: true
 };

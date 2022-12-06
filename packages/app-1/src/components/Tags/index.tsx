@@ -6,7 +6,7 @@ export type TagsProps = BaseProps & {
 };
 
 const Tags = ({ items, className, itemClassName }: TagsProps) => (
-  <ul className={cx(!className?.includes('w-') && 'w-full', 'flex flex-wrap gap-2', className)}>
+  <ul className={cx('w-full', 'flex flex-wrap gap-2', className)}>
     {items?.map((p) => (
       <li key={p} className={cx('inline-block', itemClassName)}>
         {p}
