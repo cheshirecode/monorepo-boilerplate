@@ -58,7 +58,7 @@ export const PlainPagination = ({
             'my-4',
             'flex flex-gap-2',
             'w-fit mx-auto',
-            'children:(p-2 cursor-pointer)',
+            'children:(p-2 cursor-pointer transition-all-200)',
             className
           )}
           {...props}
@@ -67,10 +67,10 @@ export const PlainPagination = ({
             key="first"
             tabIndex={0}
             onClick={callbacks.goFirst}
-            disabled={!isRollover && !isPrevPossible}
+            disabled={!isPrevPossible && !isRollover}
             className={cx(
-              '',
-              !isRollover && !isPrevPossible && cx('', disabledItemClassName),
+              'btn btn-secondary',
+              !isPrevPossible && !isRollover && cx('disabled opacity-30', disabledItemClassName),
               itemClassName
             )}
           >
@@ -80,10 +80,10 @@ export const PlainPagination = ({
             key="prev"
             tabIndex={0}
             onClick={goPrevious}
-            disabled={!isRollover && !isPrevPossible}
+            disabled={!isPrevPossible && !isRollover}
             className={cx(
-              '',
-              !isRollover && !isPrevPossible && cx('', disabledItemClassName),
+              'btn btn-secondary',
+              !isPrevPossible && !isRollover && cx('disabled opacity-30', disabledItemClassName),
               itemClassName
             )}
           >
@@ -112,7 +112,11 @@ export const PlainPagination = ({
                 data-id={v}
                 onClick={onPageNumberClick}
                 disabled={v === page}
-                className={cx('', v === page && activeItemClassName, itemClassName)}
+                className={cx(
+                  'btn btn-secondary',
+                  v === page && cx('bg-secondary disabled', activeItemClassName),
+                  itemClassName
+                )}
               >
                 {v}
               </button>
@@ -121,10 +125,10 @@ export const PlainPagination = ({
             key="next"
             tabIndex={0}
             onClick={goNext}
-            disabled={!isRollover && !isNextPossible}
+            disabled={!isNextPossible && !isRollover}
             className={cx(
-              '',
-              !isRollover && !isNextPossible && cx('', disabledItemClassName),
+              'btn btn-secondary',
+              !isNextPossible && !isRollover && cx('disabled opacity-30', disabledItemClassName),
               itemClassName
             )}
           >
@@ -134,10 +138,10 @@ export const PlainPagination = ({
             key="last"
             tabIndex={0}
             onClick={callbacks.goLast}
-            disabled={!isRollover && !isNextPossible}
+            disabled={!isNextPossible && !isRollover}
             className={cx(
-              '',
-              !isRollover && !isNextPossible && cx('', disabledItemClassName),
+              'btn btn-secondary',
+              !isNextPossible && !isRollover && cx('disabled opacity-30', disabledItemClassName),
               itemClassName
             )}
           >
