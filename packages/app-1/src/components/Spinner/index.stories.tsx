@@ -13,7 +13,7 @@ export default {
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
 const Template: ComponentStory<typeof Spinner> = (args) => (
-  <Spinner {...args} className="border-solid border-black border-0 border-t-5" />
+  <Spinner {...args} className="border-solid border-0 border-t-5" />
 );
 
 export const Basic = Template.bind({});

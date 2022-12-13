@@ -53,7 +53,6 @@ const config = {
       },
       build: {
         commonjsOptions: {
-          // handle commonjs syntax like require() in gs-ui-toolkit
           transformMixedEsModules: true
         }
       },

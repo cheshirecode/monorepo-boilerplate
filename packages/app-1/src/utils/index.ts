@@ -187,13 +187,12 @@ export const createOnClickClipboardCopy =
     v: string,
     params: {
       preventDefault: boolean;
-    } = {}
+    }
   ) =>
   async (e: MouseEvent) => {
-    if (params.preventDefault) {
+    if (params?.preventDefault) {
       e?.preventDefault();
     }
     // localhost - open chrome://flags/ in Chrome and add origin to "Insecure origins treated as secure"
     await navigator?.clipboard?.writeText(v);
   };
-

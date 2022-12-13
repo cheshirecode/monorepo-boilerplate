@@ -1,5 +1,7 @@
-export { colors } from '@unocss/preset-mini'; //ESM
-import type { UserConfig } from 'unocss';
+// @ts-ignore
+// eslint-disable-next-line import/no-unresolved
+import { splitAlphanumeric } from '../utils';
+import { colors as baseUnoCssColors } from './colors';
 
 export const matchColorToCode = (c: string): string => {
   const splits = splitAlphanumeric(c) as string[];
@@ -8,16 +10,22 @@ export const matchColorToCode = (c: string): string => {
     console.error('matchColorToCode expects non-empty string but received ', c);
     return '';
   }
-  const color = splits[0]; // first word is color
+  if (!baseUnoCssColors) {
+    return '';
+  }
+  const color: keyof typeof baseUnoCssColors = splits[0]; // first word is color
   const shade = splits.slice(1).join(''); // treat the remainer as shade
-  return (
-    (colors
-      ? typeof colors[color] === 'object'
-        ? colors[color][String(shade)]
-        : colors[color]
-      : '') ?? ''
-  );
+  const palette = baseUnoCssColors[color];
+  let res = '';
+  if (typeof palette === 'string') {
+    res = palette ?? res;
+  } else {
+    res = (palette[String(shade)] as string) ?? res;
+  }
+  return res;
 };
+
+export const colors = baseUnoCssColors;
 
 export const sources = {};
 
@@ -44,22 +52,11 @@ export const lineHeight = {
   small: '0.75rem'
 };
 
-export const maxViewport = Object.keys(breakpoints).reduce(
+export const maxViewport = (Object.keys(breakpoints) as Array<keyof typeof breakpoints>).reduce(
   (prev, x) => Math.max(prev, ~~breakpoints[x].replace('px', '')),
   0
 );
 
-export const lineHeight = {
-  h1: '4.3125rem',
-  h2: '3.5rem',
-  h3: '3.875rem',
-  h4: '2.3125rem',
-  h5: '2rem',
-  h6: '1.6875rem',
-  default: '1rem',
-  small: '0.75rem',
-  ...Object.fromEntries(tVariantPairs.map((x) => [x[0], x[1].lineHeight]))
-};
 export const MAX_SPACING_UNIT = 20; // up to {n}rem, for em do m-[2em]
 export const extraSizes = Array(MAX_SPACING_UNIT)
   .fill(0)

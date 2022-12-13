@@ -8,7 +8,7 @@ export type Person = {
   createdAt: Date;
 };
 let i = 0;
-const newPerson = (): Person => {
+export const newPerson = (): Person => {
   return {
     id: ++i,
     firstName: faker.name.firstName(),

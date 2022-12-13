@@ -17,8 +17,8 @@ const Template: ComponentStory<typeof Pagination> = (args) => <Pagination {...ar
 export const Basic = Template.bind({});
 Basic.args = {
   className: 'flex flex-gap-2',
-  itemClassName: 'btn btn-secondary p-2 transition-all-200',
-  activeItemClassName: 'uno-layer-o:(bg-secondary) disabled',
+  itemClassName: 'btn-secondary p-2 transition-all-200',
+  activeItemClassName: 'opacity-20 disabled',
   disabledItemClassName: 'opacity-20 disabled',
   pageSize: 7,
   count: 50,

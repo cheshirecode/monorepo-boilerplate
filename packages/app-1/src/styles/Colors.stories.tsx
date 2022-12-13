@@ -54,7 +54,7 @@ const Colors = ({ className, filters, ...props }: ColorsProps) => (
       }
       return (
         <article key={name} className="text-center">
-          <header className="font-gs-display03">{name}</header>
+          <header className="">{name}</header>
           <div className="grid grid-cols-2 md:grid-cols-3 text-h6">
             {Object.keys(filtered).map((colorCode) => {
               const { hex, bgClassName } = filtered[colorCode];

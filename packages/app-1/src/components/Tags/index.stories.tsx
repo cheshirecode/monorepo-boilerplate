@@ -18,7 +18,7 @@ export const Basic = Template.bind({});
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 Basic.args = {
   className: 'border p-4 w-100',
-  itemClassName: 'border border-1-black py-1 px-2 rounded-full mix-blend-difference',
+  itemClassName: 'border border-warning py-1 px-2 rounded-full mix-blend-difference',
   items: Array(20)
     .fill(0)
     .map(() =>

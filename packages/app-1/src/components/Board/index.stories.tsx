@@ -12,14 +12,13 @@ export default {
 } as ComponentMeta<typeof Board>;
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-// @ts-expect-error
 const Template: ComponentStory<typeof Board> = ({ ...args }) => <Board {...args} />;
 
 export const Basic = Template.bind({});
 
 Basic.args = {
-  className: 'border p-4',
-  itemClassName: 'bg-blue-50 bg-blue-500 text-white',
+  className: 'border border-primary p-4',
+  itemClassName: 'card-cta',
   items: Array(22)
     .fill(0)
     .map(() =>

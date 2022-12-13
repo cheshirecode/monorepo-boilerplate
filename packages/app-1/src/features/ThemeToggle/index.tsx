@@ -9,7 +9,7 @@ const ThemeToggle = ({ className, isApply = true, onChange, ...props }: ThemeTog
     onChange
   });
   return (
-    <fieldset className={cx('w-fit h-fit', className)} {...props}>
+    <fieldset className={cx('w-fit h-fit border-0', className)} {...props}>
       <label htmlFor="--ThemeToggle" className="relative cursor-pointer">
         <span className={cx('block w-10 h-6', 'rounded-full shadow-inner', 'bg-toggle')}></span>
         <span

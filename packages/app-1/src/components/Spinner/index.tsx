@@ -7,7 +7,7 @@ const Spinner: FC<BaseProps & { borderColor?: string }> = ({
   ...props
 }) => (
   <i
-    uno-border="0 t-5 solid black"
+    uno-border="0 t-5 solid information"
     className={cx(
       'w-10 h-10',
       'rounded-t-3xl',

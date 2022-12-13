@@ -6,7 +6,14 @@ import {
   shortcutArr as gridShortcutArr,
   shortcutObj as gridShortcutObj
 } from './src/styles/grid';
-import { breakpoints, colors, lineHeight, extraSizes, extraGridTemplates, safelist } from './src/styles/tokens';
+import {
+  breakpoints,
+  colors,
+  extraGridTemplates,
+  extraSizes,
+  lineHeight,
+  safelist
+} from './src/styles/tokens';
 
 const config: UserConfig = defineConfig({
   include: [/\.[jt]sx?$/],
@@ -78,7 +85,9 @@ const config: UserConfig = defineConfig({
     utilities: 2,
     rules: 3,
     shortcuts: 4,
-    o: 5 // custom variant - uno-layer-o:{class} to override the other layers
+    // custom variant - uno-layer-o:{class} to override the other layers
+    l: 5,
+    o: 6
   },
   variants: [
     // another more powerful override over 3rd party CSS classes
@@ -95,10 +104,11 @@ const config: UserConfig = defineConfig({
     ...(gridShortcutArr as []),
     {
       ...gridShortcutObj,
+      // @ts-ignore
       btn: 'border-0 py-2 px-4 font-semibold rounded-md cursor-pointer',
       'btn-compact': 'py-1 px-1',
       anchor:
-        'text-blue-60 dark:text-blue-50 no-underline @hover:(underline text-blue-80 dark:text-blue-30)',
+        'text-blue-600 dark:text-blue-500 no-underline @hover:(underline text-blue-800 dark:text-blue-300)',
       disabled: 'focus:outline-none cursor-auto pointer-events-none',
       'responsive-page': ['max-w-custom', 'mx-auto'].join(' '),
       'px-res': ['px-4 xxl:px-1/10 4xl:px-1/5'].join(' '),
@@ -111,69 +121,76 @@ const config: UserConfig = defineConfig({
         'justify-start'
       ].join(' '),
       'fill-width': 'w-auto ml-[-9999px] pl-[9999px] mr-[-9999px] pr-[9999px]',
-      'color-cta': 'text-white dark:text-gray-10',
-      'color-cta-hover': 'text-gray-20 dark:text-white',
-      'color-primary': 'text-gray-90 dark:text-gray-10',
-      'color-primary-hover': 'text-gray-110 dark:text-white',
-      'color-secondary': 'text-gray-70 dark:text-gray-40',
-      'color-secondary-hover': 'text-gray-90 dark:text-gray-20',
-      'color-tertiary': 'text-gray-40 dark:text-gray-60',
-      'color-tertiary-hover': 'uno-layer-h:(text-gray-60 dark:text-gray-40)',
-      'color-link': 'text-blue-60 dark:text-blue-50',
-      'color-link-hover': 'text-blue-80 dark:text-blue-30',
-      'color-destructive': 'text-red-60 dark:text-gray-50',
-      'color-reversed': 'text-white dark:text-gray-110',
-      'color-error': 'text-white dark:text-gray-110',
-      'color-error-hover': 'text-gray-20 dark:text-gray-90',
-      'color-warning': 'text-gray-110 dark:text-gray-110',
-      'color-warning-hover': 'text-[#19222a] dark:text-gray-90',
-      'color-information': 'text-white dark:text-gray-110',
-      'color-information-hover': 'text-gray-20 dark:text-gray-90',
-      'color-success': 'text-white dark:text-gray-110',
-      'color-success-hover': 'text-gray-20 dark:text-gray-90',
-      'bg-cta': 'bg-blue-60 dark:bg-blue-50',
-      'bg-cta-hover': 'bg-blue-80 dark:bg-blue-30',
-      'bg-primary': 'bg-white dark:bg-gray-110',
-      'bg-primary-hover': 'bg-gray-20 dark:bg-gray-90',
-      'bg-secondary': 'bg-gray-10 dark:(bg-gray-100)',
-      'bg-secondary-hover': 'bg-gray-30 dark:bg-gray-80',
-      'bg-tertiary': 'bg-gray-20 dark:(bg-gray-90)',
-      'bg-tertiary-hover': 'bg-gray-40 dark:bg-gray-70',
-      'bg-moderate': 'bg-gray-30 dark:(bg-gray-80)',
-      'bg-moderate-hover': 'bg-gray-50 dark:bg-gray-60',
-      'bg-bold': 'bg-gray-40 dark:(bg-gray-60)',
-      'bg-bold-hover': 'bg-gray-60 dark:bg-gray-40',
-      'bg-strong': 'bg-gray-60 dark:(bg-gray-40)',
-      'bg-strong-hover': 'bg-gray-70 dark:bg-gray-20',
-      'bg-contrast': 'bg-gray-110 dark:(bg-white)',
-      'bg-contrast-hover': 'bg-gray-90 dark:bg-gray-20',
+      // color
+      'color-cta': 'text-white dark:text-gray-100',
+      'color-cta-hover': 'text-gray-200 dark:text-white',
+      'color-primary': 'text-gray-900 dark:text-gray-100',
+      'color-primary-hover': 'text-dark-900 dark:text-white',
+      'color-secondary': 'text-gray-700 dark:text-gray-400',
+      'color-secondary-hover': 'text-gray-900 dark:text-gray-200',
+      'color-tertiary': 'text-gray-400 dark:text-gray-600',
+      'color-tertiary-hover': 'uno-layer-h:(text-gray-600 dark:text-gray-400)',
+      'color-link': 'text-blue-600 dark:text-blue-500',
+      'color-link-hover': 'text-blue-800 dark:text-blue-300',
+      'color-destructive': 'text-red-600 dark:text-gray-500',
+      'color-reversed': 'text-white dark:text-dark-900',
+      'color-error': 'text-white dark:text-dark-900',
+      'color-error-hover': 'text-gray-200 dark:text-gray-900',
+      'color-warning': 'text-dark-900 dark:text-dark-900',
+      'color-warning-hover': 'text-[#19222a] dark:text-gray-900',
+      'color-information': 'text-white dark:text-dark-900',
+      'color-information-hover': 'text-gray-200 dark:text-gray-900',
+      'color-success': 'text-white dark:text-dark-900',
+      'color-success-hover': 'text-gray-200 dark:text-gray-900',
+      // bg
+      'bg-cta': 'bg-blue-600 dark:bg-blue-500',
+      'bg-cta-hover': 'bg-blue-800 dark:bg-blue-300',
+      'bg-primary': 'bg-white dark:bg-dark-900',
+      'bg-primary-hover': 'bg-gray-200 dark:bg-gray-900',
+      'bg-secondary': 'bg-gray-100 dark:(bg-gray-100)',
+      'bg-secondary-hover': 'bg-gray-300 dark:bg-gray-800',
+      'bg-tertiary': 'bg-gray-200 dark:(bg-gray-900)',
+      'bg-tertiary-hover': 'bg-gray-400 dark:bg-gray-700',
+      'bg-moderate': 'bg-gray-300 dark:(bg-gray-800)',
+      'bg-moderate-hover': 'bg-gray-500 dark:bg-gray-600',
+      'bg-bold': 'bg-gray-400 dark:(bg-gray-600)',
+      'bg-bold-hover': 'bg-gray-600 dark:bg-gray-400',
+      'bg-strong': 'bg-gray-600 dark:(bg-gray-400)',
+      'bg-strong-hover': 'bg-gray-700 dark:bg-gray-200',
+      'bg-contrast': 'bg-dark-900 dark:(bg-white)',
+      'bg-contrast-hover': 'bg-gray-900 dark:bg-gray-200',
       'bg-none': 'bg-transparent',
-      'bg-toggle': 'bg-gray-40 dark:(bg-green-40)',
-      'bg-error': 'bg-red-60 dark:(bg-red-50)',
+      'bg-toggle': 'bg-gray-400 dark:(bg-green-400)',
+      'bg-error': 'bg-red-600 dark:(bg-red-500)',
       'bg-error-hover': 'bg-[#c51d10] dark:(bg-[#fa6759])',
-      'bg-warning': 'bg-yellow-30 dark:(bg-yellow-30)',
+      'bg-warning': 'bg-yellow-300 dark:(bg-yellow-300)',
       'bg-warning-hover': 'bg-[#e7b816] dark:(bg-[#f6ce3c])',
-      'bg-information': 'bg-blue-50 dark:(bg-blue-60)',
+      'bg-information': 'bg-blue-500 dark:(bg-blue-600)',
       'bg-information-hover': 'bg-[#5399f5] dark:(bg-[#1660c9])',
-      'bg-success': 'bg-green-60 dark:(bg-green-50)',
+      'bg-success': 'bg-green-600 dark:(bg-green-500)',
       'bg-success-hover': 'bg-[#07714e] dark:(bg-[#2cac70])',
-      'border-cta': 'border-gray-20 dark:(border-gray-80)',
-      'border-cta-blend': 'border-blue-60 dark:(border-blue-50)',
-      'border-primary': 'border-gray-20 dark:(border-gray-80)',
-      'border-secondary': 'border-gray-20 dark:(border-gray-80)',
-      'border-tertiary': 'border-gray-30 dark:(border-gray-70)',
-      'border-warningAlt': 'border-orange-50 dark:(border-yellow-30)',
-      'border-warning': 'bg-yellow-30 dark:(bg-yellow-30)',
-      'border-warning-hover': 'bg-[#e7b816] dark:(bg-[#f6ce3c])'
+      // border
+      'border-cta': 'border-gray-200 dark:(border-gray-800)',
+      'border-cta-blend': 'border-blue-600 dark:(border-blue-500)',
+      'border-primary': 'border-gray-200 dark:(border-gray-800)',
+      'border-secondary': 'border-gray-200 dark:(border-gray-800)',
+      'border-tertiary': 'border-gray-300 dark:(border-gray-700)',
+      'border-warningAlt': 'border-orange-50 dark:(border-yellow-300)',
+      'border-warning': 'border-yellow-300 dark:(border-yellow-300)',
+      'border-warning-hover': 'border-[#e7b816] dark:(border-[#f6ce3c])'
     },
     [
+      // @ts-ignore
       /^btn-(.*)$/,
+      // @ts-ignore
       ([, c]) =>
         `btn bg-${c} @hover:(bg-${c}-hover color-${c}-hover) color-${c} border-1 border-${c}`
     ],
+    // @ts-ignore
     [/^card-(.*)$/, ([, c]) => `bg-${c} color-${c} border-${c}`],
+    // @ts-ignore
     [/^card-(\w*)-hover$/, ([, c]) => `bg-${c}-hover color-${c}-hover border-${c}-hover`],
-    [/^cell-(.*)$/, ([, c]) => `bg-${c} color-${c} border-1 border-${c}`]
+    [/^cell-(.*)$/, ([, c]) => (c ? `bg-${c} color-${c} border-1 border-${c}` : undefined)]
   ]
 });
 

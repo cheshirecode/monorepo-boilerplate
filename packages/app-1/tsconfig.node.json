@@ -10,6 +10,7 @@
   },
   "include": [
     "unocss.config.ts",
+    "src/styles/grid.ts",
     "vite.config.ts",
     "alias.ts"
   ]
