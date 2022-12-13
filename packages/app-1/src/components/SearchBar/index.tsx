@@ -51,6 +51,7 @@ const SearchBar: FC<
     <form
       className={cx(
         'inline-flex justify-center sm:justify-end items-center children:h-full',
+        'relative',
         'w-full',
         className
       )}
@@ -59,11 +60,12 @@ const SearchBar: FC<
       <input
         type="search"
         className={cx(
-          'search-bar-field',
-          'w-0 flex-1',
+          'flex-1 h-inherit',
           'rounded-none rounded-l-lg',
           !(searchButtonText?.length > 0) && 'rounded-r-lg',
-          'px-4 py-2.5',
+          'px-4 py-2',
+          'border border-cta',
+          'z-2',
           'focus-visible:outline-none'
         )}
         placeholder={placeholder}
@@ -74,7 +76,12 @@ const SearchBar: FC<
       />
       {searchButtonText?.length > 0 && (
         <button
-          className="btn btn-primary search-bar-field border-l-0 rounded-l-none border-1 m-0"
+          className={cx(
+            'btn-cta border-cta-blend',
+            'm-0 my--1',
+            'uno-layer-o:(rounded-l-none border-l-0)',
+            'z-1'
+          )}
           id="--poc-button-search"
           onClick={onClick}
         >
