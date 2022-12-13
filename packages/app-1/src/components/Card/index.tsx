@@ -1,27 +1,52 @@
 import styled from '@emotion/styled';
 import cx from 'classnames';
-import type { FC, ReactNode } from 'react';
+import type { FC } from 'react';
+
+import { cardHoverClassnames, cardPalette } from '@/styles/palette';
 
 type CardProps = BaseProps & {
-  ['uno-bg']?: string; // set background color
-  header?: string | ReactNode | FC;
-  footer?: string | ReactNode | FC;
-  plain?: true;
+  type: keyof typeof cardPalette;
+  hover?: boolean;
+  shadow?: boolean;
+  title?: string;
+  message?: string;
+  objects?: unknown[];
 };
 
 const StyledArticle = styled.article``;
 
-const Card: FC<CardProps> = ({ className, children, header, footer, plain, ...props }) => (
+const Card: FC<CardProps> = ({
+  className,
+  type,
+  hover,
+  shadow,
+  title,
+  message,
+  children,
+  objects,
+  ...props
+}) => (
   <StyledArticle
-    uno-bg="white"
-    className={cx('w-full', !plain && 'border-1 border-gray-20', !plain && 'shadow-lg', className)}
+    className={cx(
+      'w-full',
+      'flex flex-col justify-center',
+      shadow && 'shadow-lg',
+      cardPalette[type],
+      hover && `${cardHoverClassnames[type]}`,
+      className
+    )}
     {...props}
   >
-    <>
-      {header ? typeof header === 'string' ? <header>{header}</header> : header : null}
-      {children ? children : null}
-      {footer ? typeof footer === 'string' ? <footer>{footer}</footer> : footer : null}
-    </>
+    {title ? <h4 className="text-center">{title}</h4> : null}
+    {children ? children : null}
+    {message ? <code className="text-center">{message}</code> : null}
+    {objects
+      ? objects.map((x) => (
+          <pre className="pre-wrap" key={x?.toString() ?? String(x)}>
+            {JSON.stringify(x, null, 2)}
+          </pre>
+        ))
+      : null}
   </StyledArticle>
 );
 
