@@ -1,36 +1,12 @@
 import type { UserConfig } from 'unocss';
 import { defineConfig, presetAttributify, presetUno, transformerVariantGroup } from 'unocss';
 
-import { rules, shortcuts } from './src/styles/grid';
-import { breakpoints, lineHeight, MAX_GRID_SIZE, MAX_REM_UNITS } from './src/styles/tokens';
-
-const extraSizes = Array(MAX_REM_UNITS)
-  .fill(0)
-  .reduce(
-    (prev, x, i) => ({
-      ...prev,
-      [i + 1]: `${(i + 1) * 0.25}rem`
-    }),
-    {}
-  );
-
-const extraGridTemplates: Record<number, string> = Array(MAX_GRID_SIZE)
-  .fill(0)
-  .reduce(
-    (prev, x, i) => ({
-      ...prev,
-      [i + 13]: `repeat(${i + 13}, minmax(0, 1fr))`
-    }),
-    {}
-  );
-
-const safelist = Object.keys(breakpoints)
-  .concat('')
-  .flatMap((x) =>
-    ['grid-cols', 'grid-rows']
-      .flatMap((x) => Object.keys(extraGridTemplates).map((y) => `${x}-${y}`))
-      .map((y) => `${x ? `${x}:` : ''}${y}`)
-  );
+import {
+  rules as gridRules,
+  shortcutArr as gridShortcutArr,
+  shortcutObj as gridShortcutObj
+} from './src/styles/grid';
+import { breakpoints, colors, lineHeight, extraSizes, extraGridTemplates, safelist } from './src/styles/tokens';
 
 const config: UserConfig = defineConfig({
   include: [/\.[jt]sx?$/],
@@ -38,14 +14,7 @@ const config: UserConfig = defineConfig({
   theme: {
     screens: breakpoints,
     breakpoints,
-    colors: {
-      blue: {
-        'dark-moderate': '#3a649e' // https://www.colorhexa.com/3a649e
-      },
-      cyan: {
-        dark: '#0F747E'
-      }
-    },
+    colors,
     fontSize: {
       // based on https://grtcalculator.com/
       h1: ['2.625rem', lineHeight.h1],
@@ -91,10 +60,8 @@ const config: UserConfig = defineConfig({
       decimal: 'decimal',
       square: 'square',
       roman: 'upper-roman'
-    },
-    animation: {
-      'fade-in-slow': 'fade-in 2s ease 1s'
     }
+    // https://github.com/unocss/unocss/blob/main/packages/preset-wind/src/theme.ts
   },
   presets: [
     presetUno(),
@@ -123,13 +90,16 @@ const config: UserConfig = defineConfig({
             selector: (s) => `html ${s}`
           }
   ],
-  rules: [...rules],
+  rules: [...gridRules],
   shortcuts: [
-    ...(shortcuts as []),
+    ...(gridShortcutArr as []),
     {
-      btn: 'border-0 py-2 px-4 font-semibold rounded-md  cursor-pointer',
-      disabled: 'focus:outline-none cursor-auto pointer-events-none @hover:(shadow-none)',
-      link: 'text-white @hover:text-blue-700',
+      ...gridShortcutObj,
+      btn: 'border-0 py-2 px-4 font-semibold rounded-md cursor-pointer',
+      'btn-compact': 'py-1 px-1',
+      anchor:
+        'text-blue-60 dark:text-blue-50 no-underline @hover:(underline text-blue-80 dark:text-blue-30)',
+      disabled: 'focus:outline-none cursor-auto pointer-events-none',
       'responsive-page': ['max-w-custom', 'mx-auto'].join(' '),
       'px-res': ['px-4 xxl:px-1/10 4xl:px-1/5'].join(' '),
       'mx-res': ['mx-4 xxl:mx-1/10 4xl:mx-1/5'].join(' '),
@@ -140,22 +110,70 @@ const config: UserConfig = defineConfig({
         'lt-md:justify-center',
         'justify-start'
       ].join(' '),
-      'responsive-grid': ['grid grid-cols-1']
-        .concat(Object.keys(breakpoints).map((x, i) => `${x}:grid-cols-${i + 2}`))
-        .join(' '),
-      'btn-primary':
-        'bg-blue-500 text-white @hover:(bg-blue-700 dark:bg-blue-500) dark:bg-blue-300 dark:text-gray-700',
-      'btn-secondary': 'bg-white text-blue-500 @hover:(bg-gray-200) dark:(bg-gray-900)',
-      'color-primary': 'text-gray-700 dark:text-gray-300',
-      'color-primary-fade': 'text-gray-700:50 dark:text-gray-300:50',
-      'color-secondary': 'text-blue-700 dark:text-blue-400',
-      'bg-primary': 'bg-white dark:(bg-gray-900)',
-      'bg-primary-fade': 'bg-white:50 dark:(bg-gray-900:50)',
-      'bg-secondary': 'bg-gray-300 dark:(bg-gray-600)',
-      'bg-toggle': 'bg-gray-400 dark:(bg-green-400)',
-      'border-primary': 'border-gray-300 dark:(border-gray-600)'
+      'fill-width': 'w-auto ml-[-9999px] pl-[9999px] mr-[-9999px] pr-[9999px]',
+      'color-cta': 'text-white dark:text-gray-10',
+      'color-cta-hover': 'text-gray-20 dark:text-white',
+      'color-primary': 'text-gray-90 dark:text-gray-10',
+      'color-primary-hover': 'text-gray-110 dark:text-white',
+      'color-secondary': 'text-gray-70 dark:text-gray-40',
+      'color-secondary-hover': 'text-gray-90 dark:text-gray-20',
+      'color-tertiary': 'text-gray-40 dark:text-gray-60',
+      'color-tertiary-hover': 'uno-layer-h:(text-gray-60 dark:text-gray-40)',
+      'color-link': 'text-blue-60 dark:text-blue-50',
+      'color-link-hover': 'text-blue-80 dark:text-blue-30',
+      'color-destructive': 'text-red-60 dark:text-gray-50',
+      'color-reversed': 'text-white dark:text-gray-110',
+      'color-error': 'text-white dark:text-gray-110',
+      'color-error-hover': 'text-gray-20 dark:text-gray-90',
+      'color-warning': 'text-gray-110 dark:text-gray-110',
+      'color-warning-hover': 'text-[#19222a] dark:text-gray-90',
+      'color-information': 'text-white dark:text-gray-110',
+      'color-information-hover': 'text-gray-20 dark:text-gray-90',
+      'color-success': 'text-white dark:text-gray-110',
+      'color-success-hover': 'text-gray-20 dark:text-gray-90',
+      'bg-cta': 'bg-blue-60 dark:bg-blue-50',
+      'bg-cta-hover': 'bg-blue-80 dark:bg-blue-30',
+      'bg-primary': 'bg-white dark:bg-gray-110',
+      'bg-primary-hover': 'bg-gray-20 dark:bg-gray-90',
+      'bg-secondary': 'bg-gray-10 dark:(bg-gray-100)',
+      'bg-secondary-hover': 'bg-gray-30 dark:bg-gray-80',
+      'bg-tertiary': 'bg-gray-20 dark:(bg-gray-90)',
+      'bg-tertiary-hover': 'bg-gray-40 dark:bg-gray-70',
+      'bg-moderate': 'bg-gray-30 dark:(bg-gray-80)',
+      'bg-moderate-hover': 'bg-gray-50 dark:bg-gray-60',
+      'bg-bold': 'bg-gray-40 dark:(bg-gray-60)',
+      'bg-bold-hover': 'bg-gray-60 dark:bg-gray-40',
+      'bg-strong': 'bg-gray-60 dark:(bg-gray-40)',
+      'bg-strong-hover': 'bg-gray-70 dark:bg-gray-20',
+      'bg-contrast': 'bg-gray-110 dark:(bg-white)',
+      'bg-contrast-hover': 'bg-gray-90 dark:bg-gray-20',
+      'bg-none': 'bg-transparent',
+      'bg-toggle': 'bg-gray-40 dark:(bg-green-40)',
+      'bg-error': 'bg-red-60 dark:(bg-red-50)',
+      'bg-error-hover': 'bg-[#c51d10] dark:(bg-[#fa6759])',
+      'bg-warning': 'bg-yellow-30 dark:(bg-yellow-30)',
+      'bg-warning-hover': 'bg-[#e7b816] dark:(bg-[#f6ce3c])',
+      'bg-information': 'bg-blue-50 dark:(bg-blue-60)',
+      'bg-information-hover': 'bg-[#5399f5] dark:(bg-[#1660c9])',
+      'bg-success': 'bg-green-60 dark:(bg-green-50)',
+      'bg-success-hover': 'bg-[#07714e] dark:(bg-[#2cac70])',
+      'border-cta': 'border-gray-20 dark:(border-gray-80)',
+      'border-cta-blend': 'border-blue-60 dark:(border-blue-50)',
+      'border-primary': 'border-gray-20 dark:(border-gray-80)',
+      'border-secondary': 'border-gray-20 dark:(border-gray-80)',
+      'border-tertiary': 'border-gray-30 dark:(border-gray-70)',
+      'border-warningAlt': 'border-orange-50 dark:(border-yellow-30)',
+      'border-warning': 'bg-yellow-30 dark:(bg-yellow-30)',
+      'border-warning-hover': 'bg-[#e7b816] dark:(bg-[#f6ce3c])'
     },
-    [/^border-(.*)-primary$/, ([, c]) => `border-${c}-gray-300 dark:(border-${c}-gray-600)`]
+    [
+      /^btn-(.*)$/,
+      ([, c]) =>
+        `btn bg-${c} @hover:(bg-${c}-hover color-${c}-hover) color-${c} border-1 border-${c}`
+    ],
+    [/^card-(.*)$/, ([, c]) => `bg-${c} color-${c} border-${c}`],
+    [/^card-(\w*)-hover$/, ([, c]) => `bg-${c}-hover color-${c}-hover border-${c}-hover`],
+    [/^cell-(.*)$/, ([, c]) => `bg-${c} color-${c} border-1 border-${c}`]
   ]
 });
 

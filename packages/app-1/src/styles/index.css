@@ -14,9 +14,13 @@ html, body {
   grid-template-rows: auto 1fr auto;
 }
 
-code {
+pre, code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0;
 }
 
 img {
@@ -28,4 +32,12 @@ img {
 
 input, select {
   background-color: inherit;
+}
+
+input:focus-visible {
+  outline-width: 0;
+}
+
+a:not([class]) {
+  color: inherit;
 }

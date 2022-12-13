@@ -53,7 +53,7 @@ grid-cols-auto-(40) ->
   ]
 ];
 
-export const shortcuts: UserConfig['shortcuts'] = [
+export const shortcutArr: UserConfig['shortcuts'] = [
   [/^border-(.*)-primary$/, ([, c]) => `border-${c}-gray-300 dark:(border-${c}-gray-600)`],
   /* 
     responsive-grid-max-10 -> 
@@ -85,3 +85,14 @@ export const shortcuts: UserConfig['shortcuts'] = [
         .join(' ')
   ]
 ];
+
+export const shortcutObj: UserConfig['shortcuts'] = {
+  'responsive-grid': Object.keys(breakpoints)
+    .map((x, i) => `${x}:grid-cols-${i + 2}`)
+    .concat('grid', 'grid-cols-1')
+    .join(' '),
+  'responsive-grid-kv': Object.keys(breakpoints)
+    .map((x, i) => `${x}:grid-cols-${(i + 1) * 2}`)
+    .concat('grid')
+    .join(' ')
+};
