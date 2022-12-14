@@ -9,9 +9,11 @@ const ThemeToggle = ({ className, isApply = true, onChange, ...props }: ThemeTog
     onChange
   });
   return (
-    <fieldset className={cx('w-fit h-fit border-0', className)} {...props}>
+    // wrapper of label to allow different values for 'position'
+    <fieldset className={cx('border-0 p-0 m-0', className)} {...props}>
+      {/* label needs relative position so that the pseudo-toggle can be absolutely positioned */}
       <label htmlFor="--ThemeToggle" className="relative cursor-pointer">
-        <span className={cx('block w-10 h-6', 'rounded-full shadow-inner', 'bg-toggle')}></span>
+        <span className={cx('block w-10 h-6', 'rounded-full shadow-inner', 'bg-contrast')}></span>
         <span
           className={cx(
             'absolute block w-4 h-4 mt-1 ml-1',
