@@ -1,58 +1,10 @@
 import cx from 'classnames';
 import { isFunction, isUndefined, throttle } from 'lodash-es';
-import type { HTMLAttributes, ReactNode } from 'react';
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-export type ItemsType = {
-  id: string;
-  name: string;
-  content: ReactNode;
-}[];
+import useInitialEffect from '@/services/hooks/useInitialEffect';
 
-const useInitialEffect = useLayoutEffect || useEffect;
-
-export interface SectionsProps extends BaseProps, HTMLAttributes<HTMLElement> {
-  /**
-   * list of each section items
-   * {
-   *   id - unique id to act as URL hash for the item
-   *   name - display name
-   *   content - actual content of the item
-   *   }[]
-   */
-  items?: ItemsType;
-  activeIndex?: number;
-  navClassName?: string;
-  contentClassName?: string;
-  /**
-   * default - false. set to make the nav menu sticky on large screens > xl breakpoint ~1280px
-   */
-  stickyNav?: boolean;
-  /**
-   * default - false. set to infer active index from url hash
-   */
-  inferHash?: boolean;
-  /**
-   * default - false. set to infer active index from url params
-   */
-  inferQueryParams?: boolean;
-  /**
-   * callback to act on scrollTop of component
-   */
-  cbScrollTop?: (scrollTop: number) => void;
-  /**
-   * threshold (px|em|rm)  set offset for content
-   */
-  contentOffset?: string;
-  /**
-   * default - false. set to scroll content back to top whenever index changes
-   */
-  scrollTopOnIndexChange?: boolean;
-  /**
-   * default - false. set to allow items to take as much width as needed for content
-   */
-  itemFitContent?: boolean;
-}
+import { SectionsProps } from './typings';
 
 const Sections = ({
   items = [],
@@ -67,6 +19,8 @@ const Sections = ({
   contentOffset = '',
   scrollTopOnIndexChange = false,
   itemFitContent = false,
+  Pre,
+  preContentClassName,
   ...props
 }: SectionsProps) => {
   const [currentIndex, setCurrentIndex] = useState(activeIndex);
@@ -79,6 +33,10 @@ const Sections = ({
   }, [items]);
   const [contentOffsetStyle, setContentOffsetStyle] = useState({});
   const ref = useRef<HTMLElement>(null);
+  //scroll
+  const preRef = useRef<HTMLElement>(null);
+  const contentRef = useRef<HTMLElement>(null);
+  // const [isPreHidden, setPreHidden] = useState(false);
   const checkOnScroll = useMemo(
     () =>
       throttle(
@@ -88,11 +46,20 @@ const Sections = ({
             if (isFunction(cbScrollTop)) {
               cbScrollTop(st);
             }
-            if (contentOffset) {
-              setContentOffsetStyle({
-                marginTop: `min(${st}px, ${contentOffset})`
-              });
+            let offsetTop = 0;
+            // if scrolling down (offset > 0) hide the heading, show normally otherwise
+            if (preRef?.current) {
+              preRef.current.classList.remove(st > 0 ? 'visible' : 'invisible');
+              preRef.current.classList.add(st > 0 ? 'invisible' : 'visible');
+              const preHeight = preRef.current.offsetHeight;
+              if (st > 0 && st < preHeight) {
+                offsetTop = preHeight;
+              }
             }
+            const offsets = [offsetTop, contentOffset || 9999].map((x) => `${x}px`);
+            setContentOffsetStyle({
+              marginTop: `min(${offsets.join(', ')})`
+            });
           }
         },
         300,
@@ -144,25 +111,44 @@ const Sections = ({
   useEffect(() => {
     if (scrollTopOnIndexChange && ref?.current) {
       ref.current.scrollTo({
-        top: 1, // very slightly below the fold to still maintain the offset logic (if hiding heading e.g.)
+        top: preRef?.current?.offsetHeight ?? 1, // very slightly below the fold to still maintain the offset logic (if hiding heading e.g.)
         // left: 100,
         behavior: 'smooth'
       });
+      ref.current.dispatchEvent(
+        new MouseEvent('scroll', {
+          view: window,
+          bubbles: true,
+          cancelable: true
+        })
+      );
     }
-  }, [scrollTopOnIndexChange, currentIndex]);
+  }, [scrollTopOnIndexChange, currentIndex, checkOnScroll]);
+
   return (
     <section
       className={cx(
         'w-full h-inherit',
         'bg-primary color-primary',
-        'flex flex-wrap xxl:(flex-row) overflow-auto',
+        'flex flex-wrap xxl:(flex-row)',
+        'overflow-auto',
+        // isPreHidden ? 'overflow-hidden' : 'overflow-auto',
         'z-1',
         className
       )}
       ref={ref}
-      {...(cbScrollTop ? { onScroll: checkOnScroll } : {})}
+      onScroll={checkOnScroll}
+      // {...(isPreHidden ? {} : { onScroll: checkOnScroll })}
       {...props}
     >
+      {Pre ? (
+        <section
+          className={cx('w-full', 'bg-secondary', 'z-1', 'children:(px-res)', preContentClassName)}
+          ref={preRef}
+        >
+          {Pre}
+        </section>
+      ) : null}
       <nav
         className={cx(
           'm-0 p-0 overflow-auto',
@@ -175,11 +161,11 @@ const Sections = ({
           itemFitContent && 'lt-xxl:(children:(min-w-fit))',
           itemFitContent && 'xxl:(min-w-fit)',
           stickyNav && 'md:(sticky top-0)',
-          '',
-          'border-primary shadow-lg',
+          'bg-secondary',
+          'border-secondary xxl:shadow-lg',
           'lt-xxl:uno-layer-o:(border-b-1)',
           'xxl:uno-layer-o:(border-r-1)',
-          'z-2',
+          'z-3',
           navClassName
         )}
       >
@@ -204,15 +190,18 @@ const Sections = ({
           </a>
         ))}
       </nav>
-      <div className="hidden md:block w-full xxl:w-auto h-px" style={contentOffsetStyle}></div>
       <div
         className={cx(
           'm-0 p-0',
           'bg-transparent',
           'w-full xxl:(w-auto flex-1)',
-          'h-inherit xxl:(h-full)',
+          'h-[-webkit-fill-available] xxl:(h-full)',
+          'z-2',
           contentClassName
         )}
+        ref={contentRef}
+        // {...(isPreHidden ? { onScroll: checkOnScroll } : {})}
+        style={contentOffsetStyle}
       >
         {items[currentIndex].content}
       </div>

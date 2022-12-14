@@ -1,6 +1,5 @@
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 import cx from 'classnames';
-import { useState } from 'react';
 
 import Sections from './';
 
@@ -47,24 +46,19 @@ export default {
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
 // @ts-expect-error
-const Template: ComponentStory<typeof Sections> = ({ Extra, cbScrollTop, ...args }) => {
-  const [showHeading, setShowHeading] = useState(true);
-  const fn: typeof cbScrollTop = (x) => {
-    if (cbScrollTop) {
-      cbScrollTop(x);
-      setShowHeading(x === 0);
-    }
-  };
+const Template: ComponentStory<typeof Sections> = ({ Extra, ...args }) => {
   return (
     <section className="flex flex-col border shadow-lg bg-lime-50 dark:bg-lime-900 w-full h-full overflow-hidden">
-      {showHeading && (
-        <div className="max-h-30 flex flex-wrap children:(h-10 w-full relative)">
-          <code>static heading </code>
-          {Extra ? Extra : null}
-          <code>post-extra </code>
-        </div>
-      )}
-      <Sections {...args} cbScrollTop={fn} />
+      <Sections
+        Pre={
+          <div className="max-h-30 flex flex-wrap children:(h-10 w-full relative)">
+            <code>static heading </code>
+            {Extra ? Extra : null}
+            <code>post-extra </code>
+          </div>
+        }
+        {...args}
+      />
       <p>block after sections</p>
     </section>
   );
