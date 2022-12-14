@@ -23,13 +23,13 @@ export default class ErrorBoundary extends Component<
   render: () => ReactNode = () => {
     if (this.state.errorInfo) {
       return import.meta.env.DEV ? (
-        <details className="pre-wrap">
+        <details className="pre-wrap color-error">
           {this.state.error && this.state.error.toString()}
           <br />
           {this.state.errorInfo.componentStack}
         </details>
       ) : (
-        <em className="text-red">{this.state.error.toString()}</em>
+        <em className="color-error">{this.state.error.toString()}</em>
       );
     }
     // Normally, just render children
