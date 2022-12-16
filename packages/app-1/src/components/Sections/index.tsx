@@ -16,7 +16,7 @@ const Sections = ({
   inferHash = false,
   inferQueryParams = false,
   cbScrollTop,
-  contentOffset = '',
+  // contentOffset = 0,
   scrollTopOnIndexChange = false,
   itemFitContent = false,
   Pre,
@@ -31,12 +31,11 @@ const Sections = ({
       setCurrentIndex(indexFromHash);
     }
   }, [items]);
-  const [contentOffsetStyle, setContentOffsetStyle] = useState({});
+  // const [contentOffsetStyle, setContentOffsetStyle] = useState({});
   const ref = useRef<HTMLElement>(null);
   //scroll
   const preRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLElement>(null);
-  // const [isPreHidden, setPreHidden] = useState(false);
   const checkOnScroll = useMemo(
     () =>
       throttle(
@@ -46,20 +45,26 @@ const Sections = ({
             if (isFunction(cbScrollTop)) {
               cbScrollTop(st);
             }
-            let offsetTop = 0;
-            // if scrolling down (offset > 0) hide the heading, show normally otherwise
             if (preRef?.current) {
-              preRef.current.classList.remove(st > 0 ? 'visible' : 'invisible');
-              preRef.current.classList.add(st > 0 ? 'invisible' : 'visible');
-              const preHeight = preRef.current.offsetHeight;
-              if (st > 0 && st < preHeight) {
-                offsetTop = preHeight;
+              const { classList } = preRef.current;
+              const isScrollingPastPre = st > 0;
+              const alreadyHidden = classList.contains('hidden');
+              if (alreadyHidden && st === 1) {
+                return;
+              }
+              classList[isScrollingPastPre ? 'add' : 'remove']('hidden');
+              if (!alreadyHidden && isScrollingPastPre) {
+                ref.current.scrollTo({
+                  // very slightly below the fold to still maintain the offset logic (if hiding heading e.g.)
+                  top: 1,
+                  behavior: 'smooth'
+                });
               }
             }
-            const offsets = [offsetTop, contentOffset || 9999].map((x) => `${x}px`);
-            setContentOffsetStyle({
-              marginTop: `min(${offsets.join(', ')})`
-            });
+            // const offsets = [ contentOffset || 9999].map((x) => `${x}px`);
+            // setContentOffsetStyle({
+            //   marginTop: `min(${offsets.join(', ')})`
+            // });
           }
         },
         300,
@@ -68,7 +73,7 @@ const Sections = ({
           leading: true
         }
       ),
-    [cbScrollTop, contentOffset]
+    [cbScrollTop]
   );
 
   useInitialEffect(() => {
@@ -111,34 +116,25 @@ const Sections = ({
   useEffect(() => {
     if (scrollTopOnIndexChange && ref?.current) {
       ref.current.scrollTo({
-        top: preRef?.current?.offsetHeight ?? 1, // very slightly below the fold to still maintain the offset logic (if hiding heading e.g.)
-        // left: 100,
+        // very slightly below the fold to still maintain the offset logic (if hiding heading e.g.)
+        top: preRef?.current?.offsetHeight || 1,
         behavior: 'smooth'
       });
-      ref.current.dispatchEvent(
-        new MouseEvent('scroll', {
-          view: window,
-          bubbles: true,
-          cancelable: true
-        })
-      );
     }
-  }, [scrollTopOnIndexChange, currentIndex, checkOnScroll]);
+  }, [scrollTopOnIndexChange, currentIndex]);
 
   return (
     <section
       className={cx(
-        'w-full h-inherit',
+        'w-full max-h-full',
         'bg-primary color-primary',
-        'flex flex-wrap xxl:(flex-row)',
+        'flex flex-wrap xxl:(flex-row h-full)',
         'overflow-auto',
-        // isPreHidden ? 'overflow-hidden' : 'overflow-auto',
         'z-1',
         className
       )}
       ref={ref}
       onScroll={checkOnScroll}
-      // {...(isPreHidden ? {} : { onScroll: checkOnScroll })}
       {...props}
     >
       {Pre ? (
@@ -155,7 +151,7 @@ const Sections = ({
           'flex ',
           'lt-xxl:(w-full)',
           'lt-md:(flex-wrap flex-col children:(max-w-full overflow-x-scroll))',
-          'xxl:(max-w-60 w-full)',
+          'xxl:(max-w-60)',
           'xxl:(h-full flex-col)',
           !itemFitContent && 'lt-xxl:(children:(max-w-60))',
           itemFitContent && 'lt-xxl:(children:(min-w-fit))',
@@ -200,8 +196,7 @@ const Sections = ({
           contentClassName
         )}
         ref={contentRef}
-        // {...(isPreHidden ? { onScroll: checkOnScroll } : {})}
-        style={contentOffsetStyle}
+        // style={contentOffsetStyle}
       >
         {items[currentIndex].content}
       </div>
