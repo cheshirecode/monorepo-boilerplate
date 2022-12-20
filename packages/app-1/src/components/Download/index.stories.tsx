@@ -12,7 +12,6 @@ export default {
 } as ComponentMeta<typeof Download>;
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-// @ts-expect-error
 const Template: ComponentStory<typeof Download> = ({ ...args }) => (
   <section className="bg-secondary flex w-100">
     click to copy <Download {...args} />{' '}

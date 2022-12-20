@@ -1,43 +1,16 @@
-import { ComponentMeta, ComponentStory } from '@storybook/react';
+import cx from 'classnames';
+import stringify from 'fast-json-stable-stringify';
+import { isString } from 'lodash-es';
 
-import Download from './';
+import { createOnClickClipboardCopy } from '@/utils';
 
-// More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
-// eslint-disable-next-line import/no-anonymous-default-export
-export default {
-  title: 'components/Download',
-  component: Download,
-  // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
-  argTypes: {}
-} as ComponentMeta<typeof Download>;
-
-// More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-// @ts-expect-error
-const Template: ComponentStory<typeof Download> = ({ ...args }) => (
-  <section className="bg-secondary flex w-100">
-    click to copy <Download {...args} />{' '}
-  </section>
+const Download = ({ data, className, children }: BaseProps & { data: unknown }) => (
+  <button
+    className={cx('btn btn-compact btn-primary self-center cursor-pointer', className)}
+    onClick={createOnClickClipboardCopy(isString(data) ? data : stringify(data))}
+  >
+    {children ? children : '📋'}
+  </button>
 );
 
-export const Basic = Template.bind({});
-
-Basic.args = {
-  className: 'btn-primary mr-0 ml-auto',
-  data: 'random text'
-};
-
-export const MoreData = Template.bind({});
-
-MoreData.args = {
-  ...Basic.args,
-  data: {
-    text: 'random text'
-  }
-};
-
-export const CustomIcon = Template.bind({});
-
-CustomIcon.args = {
-  ...Basic.args,
-  children: 'download'
-};
+export default Download;
