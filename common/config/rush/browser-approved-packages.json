@@ -273,6 +273,10 @@
     {
       "name": "vitest",
       "allowedCategories": [ "production", "tools" ]
+    },
+    {
+      "name": "wouter",
+      "allowedCategories": [ "production" ]
     }
   ]
 }
