@@ -1,4 +1,5 @@
 import { ComponentMeta, ComponentStory } from '@storybook/react';
+import { useState } from 'react';
 
 import Field from './';
 
@@ -10,46 +11,71 @@ export default {
 } as ComponentMeta<typeof Field>;
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-const Template: ComponentStory<typeof Field> = (args) => (
-  <fieldset className="h-20 w-50">
-    <Field {...args} />
-  </fieldset>
-);
+const Template: ComponentStory<typeof Field> = (args) => {
+  const [current, onChange] = useState(args.value);
+  const [final, setV] = useState(args.value);
+  return (
+    <fieldset className="h-20 w-50">
+      <dl className="grid grid-cols-2">
+        <dt>onChange</dt>
+        <dd>
+          <input value={current} readOnly className="card-primary" />
+        </dd>
+        <dt>set</dt>
+        <dd>{final}</dd>
+      </dl>
+      <Field {...args} set={setV} onChange={(v) => onChange(v)} />
+    </fieldset>
+  );
+};
 
 export const Default = Template.bind({});
-// More on args: https://storybook.js.org/docs/react/writing-stories/args
+
 Default.args = {
   name: 'name',
   value: 'default',
-  // eslint-disable-next-line no-console
-  set: (v) => console.log(v),
   iconClassName: '',
-  className: 'font-gs-body01 outline outline-solid',
-  readonly: false
+  inputClassName: '',
+  readOnlyClassName: '',
+  readOnly: false,
+  className: 'outline outline-solid'
 };
 
 export const BigIcon = Template.bind({});
-// More on args: https://storybook.js.org/docs/react/writing-stories/args
+
 BigIcon.args = {
   ...Default.args,
   name: 'name',
   value: 'big icon',
-  // eslint-disable-next-line no-console
-  set: (v) => console.log(v),
-  iconClassName: 'h-full w-10',
-  inputClassName: 'h-full',
-  readOnlyClassName: '',
-  readonly: false
+  scale: 3
 };
 
 export const Readonly = Template.bind({});
-// More on args: https://storybook.js.org/docs/react/writing-stories/args
+
 Readonly.args = {
   ...Default.args,
   name: 'name',
-  value: 'readonly',
-  // eslint-disable-next-line no-console
-  set: (v) => console.log(v),
-  iconClassName: '',
-  readonly: true
+  value: 'readOnly',
+  readOnly: true
+};
+
+export const SaveOnBlur = Template.bind({});
+
+SaveOnBlur.args = {
+  ...Default.args,
+  name: 'name',
+  value: 'custom',
+  saveOnBlur: true,
+  displayValue: (v) => `custom (${v})`
+};
+
+export const NoConfirmation = Template.bind({});
+
+NoConfirmation.args = {
+  ...Default.args,
+  name: 'name',
+  value: 'noConfirmation',
+  saveOnBlur: true,
+  noConfirmation: true,
+  displayValue: (v) => `custom (${v})`
 };
