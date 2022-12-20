@@ -1,127 +1,29 @@
 import cx from 'classnames';
-import { isFunction, isUndefined, throttle } from 'lodash-es';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-
-import useInitialEffect from '@/services/hooks/useInitialEffect';
 
 import { SectionsProps } from './typings';
+import useSections from './useSections';
 
 const Sections = ({
+  // props for hook
+  activeIndex: _a,
+  stickyNav,
+  inferHash,
+  inferQueryParams: _i1,
+  cbScrollTop: _c,
+  // contentOffset = 0,
+  scrollTopOnIndexChange: _s,
+  // props for rendering
   items = [],
   className,
   navClassName,
   contentClassName,
-  activeIndex = 0,
-  stickyNav = false,
-  inferHash = false,
-  inferQueryParams = false,
-  cbScrollTop,
-  // contentOffset = 0,
-  scrollTopOnIndexChange = false,
   itemFitContent = false,
   Pre,
   preContentClassName,
   ...props
 }: SectionsProps) => {
-  const [currentIndex, setCurrentIndex] = useState(activeIndex);
-  const updateIndexByHash = useCallback(() => {
-    const hash = window.location.hash?.slice(1); // #abc > abc
-    const indexFromHash = items.findIndex((x) => x.id === hash);
-    if (indexFromHash >= 0) {
-      setCurrentIndex(indexFromHash);
-    }
-  }, [items]);
-  // const [contentOffsetStyle, setContentOffsetStyle] = useState({});
-  const ref = useRef<HTMLElement>(null);
-  //scroll
-  const preRef = useRef<HTMLElement>(null);
-  const contentRef = useRef<HTMLElement>(null);
-  const checkOnScroll = useMemo(
-    () =>
-      throttle(
-        () => {
-          const st = ref?.current?.scrollTop;
-          if (!isUndefined(st) && st >= 0) {
-            if (isFunction(cbScrollTop)) {
-              cbScrollTop(st);
-            }
-            if (preRef?.current) {
-              const { classList } = preRef.current;
-              const isScrollingPastPre = st > 0;
-              const alreadyHidden = classList.contains('hidden');
-              if (alreadyHidden && st === 1) {
-                return;
-              }
-              classList[isScrollingPastPre ? 'add' : 'remove']('hidden');
-              if (!alreadyHidden && isScrollingPastPre) {
-                ref.current.scrollTo({
-                  // very slightly below the fold to still maintain the offset logic (if hiding heading e.g.)
-                  top: 1,
-                  behavior: 'smooth'
-                });
-              }
-            }
-            // const offsets = [ contentOffset || 9999].map((x) => `${x}px`);
-            // setContentOffsetStyle({
-            //   marginTop: `min(${offsets.join(', ')})`
-            // });
-          }
-        },
-        300,
-        {
-          trailing: true,
-          leading: true
-        }
-      ),
-    [cbScrollTop]
-  );
-
-  useInitialEffect(() => {
-    if (stickyNav) {
-      // eslint-disable-next-line no-console
-      console.info(
-        'Sections - stickyNav needs a fixed height set on either this or direct ancestor'
-      );
-    }
-    if (!window || !window.location) {
-      return;
-    }
-    const {
-      location: { search },
-      addEventListener
-    } = window;
-    let isListenToHashChange = false;
-    if (inferHash) {
-      isListenToHashChange = true;
-      // Bind the event listener
-      window.removeEventListener('hashchange', updateIndexByHash);
-      addEventListener('hashchange', updateIndexByHash);
-      updateIndexByHash();
-    }
-    if (inferQueryParams) {
-      const queryParams = new URLSearchParams(search);
-      let hash = queryParams.get('sectionHash') ?? '';
-      hash = decodeURIComponent(hash) !== hash ? decodeURIComponent(hash) : hash;
-      const indexFromHash = items.findIndex((x) => x.id === hash);
-      if (indexFromHash >= 0) {
-        setCurrentIndex(indexFromHash);
-      }
-    }
-    return () => {
-      // Unbind the event listener on clean up
-      isListenToHashChange && window.removeEventListener('hashchange', updateIndexByHash);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (scrollTopOnIndexChange && ref?.current) {
-      ref.current.scrollTo({
-        // very slightly below the fold to still maintain the offset logic (if hiding heading e.g.)
-        top: preRef?.current?.offsetHeight || 1,
-        behavior: 'smooth'
-      });
-    }
-  }, [scrollTopOnIndexChange, currentIndex]);
+  const { ref, preRef, contentRef, checkOnScroll, currentIndex, setCurrentIndex } =
+    useSections(props);
 
   return (
     <section
@@ -157,8 +59,7 @@ const Sections = ({
           itemFitContent && 'lt-xxl:(children:(min-w-fit))',
           itemFitContent && 'xxl:(min-w-fit)',
           stickyNav && 'md:(sticky top-0)',
-          'bg-secondary',
-          'border-secondary xxl:shadow-lg',
+          'bg-secondary border-secondary xxl:shadow-lg',
           'lt-xxl:uno-layer-o:(border-b-1)',
           'xxl:uno-layer-o:(border-r-1)',
           'z-3',
