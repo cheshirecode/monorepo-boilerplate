@@ -10,7 +10,6 @@ import { SectionHookParams } from './typings';
 const useSections = ({
   items = [],
   activeIndex = 0,
-  stickyNav = false,
   inferHash = false,
   inferQueryParams = false,
   cbScrollTop,
@@ -73,12 +72,6 @@ const useSections = ({
     [items]
   );
   useInitialEffect(() => {
-    if (stickyNav) {
-      // eslint-disable-next-line no-console
-      console.info(
-        'Sections - stickyNav needs a fixed height set on either this or direct ancestor'
-      );
-    }
     if (inferQueryParams) {
       let hash = queryString.get('sectionHash') ?? '';
       hash = decodeURIComponent(hash) !== hash ? decodeURIComponent(hash) : hash;
