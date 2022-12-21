@@ -6,7 +6,7 @@ import { createOnClickClipboardCopy } from '@/utils';
 
 const Download = ({ data, className, children }: BaseProps & { data: unknown }) => (
   <button
-    className={cx('btn btn-compact btn-primary self-center cursor-pointer', className)}
+    className={cx('btn self-center cursor-pointer', className)}
     onClick={createOnClickClipboardCopy(isString(data) ? data : stringify(data))}
   >
     {children ? children : '📋'}
