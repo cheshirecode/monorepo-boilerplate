@@ -3,28 +3,28 @@ import cx from 'classnames';
 import { SectionsProps } from './typings';
 import useSections from './useSections';
 
-const Sections = ({
-  // props for hook
-  activeIndex: _a,
-  stickyNav,
-  inferHash,
-  inferQueryParams: _i1,
-  cbScrollTop: _c,
-  // contentOffset = 0,
-  scrollTopOnIndexChange: _s,
-  // props for rendering
-  items = [],
-  className,
-  navClassName,
-  contentClassName,
-  itemFitContent = false,
-  Pre,
-  preContentClassName,
-  ...props
-}: SectionsProps) => {
+const Sections = (props: SectionsProps) => {
   const { ref, preRef, contentRef, checkOnScroll, currentIndex, setCurrentIndex } =
     useSections(props);
-
+  const {
+    // props for hook
+    activeIndex: _a,
+    inferQueryParams: _i1,
+    cbScrollTop: _c,
+    // contentOffset = 0,
+    scrollTopOnIndexChange: _s,
+    // props for rendering
+    stickyNav,
+    inferHash,
+    items = [],
+    className,
+    navClassName,
+    contentClassName,
+    itemFitContent = false,
+    Pre,
+    preContentClassName,
+    ...rest
+  } = props;
   return (
     <section
       className={cx(
@@ -37,7 +37,7 @@ const Sections = ({
       )}
       ref={ref}
       onScroll={checkOnScroll}
-      {...props}
+      {...rest}
     >
       {Pre ? (
         <section
