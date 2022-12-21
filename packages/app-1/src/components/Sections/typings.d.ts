@@ -11,10 +11,6 @@ export interface SectionHookParams {
   items?: ItemsType;
   activeIndex?: number;
   /**
-   * default - false. set to make the nav menu sticky on large screens > xl breakpoint ~1280px
-   */
-  stickyNav?: boolean;
-  /**
    * default - false. set to infer active index from url hash
    */
   inferHash?: boolean;
@@ -44,6 +40,10 @@ export interface SectionHookResults {
 }
 
 export interface SectionsProps extends BaseProps, HTMLAttributes<HTMLElement>, SectionHookParams {
+  /**
+   * default - false. set to make the nav menu sticky on large screens > xl breakpoint ~1280px
+   */
+  stickyNav?: boolean;
   /**
    * list of each section items
    * {
