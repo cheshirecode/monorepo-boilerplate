@@ -33,7 +33,7 @@ const QueryStringForm = (props: QueryStringFormProps) => {
   );
   const finalMetadata = useMemo(
     () =>
-      merge(metadata, {
+      merge({}, metadata, {
         '*': {
           field: {
             render: fieldRenderer
