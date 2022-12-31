@@ -4,14 +4,20 @@ export default function createOnClickCopyToClipboard(
   v: string,
   params: {
     preventDefault: boolean;
-  } = {}
+  } = {
+    preventDefault: false
+  }
 ) {
   return async (e: MouseEvent) => {
     if (params.preventDefault) {
       e?.preventDefault();
     }
     const n =
-      navigator?.clipboard && (await navigator.permissions.query({ name: 'clipboard-write' }));
+      navigator?.clipboard &&
+      (await navigator.permissions.query({
+        // @ts-expect-error
+        name: 'clipboard-write'
+      }));
     if (n?.state === 'granted') {
       // localhost - open chrome://flags/ in Chrome and add origin to "Insecure origins treated as secure"
       return await navigator?.clipboard?.writeText(v);

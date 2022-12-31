@@ -92,7 +92,7 @@ export const PlainPagination = ({
           {!showAllPages && (
             <Field
               name="--pagination-page"
-              value={page}
+              value={String(page)}
               title={`Page 1..${maxPage}`}
               displayValue={(v) => `${v} / ${maxPage}`}
               set={callbacks.set}

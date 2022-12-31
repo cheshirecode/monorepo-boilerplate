@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 
 export type DetailsProps = BaseProps & {
-  data: Record<string, ReactNode | ReactNode[]> | Record<string, unknown>;
+  data: Record<string, ReactNode | ReactNode[]>;
   labelClassName?: string;
   fieldClassName?: string;
   fieldCopy?: boolean;
@@ -19,7 +19,7 @@ export type DetailsProps = BaseProps & {
         render?: (
           v: unknown,
           keyValue: { k: string; v: string | number | ReactNode | ReactNode[] },
-          props?: Record<string, unknown>
+          props?: DetailsProps
         ) => ReactNode;
       }
     >

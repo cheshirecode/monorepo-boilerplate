@@ -1,7 +1,9 @@
+import type { RefObject } from 'react';
+
 export type FieldHookParams = {
   value: string | number;
-  onChange: (v: FieldProps['value']) => void | FieldProps['value'];
-  set: (v: FieldProps['value']) => void | FieldProps['value'];
+  onChange?: (v?: FieldProps['value']) => void | FieldProps['value'];
+  set?: (v?: FieldProps['value']) => void | FieldProps['value'];
   title?: string;
   readOnly?: boolean;
   /**
@@ -12,13 +14,14 @@ export type FieldHookParams = {
 };
 
 export type FieldHookResults = {
+  readonly fieldRef: RefObject<HTMLDivElement>;
+  readonly getFieldInput: () => HTMLElement | null | undefined;
   readonly innerValue: FieldHookParams['value'];
   readonly onChange: (e: ChangeEvent<HTMLElement>) => void;
   readonly setValue: () => void;
   readonly isEditing: boolean;
   readonly onEnter: (e: KeyboardEvent<HTMLElement>) => void;
   readonly onBlur: () => void;
-  readonly getFieldInput: () => HTMLElement | null;
   readonly style: {
     transform: string;
   };

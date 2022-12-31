@@ -93,13 +93,13 @@ const useField = ({
       };
   return {
     fieldRef,
+    getFieldInput,
     innerValue,
     isEditing,
     onChange,
     setValue,
     onEnter,
     onBlur,
-    getFieldInput,
     style,
     readOnlyProps
   } as const;

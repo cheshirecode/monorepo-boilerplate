@@ -1,3 +1,4 @@
+import type { MouseEvent } from 'react';
 import { useCallback, useState } from 'react';
 
 export type DrilldownTrackerHookResults = {
@@ -8,7 +9,7 @@ export type DrilldownTrackerHookResults = {
 const useDrilldownTracker = (): DrilldownTrackerHookResults => {
   const [opened, setOpened] = useState<DrilldownTrackerHookResults['opened']>({});
   const toggleOpened = useCallback<DrilldownTrackerHookResults['toggleOpened']>((e) => {
-    const qs = e.currentTarget.dataset.id;
+    const qs = e.currentTarget.dataset.id ?? '';
     setOpened((x) => ({
       ...x,
       [qs]: !(x[qs] ?? false)

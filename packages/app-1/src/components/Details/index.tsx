@@ -1,13 +1,14 @@
 import styled from '@emotion/styled';
 import cx from 'classnames';
 import { isObject, isString, isUndefined, merge } from 'lodash-es';
+import type { ReactNode } from 'react';
 import { Fragment } from 'react';
 
 import createOnClickCopyToClipboard from '@/services/browser/createOnClickCopyToClipboard';
 
 import type { DetailsProps } from './typings';
 
-const StyledArticle = styled.article<DetailsProps>``;
+const StyledArticle = styled.article``;
 const Details = (props: DetailsProps) => {
   const {
     className,
@@ -30,11 +31,11 @@ const Details = (props: DetailsProps) => {
         }
 
         const renderedKey = label?.render
-          ? label?.render(k, { k, v }, props)
+          ? label?.render(k, { k, v: v as ReactNode }, props)
           : k.toLocaleUpperCase();
-        const renderedValue = field?.render ? field?.render(v, { k, v }, props) : v;
+        const renderedValue = field?.render ? field?.render(v, { k, v: v as ReactNode }, props) : v;
         const isFieldCopy = !isUndefined(renderedValue) && renderedValue !== '' && fieldCopy;
-        const displayValue = isString(renderedValue) ? renderedValue : v;
+        const displayValue = isString(renderedValue) ? renderedValue : String(v);
         const isFieldCopyPossible = isFieldCopy && !isUndefined(displayValue);
         return (
           <Fragment key={k}>
