@@ -3,7 +3,7 @@ import cx from 'classnames';
 import { isObject, isString, isUndefined, merge } from 'lodash-es';
 import { Fragment } from 'react';
 
-import { createOnClickClipboardCopy } from '@/utils';
+import createOnClickCopyToClipboard from '@/services/browser/createOnClickCopyToClipboard';
 
 import type { DetailsProps } from './typings';
 
@@ -22,7 +22,8 @@ const Details = (props: DetailsProps) => {
     <StyledArticle className={cx('', className)} {...rest}>
       {Object.keys(data).map((k) => {
         const v = data[k];
-        const { label, field } = merge(metadata[k] ?? {}, metadata['*'] ?? {}, {});
+        // resolution order - key > * > null
+        const { label, field } = merge({}, metadata['*'] ?? {}, metadata[k] ?? {});
         // for object or array types, requires a custom renderer
         if ((Array.isArray(v) || isObject(v)) && !field?.render) {
           return null;
@@ -34,7 +35,7 @@ const Details = (props: DetailsProps) => {
         const renderedValue = field?.render ? field?.render(v, { k, v }, props) : v;
         const isFieldCopy = !isUndefined(renderedValue) && renderedValue !== '' && fieldCopy;
         const displayValue = isString(renderedValue) ? renderedValue : v;
-        const isFieldCopyPossible = isFieldCopy && displayValue;
+        const isFieldCopyPossible = isFieldCopy && !isUndefined(displayValue);
         return (
           <Fragment key={k}>
             {label?.fullLinePre && <span className="col-span-full" />}
@@ -55,7 +56,7 @@ const Details = (props: DetailsProps) => {
               {...(displayValue ? { title: displayValue } : {})}
               {...(isFieldCopyPossible
                 ? {
-                    onClick: createOnClickClipboardCopy(displayValue, { preventDefault: true })
+                    onClick: createOnClickCopyToClipboard(displayValue, { preventDefault: true })
                   }
                 : {})}
             >
