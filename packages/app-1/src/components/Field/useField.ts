@@ -1,6 +1,6 @@
 import { isFunction, isUndefined } from 'lodash-es';
 import type { ChangeEvent, KeyboardEvent } from 'react';
-import { useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import useClickOutside from '@/services/hooks/useClickOutside';
 
@@ -17,7 +17,6 @@ const useField = ({
 }: FieldHookParams): FieldHookResults => {
   const [isEditing, setIsEditing] = useState(false);
   const [innerValue, setInnerValue] = useState<typeof value>(value ?? '');
-  const deferredValue = useDeferredValue(innerValue);
   // ref for clicking outside
   const fieldRef = useRef<HTMLDivElement>(null);
   const { onChange, setValue, onEnter, onBlur, getFieldInput, disableEditMode, enableEditMode } =
@@ -35,19 +34,23 @@ const useField = ({
       return {
         onChange: (e: ChangeEvent<HTMLInputElement>) => {
           const v = e.currentTarget?.value;
+          // console.log('onChange', v, innerValue);
           if (!isUndefined(v)) {
             setInnerValue(v);
             isFunction(externalOnChange) && externalOnChange(v);
           }
         },
         setValue: () => {
-          const finalValue = isFunction(set) ? set(deferredValue) : deferredValue;
-          if (!isUndefined(finalValue) && deferredValue !== finalValue) {
-            setInnerValue(deferredValue);
+          const v = getFieldInput()?.value;
+          // console.log('setValue', v, innerValue);
+          const finalValue = isFunction(set) ? set(v) ?? v : v;
+          if (!isUndefined(finalValue) && innerValue !== finalValue) {
+            setInnerValue(finalValue);
           }
           disableEditMode();
         },
         onEnter: (e: KeyboardEvent<HTMLInputElement>) => {
+          // console.log('onEnter', getFieldInput()?.value, innerValue);
           const v = e.currentTarget?.value;
           if (!isUndefined(v) && e.key === 'Enter') {
             setInnerValue(value);
@@ -55,23 +58,22 @@ const useField = ({
           }
         },
         onBlur: () => {
+          // console.log('onBlur', getFieldInput()?.value, innerValue);
           if (saveOnBlur) {
             setValue();
-          } else {
-            setInnerValue(value);
-            disableEditMode();
           }
         },
         disableEditMode,
         enableEditMode,
         getFieldInput
       };
-    }, [deferredValue, externalOnChange, saveOnBlur, set, value]);
+    }, [externalOnChange, saveOnBlur, set, value, innerValue]);
   // if clicking outside the , set flag to hide
   useClickOutside(fieldRef, disableEditMode);
 
   // update state if passed in props change
   useEffect(() => {
+    // console.log('useEffect', value, innerValue);
     if (value !== innerValue) setInnerValue(value);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
