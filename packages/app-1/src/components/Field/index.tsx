@@ -1,9 +1,12 @@
+import styled from '@emotion/styled';
 import cx from 'classnames';
 import { isFunction } from 'lodash-es';
 import type { ReactElement } from 'react';
 
 import { FieldProps } from './typings';
 import useField from './useField';
+
+const StyledButton = styled.button``;
 
 const Field = (props: FieldProps): ReactElement | null => {
   const {
@@ -67,20 +70,20 @@ const Field = (props: FieldProps): ReactElement | null => {
         {...readOnlyProps}
       />
       {!noConfirmation && (
-        <button
-          onClick={setValue}
+        <StyledButton
+          {...(isEditing ? { onClick: setValue } : {})}
           className={cx(
-            !isEditing && 'disable invisible',
+            !isEditing && 'btn-transparent z--1',
+            isEditing && 'btn btn-primary btn-compact cursor-pointer @hover:animate-pulse z-1',
             'inline-block absolute top-0 right-0',
             'items-center',
-            'btn btn-primary btn-compact h-6 w-6 lh-0',
-            'cursor-pointer @hover:animate-pulse',
+            'h-6 w-6 lh-0',
             iconClassName
           )}
           title="Click to confirm changes, or press Enter"
         >
           ✓
-        </button>
+        </StyledButton>
       )}
     </div>
   );
