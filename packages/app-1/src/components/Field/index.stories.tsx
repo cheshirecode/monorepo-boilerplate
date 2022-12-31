@@ -24,7 +24,7 @@ const Template: ComponentStory<typeof Field> = (args) => {
         <dt>set</dt>
         <dd>{final}</dd>
       </dl>
-      <Field {...args} set={setV} onChange={(v) => onChange(v)} />
+      <Field {...args} value={final} set={setV} onChange={(v) => onChange(v)} />
     </fieldset>
   );
 };
@@ -38,7 +38,7 @@ Default.args = {
   inputClassName: '',
   readOnlyClassName: '',
   readOnly: false,
-  className: 'outline outline-solid'
+  className: 'font-gs-body01 outline outline-solid'
 };
 
 export const BigIcon = Template.bind({});
@@ -64,7 +64,7 @@ export const SaveOnBlur = Template.bind({});
 SaveOnBlur.args = {
   ...Default.args,
   name: 'name',
-  value: 'custom',
+  value: 'blur',
   saveOnBlur: true,
   displayValue: (v) => `custom (${v})`
 };
