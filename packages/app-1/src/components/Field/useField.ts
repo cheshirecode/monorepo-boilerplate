@@ -1,5 +1,4 @@
 import { isFunction, isUndefined } from 'lodash-es';
-import type { ChangeEvent, KeyboardEvent } from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 import useClickOutside from '@/services/hooks/useClickOutside';
@@ -12,95 +11,134 @@ const useField = ({
   onChange: externalOnChange,
   title,
   readOnly,
-  scale = 1,
-  saveOnBlur = false
+  saveOnBlur = false,
+  autoCompleteItems
 }: FieldHookParams): FieldHookResults => {
   const [isEditing, setIsEditing] = useState(false);
-  const [innerValue, setInnerValue] = useState<typeof value>(value ?? '');
+  const [v, setV] = useState<typeof value>(value ?? '');
   // ref for clicking outside
   const fieldRef = useRef<HTMLDivElement>(null);
-  const { onChange, setValue, onEnter, onBlur, getFieldInput, disableEditMode, enableEditMode } =
-    useMemo(() => {
-      const getFieldInput = () => fieldRef.current?.querySelector('input');
-      const disableEditMode = () => {
-        setIsEditing(false);
-        getFieldInput()?.blur();
-      };
-      const enableEditMode = () => {
-        setIsEditing(true);
-        // when editing, focus on input
-        getFieldInput()?.focus();
-      };
-      return {
-        onChange: (e: ChangeEvent<HTMLInputElement>) => {
-          const v = e.currentTarget?.value;
-          // console.log('onChange', v, innerValue);
-          if (!isUndefined(v)) {
-            setInnerValue(v);
-            isFunction(externalOnChange) && externalOnChange(v);
-          }
-        },
-        setValue: () => {
-          const v = getFieldInput()?.value;
-          // console.log('setValue', v, innerValue);
-          const finalValue = isFunction(set) ? set(v) ?? v : v;
-          if (!isUndefined(finalValue) && innerValue !== finalValue) {
-            setInnerValue(finalValue);
-          }
-          disableEditMode();
-        },
-        onEnter: (e: KeyboardEvent<HTMLInputElement>) => {
-          // console.log('onEnter', getFieldInput()?.value, innerValue);
-          const v = e.currentTarget?.value;
-          if (!isUndefined(v) && e.key === 'Enter') {
-            setInnerValue(value);
-            setValue();
-          }
-        },
-        onBlur: () => {
-          // console.log('onBlur', getFieldInput()?.value, innerValue);
-          if (saveOnBlur) {
-            setValue();
-          }
-        },
-        disableEditMode,
-        enableEditMode,
-        getFieldInput
-      };
-    }, [externalOnChange, saveOnBlur, set, value, innerValue]);
-  // if clicking outside the , set flag to hide
-  useClickOutside(fieldRef, disableEditMode);
+  const {
+    setInnerValue,
+    onChange,
+    onClickSetInnerValue,
+    setValue,
+    onKeyUp,
+    onFocus,
+    onBlur,
+    disableEditMode,
+    enableEditMode,
+    getFieldInput
+  } = useMemo(() => {
+    const getFieldInput = () => fieldRef.current?.querySelector('input');
+    const disableEditMode = () => {
+      isEditing && setIsEditing(false);
+      getFieldInput()?.blur();
+    };
+    const enableEditMode = () => {
+      !isEditing && setIsEditing(true);
+      // when editing, focus on input
+      fieldRef?.current?.focus();
+      getFieldInput()?.focus();
+    };
+    const setInnerValue: FieldHookResults['setInnerValue'] = (value) => {
+      if (v !== value) {
+        setV(value);
+        isFunction(externalOnChange) && externalOnChange(value);
+      }
+    };
+    const onChange: FieldHookResults['onChange'] = (e) => {
+      const v = e.currentTarget?.value;
+      // console.log('onChange', v);
+      setInnerValue(v);
+    };
+    const onClickSetInnerValue: FieldHookResults['onClickSetInnerValue'] = (e) => {
+      const v = e.currentTarget?.dataset?.value;
+      if (!isUndefined(v)) {
+        setInnerValue(v);
+      }
+    };
+    const setValue: FieldHookResults['setValue'] = (e) => {
+      const v = e?.currentTarget?.dataset?.value ?? getFieldInput()?.value;
+      if (!isUndefined(v)) {
+        // console.log('setValue', v, innerValue);
+        const finalValue = isFunction(set) ? set(v) ?? v : v;
+        setInnerValue(finalValue);
+        disableEditMode();
+      }
+    };
+    const onKeyUp: FieldHookResults['onKeyUp'] = (e) => {
+      // console.log('onKeyUp', getFieldInput()?.value, innerValue);
+      if (e.key === 'Enter') {
+        setValue();
+      }
+      if (e.key === 'Escape') {
+        disableEditMode();
+      }
+    };
+    return {
+      setInnerValue,
+      onChange,
+      onClickSetInnerValue,
+      setValue,
+      onKeyUp,
+      onFocus: () => {
+        // console.log('onFocus');
+      },
+      onBlur: () => {
+        // console.log('onBlur', getFieldInput()?.value, innerValue, value);
+        // workaround for autocompletion + saving on blur - skip saving, see clickOutside logic
+        if (saveOnBlur && !autoCompleteItems) {
+          setValue();
+        }
+      },
+      disableEditMode,
+      enableEditMode,
+      getFieldInput
+    };
+  }, [isEditing, v, externalOnChange, set, autoCompleteItems, saveOnBlur]);
+  // if clicking outside the , set flag to hide unless with autocompletion, then save first
+  useClickOutside(fieldRef, () => {
+    if (saveOnBlur && autoCompleteItems) {
+      setValue();
+    }
+    disableEditMode();
+  });
 
   // update state if passed in props change
   useEffect(() => {
     // console.log('useEffect', value, innerValue);
-    if (value !== innerValue) setInnerValue(value);
+    if (value !== v) {
+      setInnerValue(value);
+      isFunction(externalOnChange) && externalOnChange(value);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
-  const style = {
-    transform: `scale(${scale}) translate(${scale > 1 ? 24 * scale : 0}px, ${
-      scale > 1 ? 24 * 0.125 * scale : 0
-    }px)`
-  };
   const readOnlyProps = isEditing
     ? {}
     : {
         readOnly,
-        onClick: enableEditMode,
-        onFocus: enableEditMode,
-        title: title ?? 'Click to edit this field'
+        ...(readOnly
+          ? {}
+          : {
+              onClick: enableEditMode,
+              onFocus: enableEditMode,
+              title: title ?? 'Click to edit this field'
+            })
       };
   return {
     fieldRef,
     getFieldInput,
-    innerValue,
+    v,
     isEditing,
-    onChange,
+    setInnerValue,
     setValue,
-    onEnter,
+    onChange,
+    onClickSetInnerValue,
+    onKeyUp,
     onBlur,
-    style,
+    onFocus,
     readOnlyProps
   } as const;
 };

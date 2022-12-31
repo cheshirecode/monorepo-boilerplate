@@ -1,29 +1,32 @@
 import styled from '@emotion/styled';
 import cx from 'classnames';
 import { isFunction } from 'lodash-es';
-import type { ReactElement } from 'react';
+import { Fragment } from 'react';
+
+// import { timeout } from '@/utils';
 
 import { FieldProps } from './typings';
 import useField from './useField';
 
 const StyledButton = styled.button``;
 
-const Field = (props: FieldProps): ReactElement | null => {
+const Field = (props: FieldProps) => {
   const {
     fieldRef,
-    innerValue,
+    v,
+    onClickSetInnerValue,
     onChange,
     setValue,
     isEditing,
-    onEnter,
+    onKeyUp,
     onBlur,
-    style,
+    onFocus,
     readOnlyProps
   } = useField(props);
   const {
     value: _value,
     scale: _scale,
-    saveOnBlur: _saveOnBlur,
+    saveOnBlur,
     set: _set,
     onChange: _onChange,
     className,
@@ -35,15 +38,16 @@ const Field = (props: FieldProps): ReactElement | null => {
     readOnly,
     readOnlyClassName,
     noConfirmation = false,
+    autoCompleteItems = [],
     ...rest
   } = props;
 
   return (
     <div
-      className={cx('relative children:(my-auto)', 'w-full', className)}
+      className={cx('relative children:(my-auto)', 'w-full', 'relative z-1', className)}
       ref={fieldRef}
+      onFocus={onFocus}
       {...rest}
-      style={style}
     >
       <input
         id={`--poc-field-${name}`}
@@ -54,24 +58,22 @@ const Field = (props: FieldProps): ReactElement | null => {
           'h-6 w-full',
           'border border-transparent',
           '@hover:(border-primary)',
-          !isEditing && 'cursor-pointer',
-          'bg-primary color-primary',
+          'card-primary',
           !readOnly && inputClassName,
+          !readOnly && !isEditing && 'cursor-pointer',
           readOnly && readOnlyClassName
         )}
         type="text"
-        value={
-          isEditing ? innerValue : isFunction(displayValue) ? displayValue(innerValue) : innerValue
-        }
+        value={isEditing ? v : isFunction(displayValue) ? displayValue(v) : v}
         placeholder={title}
         onChange={onChange}
-        onKeyUp={onEnter}
+        onKeyUp={onKeyUp}
         onBlur={onBlur}
         {...readOnlyProps}
       />
-      {!noConfirmation && (
+      {!readOnly && !noConfirmation && (
         <StyledButton
-          {...(isEditing ? { onClick: setValue } : {})}
+          onClick={setValue}
           className={cx(
             !isEditing && 'btn-transparent z--1',
             isEditing && 'btn btn-primary btn-compact cursor-pointer @hover:animate-pulse z-1',
@@ -84,6 +86,42 @@ const Field = (props: FieldProps): ReactElement | null => {
         >
           ✓
         </StyledButton>
+      )}
+      {isEditing && (
+        <Fragment>
+          {Array.isArray(autoCompleteItems) && autoCompleteItems.length > 0 && (
+            <section
+              className={cx(
+                'absolute z-10 p-0 m-0 w-full max-h-40 overflow-y-auto',
+                'card-primary',
+                'children:(w-full inline-block border-b-1 border-primary)'
+              )}
+            >
+              {autoCompleteItems.map(({ name, value }) => {
+                const splits = name.split(new RegExp(`(${v})`, 'gi'));
+                return (
+                  <button
+                    key={name}
+                    className="anchor hover:bg-primary-hover"
+                    data-value={value}
+                    onClick={saveOnBlur ? setValue : onClickSetInnerValue}
+                    onKeyUp={onKeyUp}
+                  >
+                    {splits.map((x, i) =>
+                      x.toLocaleLowerCase() === String(v).toLocaleLowerCase() ? (
+                        <span className="bg-warning" key={i}>
+                          {x}
+                        </span>
+                      ) : (
+                        x
+                      )
+                    )}
+                  </button>
+                );
+              })}
+            </section>
+          )}
+        </Fragment>
       )}
     </div>
   );
