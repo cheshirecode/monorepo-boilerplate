@@ -1,5 +1,3 @@
-import type { MouseEvent } from 'react';
-
 export const pascalToSeparatedWords = (str: unknown = '', sep = '-') =>
   String(str)
     .replace(' ', '')
@@ -182,6 +180,16 @@ export const removeWord = (words = '', wordToRemove = '') => {
   return arr.join(' ');
 };
 
-
 export const isEmptyObject = (obj: Record<string, never>) =>
   typeof obj === 'object' && Object.keys(obj).every((x) => [undefined, null].includes(obj[x]));
+
+const noOp = () => undefined;
+
+export async function timeout(cb: () => void = noOp, ms = 1000) {
+  await new Promise(() => {
+    const wait = setTimeout(() => {
+      cb();
+      clearTimeout(wait);
+    }, ms);
+  });
+}
