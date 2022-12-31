@@ -82,11 +82,11 @@ describe('@/utils', () => {
       }
     ]);
 
-    expect(deepFilter(['bld-tech', 'bld', 'bld-linux'], 'bld-tech')).toEqual(['bld-tech']);
-    expect(deepFilter(['bld-tech', 'bld', 'bld-linux'], 'bld, tech')).toEqual([
-      'bld-tech',
-      'bld',
-      'bld-linux'
+    expect(deepFilter(['os-windows', 'os-mac', 'os-linux'], 'os-linux')).toEqual(['os-linux']);
+    expect(deepFilter(['os-windows', 'os-mac', 'os-linux'], 'os')).toEqual([
+      'os-windows',
+      'os-mac',
+      'os-linux'
     ]);
   });
 
