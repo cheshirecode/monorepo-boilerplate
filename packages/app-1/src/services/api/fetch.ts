@@ -2,7 +2,8 @@ import stringify from 'fast-json-stable-stringify';
 import fetch from 'isomorphic-unfetch';
 import { merge } from 'lodash-es';
 import type { Key, SWRConfiguration, SWRHook, SWRResponse } from 'swr';
-import useSWR, { useSWRImmutable } from 'swr';
+import useSWR from 'swr';
+import useSWRImmutable from 'swr/immutable';
 
 export type Fetcher = <T>(url: string, options?: RequestInit) => Promise<T>;
 export type SWRMiddleware<T> = (
