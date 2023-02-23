@@ -24,4 +24,6 @@ export type DetailsProps = BaseProps & {
       }
     >
   >;
+  responsiveGrid?: boolean;
+  oneFieldPerLine?: boolean;
 };
