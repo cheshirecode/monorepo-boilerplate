@@ -12,7 +12,8 @@ const useField = ({
   title,
   readOnly,
   saveOnBlur = false,
-  autoCompleteItems
+  autoCompleteItems,
+  filterByValue = true
 }: FieldHookParams): FieldHookResults => {
   const [isEditing, setIsEditing] = useState(false);
   const [v, setV] = useState<typeof value>(value ?? '');
@@ -21,7 +22,7 @@ const useField = ({
   const {
     setInnerValue,
     onChange,
-    onClickSetInnerValue,
+    onAutoCompleteItemClicked,
     setValue,
     onKeyUp,
     onFocus,
@@ -41,28 +42,32 @@ const useField = ({
       fieldRef?.current?.focus();
       getFieldInput()?.focus();
     };
-    const setInnerValue: FieldHookResults['setInnerValue'] = (value) => {
-      if (v !== value) {
-        setV(value);
-        isFunction(externalOnChange) && externalOnChange(value);
+    const setInnerValue: FieldHookResults['setInnerValue'] = (tmp) => {
+      if (v !== tmp) {
+        setV(tmp);
+        isFunction(externalOnChange) && externalOnChange(tmp);
       }
     };
     const onChange: FieldHookResults['onChange'] = (e) => {
-      const v = e.currentTarget?.value;
+      const tmp = e.currentTarget?.value;
       // console.log('onChange', v);
-      setInnerValue(v);
+      setInnerValue(tmp);
     };
-    const onClickSetInnerValue: FieldHookResults['onClickSetInnerValue'] = (e) => {
-      const v = e.currentTarget?.dataset?.value;
-      if (!isUndefined(v)) {
-        setInnerValue(v);
+    const onAutoCompleteItemClicked: FieldHookResults['onAutoCompleteItemClicked'] = (e) => {
+      const tmp = e.currentTarget?.dataset?.value;
+      if (!isUndefined(tmp)) {
+        if (saveOnBlur) {
+          setValue(e);
+        } else {
+          setInnerValue(tmp);
+        }
       }
     };
     const setValue: FieldHookResults['setValue'] = (e) => {
-      const v = e?.currentTarget?.dataset?.value ?? getFieldInput()?.value;
-      if (!isUndefined(v)) {
-        // console.log('setValue', v, innerValue);
-        const finalValue = isFunction(set) ? set(v) ?? v : v;
+      const tmp = e?.currentTarget?.dataset?.value ?? getFieldInput()?.value;
+      // console.log('setValue', value, v, tmp);
+      if (!isUndefined(tmp)) {
+        const finalValue = isFunction(set) ? set(tmp) ?? tmp : tmp;
         setInnerValue(finalValue);
         disableEditMode();
       }
@@ -73,13 +78,19 @@ const useField = ({
         setValue();
       }
       if (e.key === 'Escape') {
+        if (!saveOnBlur) {
+          setInnerValue(value);
+        }
+        disableEditMode();
+      }
+      if (e.key === 'Tab') {
         disableEditMode();
       }
     };
     return {
       setInnerValue,
       onChange,
-      onClickSetInnerValue,
+      onAutoCompleteItemClicked,
       setValue,
       onKeyUp,
       onFocus: () => {
@@ -88,21 +99,29 @@ const useField = ({
       onBlur: () => {
         // console.log('onBlur', getFieldInput()?.value, innerValue, value);
         // workaround for autocompletion + saving on blur - skip saving, see clickOutside logic
-        if (saveOnBlur && !autoCompleteItems) {
-          setValue();
+        if (saveOnBlur) {
+          if (!autoCompleteItems) {
+            setValue();
+          }
         }
       },
       disableEditMode,
       enableEditMode,
       getFieldInput
     };
-  }, [isEditing, v, externalOnChange, set, autoCompleteItems, saveOnBlur]);
+  }, [isEditing, v, externalOnChange, saveOnBlur, set, value, autoCompleteItems]);
   // if clicking outside the , set flag to hide unless with autocompletion, then save first
   useClickOutside(fieldRef, () => {
-    if (saveOnBlur && autoCompleteItems) {
-      setValue();
+    if (isEditing) {
+      if (saveOnBlur) {
+        if (autoCompleteItems) {
+          setValue();
+        }
+      } else {
+        setInnerValue(value);
+      }
+      disableEditMode();
     }
-    disableEditMode();
   });
 
   // update state if passed in props change
@@ -114,6 +133,16 @@ const useField = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
+
+  const filteredAutoCompleteItems = useMemo(
+    () =>
+      autoCompleteItems?.filter((x) =>
+        filterByValue
+          ? x?.value?.toLocaleLowerCase()?.includes(String(v).toLocaleLowerCase())
+          : true
+      ),
+    [autoCompleteItems, filterByValue, v]
+  );
 
   const readOnlyProps = isEditing
     ? {}
@@ -135,11 +164,12 @@ const useField = ({
     setInnerValue,
     setValue,
     onChange,
-    onClickSetInnerValue,
+    onAutoCompleteItemClicked,
     onKeyUp,
     onBlur,
     onFocus,
-    readOnlyProps
+    readOnlyProps,
+    filteredAutoCompleteItems
   } as const;
 };
 
