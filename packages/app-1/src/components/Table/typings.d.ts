@@ -35,4 +35,5 @@ export type TableProps<T> = BaseProps &
       row?: (props: Row<T>) => string;
       cell?: (props: Cell<T, unknown>) => string;
     };
+    tableClassName?: string;
   };
