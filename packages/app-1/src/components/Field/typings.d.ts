@@ -6,10 +6,6 @@ export type FieldHookParams = {
   set?: (v: FieldProps['value']) => void | FieldProps['value'];
   title?: string;
   readOnly?: boolean;
-  /**
-   * default - 1
-   */
-  scale?: number;
   saveOnBlur?: boolean;
   /**
    * autocomplete list
@@ -18,6 +14,7 @@ export type FieldHookParams = {
     name: string;
     value: string;
   }[];
+  filterByValue?: boolean;
 };
 
 export type FieldHookResults = {
@@ -37,7 +34,10 @@ export type FieldHookResults = {
    */
   readonly setValue: (e?: MouseEvent<HTMLElement>) => void;
   readonly onChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  readonly onClickSetInnerValue: (e: MouseEvent<HTMLElement>) => void;
+  /**
+   * event handler for clicking on an autocomplete item, depending on saving mode (onBlur or otherwise)
+   */
+  readonly onAutoCompleteItemClicked: (e: MouseEvent<HTMLElement>) => void;
   readonly isEditing: boolean;
   readonly onKeyUp: (e: KeyboardEvent<HTMLInputElement>) => void;
   readonly onFocus: () => void;
@@ -47,13 +47,18 @@ export type FieldHookResults = {
     onFocus?: () => void;
     title?: string;
   };
+  readonly filteredAutoCompleteItems: {
+    name: string;
+    value: string;
+  }[];
 };
 export type FieldProps = BaseProps &
   FieldHookParams & {
+    name: string;
     displayValue?: (v: FieldProps['value']) => FieldProps['value'];
     inputClassName?: string;
     readOnlyClassName?: string;
     iconClassName?: string;
     noConfirmation?: boolean;
-    name: string;
+    autoCompletePos?: 'absolute' | 'relative';
   };
