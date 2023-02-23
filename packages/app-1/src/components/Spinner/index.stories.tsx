@@ -12,10 +12,44 @@ export default {
 } as ComponentMeta<typeof Spinner>;
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
-const Template: ComponentStory<typeof Spinner> = (args) => (
-  <Spinner {...args} className="border-solid border-0 border-t-5" />
-);
+// @ts-expect-error
+const Template: ComponentStory<typeof Spinner> = ({ ...args }) => <Spinner {...args} />;
 
-export const Basic = Template.bind({});
-// More on args: https://storybook.js.org/docs/react/writing-stories/args
-Basic.args = {};
+export const Default = Template.bind({});
+
+Default.args = {
+  className: ''
+};
+
+export const Small = Template.bind({});
+
+Small.args = {
+  ...Default.args,
+  size: 'small'
+};
+
+export const LargeInsetTertiary = Template.bind({});
+
+LargeInsetTertiary.args = {
+  ...Default.args,
+  size: 'large',
+  type: 'inset',
+  palette: 'tertiary'
+};
+
+export const LargeScreen = Template.bind({});
+
+LargeScreen.args = {
+  ...Default.args,
+  size: 'large',
+  screen: true,
+  screenClassName: 'bg-contrast'
+};
+
+export const LargeWarningMoonScreen = Template.bind({});
+
+LargeWarningMoonScreen.args = {
+  ...LargeScreen.args,
+  type: 'moon',
+  palette: 'warning'
+};
