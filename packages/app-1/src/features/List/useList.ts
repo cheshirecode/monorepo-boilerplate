@@ -22,7 +22,7 @@ const noOp = <T>(x: T) => x;
         page: number
         pageSize: number
         _pageSize?: number
-        onChange?: ((params: Partial<PaginationInputs>) => void)
+        onChange?: ((params: Partial<PaginationHookParams>) => void)
         isRollover?: boolean
       }
  * @returns filters/pagination params/filtered then paginated list for users to decide
@@ -37,7 +37,7 @@ const useList = <T>(
       cause: `${typeof arr} instead of Array`
     });
   }
-  const { filter: filterParams, pagination: paginationParams } = params ?? {};
+  const { filter: filterParams, pagination: paginationParams, postProcess } = params ?? {};
   const [filterStr, setFilterStr] = useState(filterParams?.str ?? '');
   const filter = useMemo(
     () => ({
@@ -67,8 +67,8 @@ const useList = <T>(
   });
 
   const paginated = useMemo(
-    () => filtered.slice(pagination.first, pagination.last + 1),
-    [filtered, pagination.first, pagination.last]
+    () => (postProcess ?? noOp<T[]>)(filtered.slice(pagination.first, pagination.last + 1)),
+    [filtered, pagination.first, pagination.last, postProcess]
   );
 
   return {
