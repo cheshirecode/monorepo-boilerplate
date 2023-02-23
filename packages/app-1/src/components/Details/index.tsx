@@ -1,7 +1,6 @@
 import styled from '@emotion/styled';
 import cx from 'classnames';
-import { isObject, isString, isUndefined, merge } from 'lodash-es';
-import type { ReactNode } from 'react';
+import { isNil, isPlainObject, isString, mergeWith } from 'lodash-es';
 import { Fragment } from 'react';
 
 import createOnClickCopyToClipboard from '@/services/browser/createOnClickCopyToClipboard';
@@ -17,31 +16,52 @@ const Details = (props: DetailsProps) => {
     fieldCopy,
     data = {},
     metadata = {},
+    responsiveGrid = true,
     ...rest
   } = props;
+
   return (
-    <StyledArticle className={cx('', className)} {...rest}>
+    <StyledArticle
+      className={cx('', responsiveGrid && 'grid responsive-grid-kv gap-2', className)}
+      {...rest}
+    >
       {Object.keys(data).map((k) => {
-        const v = data[k];
         // resolution order - key > * > null
-        const { label, field } = merge({}, metadata['*'] ?? {}, metadata[k] ?? {});
+        const { label, field } = mergeWith(
+          {},
+          metadata['*'] ?? {},
+          metadata[k] ?? {},
+          (objValue, srcValue, key) => {
+            if (key === 'className') {
+              return cx(objValue, srcValue);
+            }
+          }
+        );
+        const v = data[k];
         // for object or array types, requires a custom renderer
-        if ((Array.isArray(v) || isObject(v)) && !field?.render) {
+        if ((Array.isArray(v) || isPlainObject(v)) && !field?.render) {
           return null;
         }
 
         const renderedKey = label?.render
-          ? label?.render(k, { k, v: v as ReactNode }, props)
+          ? label?.render(k, { k, v }, props)
           : k.toLocaleUpperCase();
-        const renderedValue = field?.render ? field?.render(v, { k, v: v as ReactNode }, props) : v;
-        const isFieldCopy = !isUndefined(renderedValue) && renderedValue !== '' && fieldCopy;
-        const displayValue = isString(renderedValue) ? renderedValue : String(v);
-        const isFieldCopyPossible = isFieldCopy && !isUndefined(displayValue);
+        const renderedValue = field?.render ? field?.render(v, { k, v }, props) : v;
+        const displayValue = field?.render ? '' : v?.toString();
+        if ([renderedValue, renderedKey].every(isNil)) {
+          return null;
+        }
+        const isFieldCopyPossible = fieldCopy && !isNil(displayValue);
         return (
           <Fragment key={k}>
             {label?.fullLinePre && <span className="col-span-full" />}
             <span
-              className={cx('', label?.className, labelClassName)}
+              className={cx(
+                'text-right border border-transparent',
+                'color-secondary truncate opacity-60',
+                label?.className,
+                labelClassName
+              )}
               {...(isString(renderedKey) ? { title: renderedKey } : {})}
             >
               {renderedKey}
@@ -49,6 +69,8 @@ const Details = (props: DetailsProps) => {
             {field?.fullLinePre && <span className="col-span-full" />}
             <span
               className={cx(
+                '',
+                'color-primary truncate',
                 field?.className,
                 isFieldCopyPossible &&
                   'cursor-copy border border-transparent @hover:(border-primary)',
