@@ -1,25 +1,27 @@
 import cx from 'classnames';
 import { isFunction, isUndefined, noop, throttle } from 'lodash-es';
-import type { ChangeEvent, FC, MouseEvent } from 'react';
+import type { ChangeEvent, MouseEvent } from 'react';
 import { useMemo } from 'react';
 
-const SearchBar: FC<
-  BaseProps & {
-    update?: (v: string) => void;
-    submit?: (v: string) => void;
-    placeholder?: string;
-    searchButtonText?: string;
-    value: string;
-  }
-> = ({
+export type SearchBarProps = BaseProps & {
+  update?: (v: string) => void;
+  submit?: (v: string) => void;
+  placeholder?: string;
+  searchButtonText?: string;
+  value: string;
+  roundedBorders?: boolean;
+};
+
+const SearchBar = ({
   className,
   value,
   placeholder = 'search placeholder',
   searchButtonText = 'Search',
   update = noop,
   submit = noop,
+  roundedBorders = true,
   ...props
-}) => {
+}: SearchBarProps) => {
   const updateValue = useMemo(
     () =>
       throttle(
@@ -61,10 +63,11 @@ const SearchBar: FC<
         type="search"
         className={cx(
           'flex-1 h-inherit',
-          'rounded-none rounded-l-lg',
-          !(searchButtonText?.length > 0) && 'rounded-r-lg',
+          roundedBorders && 'rounded-none rounded-l-lg',
+          roundedBorders && !(searchButtonText?.length > 0) && 'rounded-r-lg',
           'px-4 py-2',
           'border border-cta',
+          'card-secondary',
           'z-2',
           'focus-visible:outline-none'
         )}
@@ -79,7 +82,7 @@ const SearchBar: FC<
           className={cx(
             'btn-cta border-cta-blend',
             'm-0 my--1',
-            'uno-layer-o:(rounded-l-none border-l-0)',
+            roundedBorders && 'uno-layer-o:(rounded-l-none border-l-0)',
             'z-1'
           )}
           id="--poc-button-search"
