@@ -1,9 +1,9 @@
 /* eslint-disable no-unreachable */
 import { flexRender } from '@tanstack/react-table';
 import cx from 'classnames';
+import stringify from 'fast-json-stable-stringify';
 import { Fragment, useReducer } from 'react';
 
-// import './integrated.css';
 import { TableProps } from './typings';
 import useTable from './useTable';
 
@@ -15,6 +15,7 @@ const Table = <T,>(props: TableProps<T>) => {
     extra,
     className,
     classNameGetters,
+    tableClassName,
     ...p
   } = props;
   const rerender = useReducer(() => ({}), {})[1];
@@ -31,8 +32,8 @@ const Table = <T,>(props: TableProps<T>) => {
   );
 
   return (
-    <div className={cx('w-full overflow-y-hidden', className)}>
-      <table className="w-full border-separate border-spacing-0">
+    <div className={cx('w-full', className)}>
+      <table className={cx('w-full border-separate border-spacing-0', tableClassName)}>
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
@@ -55,8 +56,8 @@ const Table = <T,>(props: TableProps<T>) => {
                     >
                       {flexRender(header.column.columnDef.header, header.getContext())}
                       {{
-                        asc: ' 🔼',
-                        desc: ' 🔽'
+                        asc: ' △',
+                        desc: ' ▽'
                       }[header.column.getIsSorted() as string] ?? null}
                     </div>
                   )}
@@ -68,7 +69,7 @@ const Table = <T,>(props: TableProps<T>) => {
                       className={cx(
                         'absolute right-0 top-0 h-full w-1 bg-gray',
                         'cursor-col-resize select-none touch-none',
-                        'opacity-0 group-hover:(opacity-100)',
+                        'opacity-0 group-@hover:(opacity-100)',
                         // 'resizer',
                         header.column.getIsResizing() &&
                           'isResizing bg-blue-70 bg-blue-700  opacity-100'
@@ -112,7 +113,7 @@ const Table = <T,>(props: TableProps<T>) => {
           <button className="btn" onClick={rerender}>
             Force Rerender
           </button>
-          <pre>{JSON.stringify(sorting, null, 2)}</pre>
+          <pre>{stringify(sorting)}</pre>
         </div>
       )}
     </div>
