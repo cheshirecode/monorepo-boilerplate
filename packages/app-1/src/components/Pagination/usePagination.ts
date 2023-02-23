@@ -2,12 +2,20 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { getIntervals } from '@/utils';
 
-import type { PaginationHookResults, PaginationInputs, PaginationParams } from './typings';
+import type { PaginationHookParams, PaginationHookResults, PaginationParams } from './typings';
 
 export const DEFAULT_PAGINATION_THRESHOLD = 10;
+export const DEFAULT_PAGE_SIZE_COUNTS = 4;
+
+/**
+ * main logic to generate pagination parameters with clamped internvals and resolved page values
+ *
+ * @param param0
+ * @returns
+ */
 const createNewParams: (
-  p: PaginationInputs
-) => PaginationParams & Required<Pick<PaginationInputs, 'page'>> = ({
+  p: PaginationHookParams
+) => PaginationParams & Required<Pick<PaginationHookParams, 'page'>> = ({
   page,
   count,
   pageSize = DEFAULT_PAGINATION_THRESHOLD,
@@ -27,18 +35,22 @@ const createNewParams: (
   const threshold = Math.max(count, DEFAULT_PAGINATION_THRESHOLD);
   const intervals = getIntervals(
     getIntervals([], threshold).concat(Number(pageSize), Number(_pageSize)),
-    threshold
+    threshold,
+    DEFAULT_PAGE_SIZE_COUNTS
   );
-  intervals.sort((a, b) => a - b);
-  const n = (
+  let n = (
     pageSize === false || pageSize === Math.abs(~~pageSize) ? [~~pageSize || threshold] : intervals
   )[0];
+  n = Math.max(n, intervals[0]);
   // compute page size options for easy references
   const pageSizes =
     pageSize === Math.abs(~~pageSize)
-      ? [...new Set(intervals.concat(n, Number(_pageSize)).filter((x) => !!x))]
+      ? getIntervals(
+          [...new Set(intervals.concat(n, Number(_pageSize)).filter((x) => !!x))],
+          threshold,
+          DEFAULT_PAGE_SIZE_COUNTS
+        )
       : intervals;
-  pageSizes.sort((a, b) => a - b);
 
   const maxPage = Math.max(Math.ceil(count / n), 1);
   const newPage = Math.max(Math.min(Number(page), maxPage), 1);
@@ -59,9 +71,9 @@ const createNewParams: (
   } as const;
 };
 
-const usePagination: (p: PaginationInputs) => PaginationHookResults = (props) => {
+const usePagination: (p: PaginationHookParams) => PaginationHookResults = (props) => {
   const { page: initialPage = 1, pageSize, count, onChange, isRollover = false } = props ?? {};
-  const [params, _setParams] = useState(
+  const [innerParams, setInnerParams] = useState(
     createNewParams({
       page: initialPage,
       count,
@@ -70,8 +82,9 @@ const usePagination: (p: PaginationInputs) => PaginationHookResults = (props) =>
     })
   );
   const setParams = useCallback<PaginationHookResults['setParams']>(
-    (params) => {
-      _setParams((p) => {
+    (params: typeof innerParams) => {
+      // need to re-create new params based on inputs thus onChange needs to be called inside
+      setInnerParams((p) => {
         const newParams = createNewParams({
           ...p,
           ...params,
@@ -86,27 +99,37 @@ const usePagination: (p: PaginationInputs) => PaginationHookResults = (props) =>
     [onChange, pageSize]
   );
 
-  const helpers: PaginationHookResults = useMemo(
-    () => ({
-      ...params,
+  const helpers: PaginationHookResults = useMemo(() => {
+    const goTo = (page: number) => {
+      setParams({ page });
+    };
+    const { page, maxPage, pageNumbers, pageSizes } = innerParams;
+
+    return {
+      ...innerParams,
       setParams,
-      isNextPossible: isRollover || params.page < params.maxPage,
-      isPrevPossible: isRollover || params.page > 1,
+      isNextPossible: isRollover || page < maxPage,
+      isPrevPossible: isRollover || page > 1,
       isRollover,
-      goTo: (page: number) => {
-        setParams({ page });
-      },
+      isTotalLessThanMinPageSize: count < pageSizes[0],
       onPageNumberClick: (e) => setParams({ page: Number(e.currentTarget.dataset.id) }),
+      goTo,
+      goToAttempt: (v: unknown) => {
+        const newV = pageNumbers.find((x) => x === Number(v)) ?? pageNumbers[0];
+        goTo(newV);
+        return newV;
+      },
       goPrevious: () => {
-        setParams({ page: params.page <= 1 ? params.maxPage : params.page - 1 });
+        setParams({ page: page <= 1 ? maxPage : page - 1 });
       },
       goNext: () => {
-        setParams({ page: params.page >= params.maxPage ? 1 : params.page + 1 });
+        setParams({ page: page >= maxPage ? 1 : page + 1 });
       },
-      setPageSize: (pageSize: number) => setParams({ pageSize })
-    }),
-    [params, setParams, isRollover]
-  );
+      goFirst: () => goTo(1),
+      goLast: () => goTo(maxPage),
+      setPageSize: (pageSize: number) => setParams({ pageSize: Number(pageSize) })
+    };
+  }, [innerParams, setParams, isRollover, count]);
 
   useEffect(() => {
     helpers.goTo(initialPage);
