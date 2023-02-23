@@ -1,11 +1,19 @@
+// import { css } from '@emotion/react';
 import cx from 'classnames';
 
 import { SectionsProps } from './typings';
 import useSections from './useSections';
 
 const Sections = (props: SectionsProps) => {
-  const { ref, preRef, contentRef, checkOnScroll, currentIndex, setCurrentIndex } =
-    useSections(props);
+  const {
+    ref,
+    preRef,
+    contentRef,
+    bottomPaddingRef,
+    checkOnScroll,
+    currentIndex,
+    setCurrentIndex
+  } = useSections(props);
   const {
     // props for hook
     activeIndex: _a,
@@ -29,7 +37,6 @@ const Sections = (props: SectionsProps) => {
     <section
       className={cx(
         'w-full max-h-full',
-        'bg-primary color-primary',
         'flex flex-wrap xxl:(flex-row h-full)',
         'overflow-auto',
         'z-1',
@@ -41,7 +48,7 @@ const Sections = (props: SectionsProps) => {
     >
       {Pre ? (
         <section
-          className={cx('w-full', 'bg-secondary', 'z-1', 'children:(px-res)', preContentClassName)}
+          className={cx('w-full', 'z-1', 'children:(px-res)', preContentClassName)}
           ref={preRef}
         >
           {Pre}
@@ -59,7 +66,7 @@ const Sections = (props: SectionsProps) => {
           itemFitContent && 'lt-xxl:(children:(min-w-fit))',
           itemFitContent && 'xxl:(min-w-fit)',
           stickyNav && 'md:(sticky top-0)',
-          'bg-secondary border-secondary xxl:shadow-lg',
+          'card-secondary xxl:shadow-lg',
           'lt-xxl:uno-layer-o:(border-b-1)',
           'xxl:uno-layer-o:(border-r-1)',
           'z-3',
@@ -99,8 +106,10 @@ const Sections = (props: SectionsProps) => {
         ref={contentRef}
         // style={contentOffsetStyle}
       >
-        {items[currentIndex].content}
+        {items[currentIndex]?.content}
       </div>
+      {/* pad the bottom to ensure scrolling works - see useSections for dynamic height logic*/}
+      <div className={cx('xxl:pb-10 w-full')} ref={bottomPaddingRef}></div>
     </section>
   );
 };
