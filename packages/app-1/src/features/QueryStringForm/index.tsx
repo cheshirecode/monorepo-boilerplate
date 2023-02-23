@@ -1,6 +1,6 @@
 import cx from 'classnames';
 import { isFunction, merge } from 'lodash-es';
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 
 import Details from '@/components/Details';
 import Field from '@/components/Field';
@@ -11,46 +11,60 @@ import useQueryStringForm from './useQueryStringForm';
 const QueryStringForm = (props: QueryStringFormProps) => {
   const {
     className,
-    queryString: _queryString,
-    onChange: _onChange,
-    persistState: _persistState,
-    metadata,
+    onQsChange,
+    metadata = {},
     fieldPropsByKey,
+    oneFieldPerLine,
+    bigText,
     ...rest
   } = props;
-  const { searchParams, createSetter } = useQueryStringForm(props);
-  const fieldRenderer = useCallback(
-    (v, { k }) => {
-      const fieldProps = {
+  const { createSetter } = useQueryStringForm(props);
+
+  const finalMetadata = useMemo(() => {
+    const fieldRenderer = (v, { k }) => {
+      const finalFieldProps = {
         saveOnBlur: true,
         noConfirmation: true,
         set: createSetter(k),
+        ...(onQsChange ? {} : { readOnly: true }),
+        ...(bigText ? { inputClassName: 'uno-layer-o:(h-10)', title: '' } : {}),
         ...(isFunction(fieldPropsByKey) ? fieldPropsByKey(k) : {})
       };
-      return <Field name={k} value={v} {...fieldProps} />;
-    },
-    [createSetter, fieldPropsByKey]
-  );
-  const finalMetadata = useMemo(
-    () =>
-      merge({}, metadata, {
+      return <Field name={k} value={v} {...finalFieldProps} />;
+    };
+    return merge(
+      {},
+      oneFieldPerLine
+        ? {
+            '*': {
+              label: {
+                className: 'col-span-2 xl:(col-span-3)'
+              },
+              field: {
+                className: 'col-start-3 xl:(col-start-4) col-end--1'
+              }
+            }
+          }
+        : {},
+      {
         '*': {
           field: {
             render: fieldRenderer
           }
         }
-      }),
-    [fieldRenderer, metadata]
-  );
+      },
+      metadata
+    );
+  }, [bigText, createSetter, fieldPropsByKey, metadata, onQsChange, oneFieldPerLine]);
 
   return (
     <Details
       {...rest}
-      data={searchParams}
-      className={cx('grid responsive-grid-kv gap-2', className)}
-      labelClassName="px-2 color-secondary opacity-60"
-      fieldClassName="px-2 color-primary truncate"
+      className={cx('', bigText && 'font-gs-heading02 py-4', className)}
+      labelClassName="color-secondary opacity-60"
+      fieldClassName="color-primary truncate"
       metadata={finalMetadata}
+      oneFieldPerLine={oneFieldPerLine}
     />
   );
 };
