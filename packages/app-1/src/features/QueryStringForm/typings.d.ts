@@ -3,19 +3,19 @@ import type { FieldProps } from '@/components/Field/typings';
 
 export type QueryStringHookParams = {
   queryString: string;
-  onChange: (str: string) => void;
+  onQsChange?: (str: string) => void;
+  onKeyValueChange?: (k: string, v: unknown) => void;
+  onParamsChange?: (kv: Record<string, unknown>) => void;
   persistState?: boolean;
-};
-export type QueryStringHookResults = readonly {
-  queryStr: string;
-  setQueryStr: (v: string) => void;
-  q: CURLSearchParams;
-  searchParams: Record<string, string>;
-  createSetter: (k: string) => (v: string | number) => void;
 };
 
 export type QueryStringFormProps = BaseProps &
+  DetailsProps &
   QueryStringHookParams & {
-    metadata: DetailsProps['metadata'];
-    fieldPropsByKey: (k: string) => FieldProps;
+    fieldPropsByKey?: (k: string) => FieldProps;
+    /**
+     * default - false. flag to set out per line unless the viewport is really small
+     */
+    oneFieldPerLine?: boolean;
+    bigText?: boolean;
   };
