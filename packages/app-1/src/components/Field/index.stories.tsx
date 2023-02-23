@@ -129,8 +129,10 @@ AutoCompleteWithConfirmation.args = {
   ]
 };
 
-export const AutoCompleteWithSaveOnBlur = Template.bind({});
-
+export const AutoCompleteWithSaveOnBlur: ComponentStory<typeof Field> = (args) =>
+  Array(2)
+    .fill(0)
+    .map((_x, i) => <Template key={i} {...args} />);
 AutoCompleteWithSaveOnBlur.args = {
   ...AutoCompleteWithConfirmation.args,
   saveOnBlur: true,
