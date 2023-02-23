@@ -22,10 +22,12 @@ const useSections = ({
   //scroll
   const preRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLElement>(null);
+  const bottomPaddingRef = useRef<HTMLElement>(null);
   const checkOnScroll = useMemo(
     () =>
       throttle(
         () => {
+          // TODO - take a closer look at scrolling logic later to determine dynamic heights better
           const st = ref?.current?.scrollTop;
           if (!isUndefined(st) && st >= 0) {
             if (isFunction(cbScrollTop)) {
@@ -51,6 +53,16 @@ const useSections = ({
             // setContentOffsetStyle({
             //   marginTop: `min(${offsets.join(', ')})`
             // });
+          }
+
+          if (bottomPaddingRef?.current?.style) {
+            bottomPaddingRef.current.style.height =
+              contentRef?.current?.clientHeight + preRef?.current?.clientHeight <=
+              window?.innerHeight
+                ? `max(${window?.innerHeight - contentRef?.current?.clientHeight - 120}px, ${
+                    preRef?.current?.clientHeight
+                  }px)`
+                : `0px`;
           }
         },
         300,
@@ -102,6 +114,7 @@ const useSections = ({
     ref,
     preRef,
     contentRef,
+    bottomPaddingRef,
     checkOnScroll,
     currentIndex,
     setCurrentIndex
