@@ -1,6 +1,6 @@
 import type { MouseEvent } from 'react';
 
-export type PaginationInputs = {
+export type PaginationHookParams = {
   /**
    *  how many items in the list
    */
@@ -21,14 +21,14 @@ export type PaginationInputs = {
    *
    * change callback(PAGINATION_PARAMS) whenever pagination happens
    */
-  onChange?: (params: Partial<PaginationInputs>) => void;
+  onChange?: (params: Partial<PaginationHookParams>) => void;
   /**
    * default - true. clicking next/prev will go over the range.
    */
   isRollover?: boolean;
 };
 
-export type PaginationParams = PaginationInputs & {
+export type PaginationParams = PaginationHookParams & {
   /**
    *  index 0 for array's beginning index
    */
@@ -57,12 +57,7 @@ export type PaginationParams = PaginationInputs & {
 };
 
 export type PaginationHookResults = PaginationParams & {
-  /**
-   *
-   * change callback(PAGINATION_PARAMS) whenever pagination happens
-   */
-  onChange?: (params: Partial<PaginationInputs>) => void;
-  setParams: (params: Partial<PaginationInputs>) => void;
+  setParams: (params: Partial<PaginationHookParams>) => void;
   /**
    * helper callback to render custom paginator
    */
@@ -80,7 +75,23 @@ export type PaginationHookResults = PaginationParams & {
    */
   goTo: (n: number) => void;
   /**
+   * try to resolve a page (or default to first) then go to that page, returns the resolved value
+   */
+  goToAttempt: (n: unknown) => number;
+  /**
+   * go to first page
+   */
+  goFirst: () => void;
+  /**
+   * go to first page
+   */
+  goLast: () => void;
+  /**
    * set how many items on a page
+   */
+  setPageSize: (n: number) => void;
+  /**
+   * set current page size (usually one from pageSizes)
    */
   setPageSize: (n: number) => void;
   /**
@@ -91,6 +102,10 @@ export type PaginationHookResults = PaginationParams & {
    * flag - prev page is possible
    */
   isPrevPossible: boolean;
+  /**
+   * whether total < smallest page size (then maybe not show any pagination widgets)
+   */
+  isTotalLessThanMinPageSize: boolean;
 };
 
 export type PaginationStyleProps = {
