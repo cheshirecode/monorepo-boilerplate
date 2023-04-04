@@ -16,7 +16,8 @@ import {
 } from './src/styles/tokens';
 
 const config: UserConfig = defineConfig({
-  include: [/\.[jt]sx?$/],
+  // include: [/\.(vue|svelte|[jt]s[|x]|mdx?|astro|elm|php|phtml|html)($|\?)/],
+  darkMode: 'class',
   safelist,
   theme: {
     screens: breakpoints,
@@ -190,7 +191,10 @@ const config: UserConfig = defineConfig({
     [/^card-(.*)$/, ([, c]) => `bg-${c} color-${c} border-${c}`],
     // @ts-ignore
     [/^card-(\w*)-hover$/, ([, c]) => `bg-${c}-hover color-${c}-hover border-${c}-hover`],
-    [/^cell-(.*)$/, ([, c]) => (c ? `bg-${c} color-${c} border-1 border-${c}` : undefined)]
+    // @ts-ignore
+    [/^cell-(.*)$/, ([, c]) => `bg-${c} color-${c} border-1 border-${c}`],
+    // @ts-ignore
+    [/^both-modes:(.*)$/, ([, c]) => `${c} dark:(${c})`]
   ]
 });
 
