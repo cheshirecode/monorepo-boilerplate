@@ -3,12 +3,9 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { JSDOM } from 'jsdom';
 import { describe, expect, it } from 'vitest';
 
-import { NoCacheWrapper } from '@/services/tests/helpers';
+import { NoCacheWrapper } from '@/services/test/helper';
 
-import {
-  multipathMatcher,
-  queryString,
-} from './';
+import { multipathMatcher, queryString } from './';
 
 const jsdom = new JSDOM(``, {
   url: `${location.href}foo?bar=1`

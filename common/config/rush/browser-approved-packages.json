@@ -119,6 +119,10 @@
       "allowedCategories": [ "tools" ]
     },
     {
+      "name": "@unocss/preset-mini",
+      "allowedCategories": [ "production" ]
+    },
+    {
       "name": "@unocss/preset-wind",
       "allowedCategories": [ "production" ]
     },

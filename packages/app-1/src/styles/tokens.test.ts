@@ -9,7 +9,7 @@ describe('@/tokens', () => {
     expect(matchColorToCode('current')).toEqual('currentColor');
     expect(matchColorToCode('white')).toEqual('#fff');
     expect(matchColorToCode('rose-1')).toEqual('#ffe4e6');
-    expect(matchColorToCode('purple-10')).toEqual('#f7f2fc');
+    expect(matchColorToCode('purple-100')).toEqual('#f3e8ff');
     expect(matchColorToCode('unknownColor')).toEqual('');
     expect(matchColorToCode('purple-unknownshade')).toEqual('');
   });
@@ -18,6 +18,6 @@ describe('@/tokens', () => {
       blue: { '1': expect.any(String) },
       black: expect.any(String)
     });
-    expect(colors.blue).toMatchObject({ '1': expect.any(String) });
+    expect(colors?.blue).toMatchObject({ '1': expect.any(String) });
   });
 });

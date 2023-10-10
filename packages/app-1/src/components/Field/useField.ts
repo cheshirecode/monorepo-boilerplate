@@ -116,7 +116,7 @@ const useField = ({
       onAutoCompleteItemClicked,
       setValue,
       onKeyUp,
-      onBlur: (e) => {
+      onBlur: (e: FocusEvent) => {
         if (readOnly) {
           return;
         }

@@ -7,7 +7,6 @@
   "files.watcherExclude": {
     "**/common/temp/**": true
   },
-  "eslint.packageManager": "npm",
   "eslint.workingDirectories": [
     {
       "mode": "auto"

@@ -44,14 +44,15 @@ export type FieldHookResults = {
   onAutoCompleteItemClicked: (e: MouseEvent<HTMLElement>) => void;
   isEditing: boolean;
   onKeyUp: (e: KeyboardEvent<HTMLInputElement>) => void;
-  onFocus: () => void;
+  onFocus: (e: FocusEvent) => void;
+  onBlur: (e: FocusEvent) => void;
 
   readOnlyProps: {
     onClick?: () => void;
     onFocus?: () => void;
     title?: string;
   };
-  filteredAutoCompleteItems: {
+  filteredAutoCompleteItems?: {
     name: string;
     value: string;
   }[];

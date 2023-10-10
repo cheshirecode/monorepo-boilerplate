@@ -65,7 +65,9 @@
     "vite": "latest",
     "vite-plugin-importus": "^1.0.4",
     "vitest": "latest",
-    "@faker-js/faker": "~7.6.0"
+    "@faker-js/faker": "~7.6.0",
+    "@unocss/preset-mini": "~0.56.5",
+    "miragejs": "~0.1.47"
   },
   "resolutions": {
     "uuid": "^7",
