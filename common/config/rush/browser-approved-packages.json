@@ -147,6 +147,10 @@
       "allowedCategories": [ "production", "tools" ]
     },
     {
+      "name": "@vitest/coverage-v8",
+      "allowedCategories": [ "production" ]
+    },
+    {
       "name": "babel-loader",
       "allowedCategories": [ "production" ]
     },
