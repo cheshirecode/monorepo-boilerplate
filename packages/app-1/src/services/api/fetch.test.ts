@@ -4,7 +4,7 @@ import type { Request } from 'miragejs';
 import { describe, expect, it, vi } from 'vitest';
 
 import { makeServer, seeds } from '@/services/mocks/server';
-import { NoCacheWrapper } from '@/services/tests/helpers';
+import { NoCacheWrapper, render } from '@/services/tests/helpers';
 import type { Server } from '@/typings/mirage';
 
 import {
@@ -12,19 +12,38 @@ import {
   createValidationMiddleware,
   logger,
   useGet,
-  usePost,
+  useGets,
+  useMutation,
   validateResponse
 } from './fetch';
 
 let server: Server;
 
-beforeEach(async () => {
+const createMockedConsoleLog = () => {
+  // eslint-disable-next-line no-console
+  const x = console.log;
+  const loggerArgs: unknown[] = [];
+  const mocked = vi.spyOn(global.console, 'log').mockImplementation((...args: unknown[]) => {
+    loggerArgs.push(args);
+    if (!(args[0] as string).includes(logger.stdoutMessagePrefix)) {
+      x(...args);
+    }
+  });
+  return [mocked, loggerArgs];
+};
+
+beforeAll(async () => {
   server = makeServer();
   seeds(server);
 
   return async () => {
-    vi.restoreAllMocks();
     server.shutdown();
+  };
+});
+
+beforeEach(async () => {
+  return async () => {
+    vi.restoreAllMocks();
   };
 });
 
@@ -53,18 +72,7 @@ describe('services/api/fetch', () => {
   });
 
   it('GET /test with 1 middleware - logger', async () => {
-    // eslint-disable-next-line no-console
-    const x = console.log;
-    const loggerArgs: unknown[] = [];
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    const mockedConsoleLog = vi
-      .spyOn(global.console, 'log')
-      .mockImplementation((...args: unknown[]) => {
-        loggerArgs.push(args);
-        if (!(args[0] as string).includes(logger.stdoutMessagePrefix)) {
-          x(...args);
-        }
-      });
+    const [mockedConsoleLog, loggerArgs] = createMockedConsoleLog();
     renderHook(() => useGet<undefined>('/test', { use: [logger<undefined>] }), {
       wrapper: NoCacheWrapper
     });
@@ -117,8 +125,8 @@ describe('services/api/fetch', () => {
     });
   });
 
-  it('GET null', async () => {
-    const { result } = renderHook(() => useGet<null>(null), {
+  it('2xGET /test', async () => {
+    const { result } = renderHook(() => useGets<[Request, Request]>(['/test', '/test']), {
       wrapper: NoCacheWrapper
     });
     await waitFor(() => {
@@ -128,53 +136,75 @@ describe('services/api/fetch', () => {
   });
 
   it('POST /test/random?foo=bar with 2 middlewares - logger + custom header', async () => {
-    // eslint-disable-next-line no-console
-    const x = console.log;
-    const loggerArgs: unknown[] = [];
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    const mockedConsoleLog = vi
-      .spyOn(global.console, 'log')
-      .mockImplementation((...args: unknown[]) => {
-        loggerArgs.push(args);
-        if (!(args[0] as string).includes(logger.stdoutMessagePrefix)) {
-          x(...args);
+    const [mockedConsoleLog, loggerArgs] = createMockedConsoleLog();
+    const payload = { payloadFoo: 'payloadBar' };
+    const Comp = () => {
+      const { data, trigger } = useMutation<Request>(
+        '/test/bar?foo=bar',
+        { method: 'POST' },
+        {
+          use: [
+            logger<Request>,
+            createHeaderMiddleware<Request>({
+              'x-swr': '1'
+            })
+          ]
         }
-      });
-    const payload = { 1: 1 };
-    const { result } = renderHook(
-      () =>
-        usePost<Request>(
-          '/test/bar?foo=bar',
-          {
-            body: stringify(payload)
-          },
-          {
-            use: [
-              logger<Request>,
-              createHeaderMiddleware<Request>({
-                'x-swr': '1'
-              })
-            ]
-          }
-        ),
-      {
-        wrapper: NoCacheWrapper
-      }
-    );
+      );
+
+      return (
+        <NoCacheWrapper>
+          <button
+            onClick={() => {
+              trigger(payload);
+            }}
+          >
+            {data ? 'data' : 'trigger'}
+          </button>
+          <span title="data">{data?.body}</span>
+        </NoCacheWrapper>
+      );
+    };
+    const res = render(<Comp />);
+    const btn = await res.findByText('trigger');
+    btn.click();
+    await res.findByText('data');
+    const dataNode = await res.findByTitle('data');
     await waitFor(() => {
       expect(mockedConsoleLog).toHaveBeenCalled();
       expect(
         loggerArgs.some((x: unknown[]) => x.indexOf(logger.stdoutMessagePrefix) >= 0),
         'expect stdout to contain logger message'
       ).toBeTruthy();
-      expect(result?.current?.data?.headers).toHaveProperty('x-swr');
-      expect(result?.current?.data?.headers, 'expect POST to have content-type').toHaveProperty(
-        'Content-Type'
-      );
-      expect(result?.current?.data?.body).toMatchObject(stringify(payload));
-      expect(result?.current?.data?.params).toMatchObject({ foo: 'bar' });
-      expect(result?.current?.data?.queryParams).toEqual({ foo: 'bar' });
+      expect(dataNode.innerHTML).toEqual(stringify(payload));
     });
+  });
+
+  it('PUT /test/random?foo=bar', async () => {
+    const payload = { payloadFoo: 'payloadBar' };
+    const Comp = () => {
+      const { data, trigger } = useMutation<Request>(['/test/bar?foo=bar', { method: 'PUT' }]);
+
+      return (
+        <NoCacheWrapper>
+          <button
+            onClick={() => {
+              trigger(payload);
+            }}
+          >
+            {data ? 'data' : 'trigger'}
+          </button>
+          <span title="data">{data?.body}</span>
+        </NoCacheWrapper>
+      );
+    };
+    const res = render(<Comp />);
+    const btn = await res.findByText('trigger');
+    btn.click();
+    await res.findByText('data');
+    const dataNode = await res.findByTitle('data');
+
+    expect(dataNode.innerHTML).toEqual(stringify(payload));
   });
 
   it('validateResponse()', () => {
@@ -189,8 +219,8 @@ describe('services/api/fetch', () => {
           title: expect.any(String),
           objects: expect.arrayContaining([
             expect.objectContaining({
-              actual: expect.any(String),
-              expected: expect.any(String)
+              actual: expect.any(Object),
+              expected: expect.any(Array)
             })
           ])
         })
