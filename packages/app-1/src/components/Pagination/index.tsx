@@ -1,4 +1,5 @@
 import cx from 'classnames';
+import { Fragment } from 'react';
 
 import Field from '@/components/Field';
 
@@ -13,9 +14,9 @@ export const PlainPagination = ({
   setPageSize,
   pageSize,
   pageSizes,
-  first: _f,
-  last: _l,
-  count: _c,
+  first,
+  last,
+  count,
   // necessary props
   className,
   itemClassName,
@@ -35,125 +36,124 @@ export const PlainPagination = ({
   goLast,
   goToAttempt,
   showAllPages = false,
-  isTotalLessThanMinPageSize,
+  isPaginationRedundant,
   // DOM-only props
   ...props
 }: PaginationProps) => {
+  if (isPaginationRedundant) {
+    return null;
+  }
   return (
-    !isTotalLessThanMinPageSize && (
-      <section className="flex my-4 min-h-10">
-        {maxPage > 1 && (
-          <div
+    <section
+      className={cx(
+        'flex flex-gap-2 justify-end',
+        'w-full mx-auto my-2 min-h-10 h-10',
+        'children:(p-2 transition-all-200)',
+        className
+      )}
+      {...props}
+    >
+      <span className="color-tertiary">Page size</span>
+      <select
+        className="ml-2 h-inherit card-secondary"
+        onChange={(e) => setPageSize(~~e.currentTarget.value)}
+        value={~~pageSize}
+      >
+        {pageSizes.map((n) => (
+          <option key={n} value={n}>
+            {n}
+          </option>
+        ))}
+      </select>
+      <span className="">{`${first + 1} - ${last + 1} of ${count}`}</span>
+      {maxPage > 1 && (
+        <Fragment>
+          <button
+            key="first"
+            tabIndex={0}
+            onClick={goFirst}
+            disabled={!isPrevPossible && !isRollover}
             className={cx(
-              'flex-1 flex flex-gap-2 justify-center',
-              'w-fit mx-auto',
-              'children:(p-2 cursor-pointer transition-all-200)',
-              className
+              'btn-secondary',
+              !isPrevPossible && !isRollover && cx('disabled opacity-30', disabledItemClassName),
+              itemClassName
             )}
-            {...props}
           >
-            <button
-              key="first"
-              tabIndex={0}
-              onClick={goFirst}
-              disabled={!isPrevPossible && !isRollover}
-              className={cx(
-                'btn btn-secondary',
-                !isPrevPossible && !isRollover && cx('disabled opacity-30', disabledItemClassName),
-                itemClassName
-              )}
-            >
-              {'<<'}
-            </button>
-            <button
-              key="prev"
-              tabIndex={0}
-              onClick={goPrevious}
-              disabled={!isPrevPossible && !isRollover}
-              className={cx(
-                'btn btn-secondary',
-                !isPrevPossible && !isRollover && cx('disabled opacity-30', disabledItemClassName),
-                itemClassName
-              )}
-            >
-              {'<'}
-            </button>
-            {!showAllPages && (
-              <Field
-                name="--pagination-page"
-                value={String(page)}
-                title="Click to change page"
-                displayValue={(v) => `${v} / ${maxPage}`}
-                set={goToAttempt}
+            {'<<'}
+          </button>
+          <button
+            key="prev"
+            tabIndex={0}
+            onClick={goPrevious}
+            disabled={!isPrevPossible && !isRollover}
+            className={cx(
+              'btn-secondary',
+              !isPrevPossible && !isRollover && cx('disabled opacity-30', disabledItemClassName),
+              itemClassName
+            )}
+          >
+            {'<'}
+          </button>
+          {!showAllPages && (
+            <Field
+              name="--pagination-page"
+              value={String(page)}
+              title="Click to change page"
+              displayValue={(v) => `${v} / ${maxPage}`}
+              set={goToAttempt}
+              className={cx('uno-layer-o:(w-fit h-full my-auto py-0 inline-block)')}
+              inputClassName="uno-layer-o:w-10ch"
+              noConfirmation
+              saveOnBlur
+              readOnly={maxPage <= 1}
+            />
+          )}
+          {showAllPages &&
+            pageNumbers.map((v) => (
+              <button
+                key={v}
+                tabIndex={0}
+                data-id={v}
+                onClick={onPageNumberClick}
+                disabled={v === page}
                 className={cx(
-                  'uno-layer-o:(h-full py-0 hover-none inline-block)',
-                  'uno-layer-o:(my-auto w-fit)'
+                  'btn-secondary',
+                  v === page && cx('bg-secondary disabled opacity-30', activeItemClassName),
+                  itemClassName
                 )}
-                inputClassName="uno-layer-o:w-10ch"
-                readOnly={maxPage <= 1}
-              />
-            )}
-            {showAllPages &&
-              pageNumbers.map((v) => (
-                <button
-                  key={v}
-                  tabIndex={0}
-                  data-id={v}
-                  onClick={onPageNumberClick}
-                  disabled={v === page}
-                  className={cx(
-                    'btn btn-secondary',
-                    v === page && cx('bg-secondary disabled', activeItemClassName),
-                    itemClassName
-                  )}
-                >
-                  {v}
-                </button>
-              ))}
-            <button
-              key="next"
-              tabIndex={0}
-              onClick={goNext}
-              disabled={!isNextPossible && !isRollover}
-              className={cx(
-                'btn btn-secondary',
-                !isNextPossible && !isRollover && cx('disabled opacity-30', disabledItemClassName),
-                itemClassName
-              )}
-            >
-              {'>'}
-            </button>
-            <button
-              key="last"
-              tabIndex={0}
-              onClick={goLast}
-              disabled={!isNextPossible && !isRollover}
-              className={cx(
-                'btn btn-secondary',
-                !isNextPossible && !isRollover && cx('disabled opacity-30', disabledItemClassName),
-                itemClassName
-              )}
-            >
-              {'>>'}
-            </button>
-          </div>
-        )}
-        <div className="my-auto ml-auto h-full">
-          Page size
-          <select
-            className="ml-2 h-inherit card-secondary"
-            onChange={(e) => setPageSize(e.currentTarget.value)}
-            value={pageSize}
-          >
-            {pageSizes.map((n) => (
-              <option key={n} value={n}>
-                {n}
-              </option>
+              >
+                {v}
+              </button>
             ))}
-          </select>
-        </div>
-      </section>
-    )
+          <button
+            key="next"
+            tabIndex={0}
+            onClick={goNext}
+            disabled={!isNextPossible && !isRollover}
+            className={cx(
+              'btn-secondary',
+              !isNextPossible && !isRollover && cx('disabled opacity-30', disabledItemClassName),
+              itemClassName
+            )}
+          >
+            {'>'}
+          </button>
+          <button
+            key="last"
+            tabIndex={0}
+            onClick={goLast}
+            disabled={!isNextPossible && !isRollover}
+            className={cx(
+              'btn-secondary',
+              !isNextPossible && !isRollover && cx('disabled opacity-30', disabledItemClassName),
+              itemClassName
+            )}
+          >
+            {'>>'}
+          </button>
+        </Fragment>
+      )}
+    </section>
   );
 };
 
