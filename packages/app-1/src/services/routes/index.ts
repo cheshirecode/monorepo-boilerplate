@@ -1,30 +1,24 @@
-import { isObject, isUndefined } from 'lodash-es';
 import { useCallback } from 'react';
 import makeMatcher from 'wouter/matcher';
+import type { LocationHook } from 'wouter/use-location';
 import useLocation from 'wouter/use-location';
+
+import createUrlSearchParams from './createUrlSearchParams';
 
 // fn just in case of later dynamism
 export const getBaseUrl = (endpoint = '') =>
   `${import.meta.env.VITE_BASE_URL}/${endpoint}`.replace(/(\/{2,})/g, '/');
 
-export const routes = {
-  home: getBaseUrl(),
-  packages: getBaseUrl('packages'),
-  packageVersions: getBaseUrl('package-versions'),
-  hosts: getBaseUrl('hosts'),
-  dummy: getBaseUrl('dummy'),
-  cfuPackage: getBaseUrl('cfu-package'),
-  cfuDistGroup: getBaseUrl('cfu-dist-group'),
-  packageVersion: getBaseUrl('package-version')
-};
 /**
  * Wouter custom hook - return query string as well
  *
  * @param options base wouter options for routing
  * @returns
  */
-const useQueryString = (options, locationHref = location.href) => {
-  // console.log('useQueryString');
+export const useQueryString = (
+  options: Parameters<LocationHook>[0],
+  locationHref = location.href
+) => {
   const { pathname, search } = new URL(locationHref);
   const [_location, setLocation] = useLocation(options);
   return [pathname + search, setLocation];
@@ -36,7 +30,10 @@ const useQueryString = (options, locationHref = location.href) => {
  * @param options base wouter options for routing
  * @returns
  */
-export const useTitleUpdate = (options, locationHref = location.href) => {
+export const useTitleUpdate = (
+  options: Parameters<LocationHook>[0],
+  locationHref = location.href
+) => {
   const { pathname } = new URL(locationHref);
   if (document) {
     document.title = pathname
@@ -49,7 +46,7 @@ export const useTitleUpdate = (options, locationHref = location.href) => {
 };
 
 const defaultMatcher = makeMatcher();
-export const multipathMatcher = (patterns, path) => {
+export const multipathMatcher = (patterns: string | string[], path: string) => {
   const flattedPatterns = [patterns].flat();
   for (const p of flattedPatterns) {
     const [match, params] = defaultMatcher(p, path);
@@ -62,61 +59,19 @@ export const multipathMatcher = (patterns, path) => {
 export const useRouteMatch = (locationHref = location.href) => {
   const { pathname } = new URL(locationHref);
   const isMatchedRoute = useCallback(
-    ({ href }: { href: string } = {}) =>
+    ({ href }: { href: string } = { href: '' }) =>
       href && (pathname === href || (href !== routes.home && pathname?.startsWith(href))),
     [pathname]
   );
-
-  return [isMatchedRoute] as const;
-};
-interface CURLSearchParams extends URLSearchParams {
-  setBulk: (params: Record<string, string>) => CURLSearchParams;
-  deleteAll: () => CURLSearchParams;
-  appendStr: (str: string) => CURLSearchParams;
-  entriesAsObj: () => Record<string, string>;
-}
-export const createUrlSearchParams = (search = '', params: Record<string, string> = {}) => {
-  // coerce search to string or fall back to ''
-  const q: CURLSearchParams = new URLSearchParams(
-    search?.toString ? search.toString() : string || ''
+  const currentRoute = (Object.keys(routes) as (keyof typeof routes)[]).find(
+    (i) => pathname === routes[i] || (i !== 'home' && pathname?.startsWith(routes[i]))
   );
 
-  Object.assign(q, {
-    setBulk: function (params: Record<string, string>) {
-      // eslint-disable-next-line @typescript-eslint/no-this-alias
-      const t: CURLSearchParams = this;
-      Object.keys(isObject(params) ? params : {}).forEach((k) => t.set(k, params[k]));
-      return t;
-    },
-    deleteAll: function () {
-      // eslint-disable-next-line @typescript-eslint/no-this-alias
-      const t: CURLSearchParams = this;
-      [...t.keys()].forEach((k) => {
-        t.delete(k);
-      });
-      return this;
-    },
-    entriesAsObj: function () {
-      return Object.fromEntries([...this.entries()]);
-    }
-  });
-  q.appendStr = function (str: string) {
-    const params = Object.fromEntries(
-      [...new URLSearchParams(str).entries()].filter((x) => !isUndefined(x[1]))
-    );
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const t: CURLSearchParams = this;
-    return t.setBulk(params);
-  };
-  q.setBulk.bind(q);
-  q.deleteAll.bind(q);
-  q.appendStr.bind(q);
-  // keep setBulk on each instance to reuse
-  q.setBulk(params);
-  return q;
+  return [isMatchedRoute, currentRoute] as const;
 };
 
-const useLocationSetter = (locationHref, setter: (...args: unknown[]) => void) => {
+const useLocationSetter = (locationHref: string, setter?: ReturnType<LocationHook>[1]) => {
+  // stuck with 2.9.0 until https://github.com/molefrog/wouter/issues/286 is resolved
   const [location, setLocation] = useLocation();
   const finalLocationHref = locationHref ?? location;
   setter = setter ?? setLocation;
@@ -125,7 +80,7 @@ const useLocationSetter = (locationHref, setter: (...args: unknown[]) => void) =
 };
 
 export const queryString = {
-  get(x, locationHref = location.href) {
+  get(x: string, locationHref = location.href) {
     const { search } = new URL(locationHref);
     const q = new URLSearchParams(search);
     return q.get(x);
@@ -139,49 +94,36 @@ export const queryString = {
     return url;
   },
 
-  useSet(
-    k: string,
-    v: unknown,
-    locationHref = location.href,
-    setter: (...args: unknown[]) => void
-  ) {
+  useSetQsParam(locationHref = location.href, setter: ReturnType<LocationHook>[1]) {
     const { setter: finalSetter, url } = useLocationSetter(locationHref, setter);
     const { search } = url;
-    const q = createUrlSearchParams(search, { [k]: v });
-    url.search = q.toString();
-    finalSetter(url.toString());
+    return (k: string, v: string | number) => {
+      const q = createUrlSearchParams(search, { [k]: v });
+      url.search = q.toString();
+      finalSetter(url.toString());
+    };
   },
 
-  useSetBulk(
-    params: Record<string, unknown>,
-    locationHref = location.href,
-    setter: (...args: unknown[]) => void
-  ) {
+  useSetQsParams(locationHref = location.href, setter: ReturnType<LocationHook>[1]) {
     const { setter: finalSetter, url } = useLocationSetter(locationHref, setter);
     const { search } = url;
-    const q = createUrlSearchParams(search, params);
-    url.search = q.toString();
-    finalSetter(url.toString());
+    return (params: Record<string, string | number>) => {
+      const q = createUrlSearchParams(search, params);
+      url.search = q.toString();
+      finalSetter(url.toString());
+    };
+  },
+
+  useSetQs(locationHref = location.href, setter?: ReturnType<LocationHook>[1]) {
+    const { setter: finalSetter, url } = useLocationSetter(locationHref, setter);
+    const { search } = url;
+
+    return (str: string) => {
+      const q = createUrlSearchParams(search).appendStr(str);
+      url.search = q.toString();
+      finalSetter(url.toString(), {
+        replace: false
+      });
+    };
   }
-
-  // useAppendStr(str = '', locationHref = location.href, setter: (...args: unknown[]) => void) {
-  //   const { setter: finalSetter, url } = useLocationSetter(locationHref, setter);
-  //   const { search } = url;
-  //   const q = createUrlSearchParams(search).appendStr(str);
-  //   url.search = q.toString();
-  //   finalSetter(url.toString());
-  // }
 };
-
-// export const queryString = new Proxy(_queryString, {
-//   get(target, prop, receiver) {
-//     if (prop === 'message2') {
-//       return 'world';
-//     }
-//     const value = target[prop];
-//     if (value instanceof Function) {
-//       return (...args) => value.apply(this === receiver ? target : this, args);
-//     }
-//     return value;
-//   }
-// });
