@@ -1,13 +1,19 @@
-export const pascalToSeparatedWords = (str: unknown = '', sep = '-') =>
+import stringify from 'fast-json-stable-stringify';
+
+const toLowerCase = (x: string) => x?.toLocaleLowerCase();
+export const pascalToSeparatedWords = (str: unknown = '', sep = '-', formatter = toLowerCase) =>
   String(str)
     .replace(' ', '')
     .replace(/([A-Z])/g, ' $1')
     .trim()
     .split(' ')
-    .join(sep)
-    .toLocaleLowerCase();
+    .map((x) => formatter(x))
+    .join(sep);
 
 export const toCamel = (str = '') => str.replace(/[-_]([a-z])/g, (x) => x[1].toUpperCase());
+export const toUnderscore = (str = '') => str.replace(/[- _]+/g, '_');
+export const toHyphen = (str = '') => str.replace(/[- _]+/g, '-');
+export const toSpaced = (str = '') => str.replace(/[- _]+/g, ' ');
 
 export const splitAlphanumeric = (str: unknown = '') => String(str).match(/[^-_ \d]+|\d+/g);
 
@@ -23,8 +29,23 @@ export const SEARCH_KEYWORD_SEPARATORS = [',', ' '];
  * @returns filtered list
  */
 export const deepFilter = <T>(list: T[], str?: string) => {
+  if (
+    typeof str !== 'string' ||
+    [undefined, null].includes(str as unknown as undefined | null) ||
+    str === ''
+  ) {
+    return list;
+  }
+  const regex = new RegExp(
+    `[^${SEARCH_KEYWORD_SEPARATORS.join('')}[\\w\\-_\\d]]+|[\\w\\-_\\d]+`,
+    'ig'
+  );
+
   const included = (obj: StringOrAny, str1?: string): boolean => {
-    if (typeof str1 !== 'string' || [undefined, null].includes(obj)) {
+    if (
+      typeof str1 !== 'string' ||
+      [undefined, null].includes(obj as unknown as undefined | null)
+    ) {
       return false;
     }
     if (str1 === '') {
@@ -37,14 +58,11 @@ export const deepFilter = <T>(list: T[], str?: string) => {
       return obj.some((x) => included(x, str1));
     }
     if (typeof obj === 'object') {
-      return Object.keys(obj).some((k) => included(obj[k], str1));
+      return included(stringify(obj), str1);
     }
     if (typeof obj === 'string') {
-      const splits =
-        str1?.match(
-          new RegExp(`[^${SEARCH_KEYWORD_SEPARATORS.join('')}[\\w\\-_\\d]]+|[\\w\\-_\\d]+`, 'ig')
-        ) ?? [];
-      return splits?.some((x) => obj.toLocaleLowerCase().includes(x));
+      const splits = str1?.match(regex) ?? [];
+      return splits?.every((x) => obj.toLocaleLowerCase().includes(x));
     }
     return false;
   };
@@ -52,14 +70,10 @@ export const deepFilter = <T>(list: T[], str?: string) => {
   return list?.filter((d) => included(d as StringOrAny, str));
 };
 /**
- * expect(getRoundedToNearest(12)).toEqual(20);
- * expect(getRoundedToNearest(105)).toEqual(200);
- * expect(getRoundedToNearest(105, 2)).toEqual(110);
- * expect(getRoundedToNearest(105, 4)).toEqual(200);
- * expect(getRoundedToNearest(105, 4, false)).toEqual(100);
- * expect(getRoundedToNearest(105, null, false)).toEqual(100);
- * expect(getRoundedToNearest(105)).toEqual(200);
- * expect(getRoundedToNearest(-12, 2, false)).toEqual(-10);
+ * getRoundedToNearest(12) > 20
+ * getRoundedToNearest(105) > 200
+ * getRoundedToNearest(105, 4, false) > 100
+ * getRoundedToNearest(-12, 2, false) > -10
  *
  * @param n number to round
  * @param decimals how many digits (0 < d < digits of n excluding decimals)
@@ -97,28 +111,38 @@ export const getRoundedToNearest = (
  * getIntervals([1, 10, 20, 50, 100, 250], 501) === [100, 250, 501]
  *
  * @param arr number[] - initial numbers. pass [] to seed automatically
- * @param maxSize number - default - 10. maximum size
- * @param n number - default - 3. how many entries inc. maximum size
+ * @param clamps [number, number] - default - [0, 10]. min/max size
+ * @param count number - default - 3. how many entries inc. maximum size
  *
  * @returns number[] - range of numbers up to n
  */
-export const getIntervals = (arr: number[], maxSize = 10, n = 3): number[] => {
-  if (!Array.isArray(arr) || !arr.every((x) => x === ~~x)) {
+export const getIntervals = (
+  arr: number[],
+  clamps: number[] | number = [1, 10],
+  count = 3
+): number[] => {
+  const [minSize, maxSize] = Array.isArray(clamps) ? clamps : [1, clamps];
+  if (!Array.isArray(arr) || !arr.every(Number.isInteger)) {
     // eslint-disable-next-line no-console
     console.error('getIntervals - expect int[] for arr. received ', arr);
     throw new TypeError('getIntervals - invalid arr');
   }
-  if (n < 0 || n !== ~~n) {
+  if (count < 0 || !Number.isInteger(count)) {
     // eslint-disable-next-line no-console
-    console.error('getIntervals - expect int for n. received ', n);
+    console.error('getIntervals - expect int for count. received ', count);
     throw new TypeError('getIntervals - invalid n');
   }
-  if (maxSize < 0 || maxSize !== ~~maxSize) {
+  if (maxSize < 0 || !Number.isInteger(maxSize)) {
     // eslint-disable-next-line no-console
     console.error('getIntervals - expect int for maxSize. received ', maxSize);
     throw new TypeError('getIntervals - invalid maxSize');
   }
-  if (n === 1) {
+  if (minSize > Number.MAX_SAFE_INTEGER || !Number.isInteger(minSize)) {
+    // eslint-disable-next-line no-console
+    console.error('getIntervals - expect int for minSize. received ', maxSize);
+    throw new TypeError('getIntervals - invalid minSize');
+  }
+  if (count === 1) {
     return [maxSize];
   }
   if (maxSize === 0) {
@@ -132,64 +156,45 @@ export const getIntervals = (arr: number[], maxSize = 10, n = 3): number[] => {
     const filteredArr = newArr.filter((x, i) =>
       i <= currentMaxIndex - 1 ? x <= 0.9 * newArr[i + 1] : x <= maxSize
     );
-    const index = filteredArr.indexOf(maxSize);
-    r = filteredArr.slice(Math.max(0, index + 1 - n), index + 1);
-    r = r.concat(filteredArr.slice(index + 1, index + 1 + n - r.length)).slice(-1 * n);
+    const maxIndex = filteredArr.indexOf(maxSize);
+    r = filteredArr.slice(Math.max(0, maxIndex + 1 - count), maxIndex + 1);
+    r = r
+      .concat(filteredArr.slice(maxIndex + 1, maxIndex + 1 + count - r.length))
+      .slice(-1 * count);
   } else {
     const niceMaxSize = getRoundedToNearest(maxSize, 0, false);
     r = getIntervals(
-      Array(n - 1)
+      Array(count - 1)
         .fill(0)
-        .map((_x, i) => Math.ceil(niceMaxSize / Math.pow(2, n - 1 - i)))
+        .map((_x, i) => Math.ceil(niceMaxSize / Math.pow(2, count - 1 - i)))
         .concat(maxSize),
-      maxSize,
-      n
+      clamps,
+      count
     );
   }
-  return r;
+  r.sort((a, b) => a - b);
+  return r.filter((x) => x >= minSize);
 };
 
-export const addWord = (words = '', newWord = '') => {
-  const splits = String(newWord)
-    .split(' ')
-    .filter((x) => x)
-    .map((x) => x.trim());
-  return [
-    ...new Set(
-      words
-        .split(' ')
-        .concat(splits)
-        .map((x) => x.trim())
-        .filter((x) => x)
-    )
-  ].join(' ');
-};
-export const removeWord = (words = '', wordToRemove = '') => {
-  const splits = String(wordToRemove)
-    .split(' ')
-    .filter((x) => x)
-    .map((x) => x.trim());
-  const arr = [
-    ...new Set(
-      words
-        .split(' ')
-        .map((x) => x.trim())
-        .filter((x) => x && splits.every((y) => x !== y))
-    )
-  ];
-  return arr.join(' ');
-};
-
-export const isEmptyObject = (obj: Record<string, never>) =>
-  typeof obj === 'object' && Object.keys(obj).every((x) => [undefined, null].includes(obj[x]));
+export const isEmptyObject = (obj: unknown, emptyValues: unknown[] = [undefined, null]) =>
+  obj === Object(obj) &&
+  Object.keys(obj as Record<string, unknown>).every((x: string) =>
+    emptyValues.includes((obj as Record<string, unknown>)[x] as typeof emptyValues[number])
+  );
 
 const noOp = () => undefined;
 
-export async function timeout(cb: () => void = noOp, ms = 1000) {
-  await new Promise(() => {
+export async function timeout(ms = 1000, cb: () => void = noOp) {
+  return await new Promise<ReturnType<typeof setTimeout>>((resolve, reject) => {
     const wait = setTimeout(() => {
       cb();
       clearTimeout(wait);
     }, ms);
+
+    try {
+      resolve(wait);
+    } catch (e) {
+      reject(e);
+    }
   });
 }
