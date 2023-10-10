@@ -14,6 +14,10 @@ export type PaginationHookParams = {
    */
   pageSize: number | boolean;
   /**
+   * how many items in page size list
+   */
+  pageSizeCount?: number;
+  /**
    * original page size
    */
   _pageSize?: number | boolean;
@@ -105,7 +109,7 @@ export type PaginationHookResults = PaginationParams & {
   /**
    * whether total < smallest page size (then maybe not show any pagination widgets)
    */
-  isTotalLessThanMinPageSize: boolean;
+  isPaginationRedundant: boolean;
 };
 
 export type PaginationStyleProps = {
