@@ -1,5 +1,5 @@
 import cx from 'classnames';
-import { isFunction, merge } from 'lodash-es';
+import { isFunction, mergeWith } from 'lodash-es';
 import { useMemo } from 'react';
 
 import Details from '@/components/Details';
@@ -8,14 +8,14 @@ import Field from '@/components/Field';
 import type { QueryStringFormProps } from './typings';
 import useQueryStringForm from './useQueryStringForm';
 
-const QueryStringForm = (props: QueryStringFormProps) => {
+const QueryStringForm = <T,>(props: QueryStringFormProps<T>) => {
   const {
     className,
     onQsChange,
     metadata = {},
     fieldPropsByKey,
-    oneFieldPerLine,
     bigText,
+    heading = '',
     ...rest
   } = props;
   const { createSetter } = useQueryStringForm(props);
@@ -27,44 +27,43 @@ const QueryStringForm = (props: QueryStringFormProps) => {
         noConfirmation: true,
         set: createSetter(k),
         ...(onQsChange ? {} : { readOnly: true }),
-        ...(bigText ? { inputClassName: 'uno-layer-o:(h-10)', title: '' } : {}),
         ...(isFunction(fieldPropsByKey) ? fieldPropsByKey(k) : {})
       };
-      return <Field name={k} value={v} {...finalFieldProps} />;
+      return <Field idPrefix="-poc-qs-field-" name={k} value={v} {...finalFieldProps} />;
     };
-    return merge(
-      {},
-      oneFieldPerLine
-        ? {
-            '*': {
-              label: {
-                className: 'col-span-2 xl:(col-span-3)'
-              },
-              field: {
-                className: 'col-start-3 xl:(col-start-4) col-end--1'
-              }
-            }
-          }
-        : {},
-      {
-        '*': {
-          field: {
-            render: fieldRenderer
-          }
+    const baseMetadata: QueryStringFormProps<T>['metadata'] = {
+      '*': {
+        label: {
+          className: 'uppercase h-9',
+          renderAsLabel: '-poc-qs-field-'
+        },
+        field: {
+          className: 'h-9',
+          render: fieldRenderer
         }
-      },
-      metadata
-    );
-  }, [bigText, createSetter, fieldPropsByKey, metadata, onQsChange, oneFieldPerLine]);
+      }
+    };
+    return mergeWith(baseMetadata, metadata, (objValue, srcValue, key) => {
+      if (key === 'className') {
+        return cx(objValue, srcValue);
+      }
+    });
+  }, [createSetter, fieldPropsByKey, metadata, onQsChange]);
 
   return (
-    <Details
+    <Details<T>
       {...rest}
-      className={cx('', bigText && 'font-gs-heading02 py-4', className)}
-      labelClassName="color-secondary opacity-60"
-      fieldClassName="color-primary truncate"
+      className={cx(className)}
+      responsiveGrid="grid md:(responsive-grid-kv)"
+      labelClassName={cx(
+        '',
+        'color-secondary opacity-60 flex justify-end lt-md:(justify-start)',
+        bigText && 'items-center',
+        bigText && 'font-gs-body01'
+      )}
+      fieldClassName={cx('', bigText && 'font-gs-body01')}
+      heading={heading}
       metadata={finalMetadata}
-      oneFieldPerLine={oneFieldPerLine}
     />
   );
 };
