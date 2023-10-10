@@ -33,9 +33,10 @@ const sizes = {
 export type SpinnerProps = BaseProps & {
   type?: keyof typeof borderTypes;
   size?: keyof typeof sizes;
-  palette: keyof typeof borderPalette;
+  palette?: keyof typeof borderPalette;
   screen?: boolean;
   screenClassName?: string;
+  center?: boolean;
 };
 
 const Spinner = ({
@@ -45,6 +46,7 @@ const Spinner = ({
   palette = 'primary',
   screen = false,
   screenClassName,
+  center = true,
   ...props
 }: SpinnerProps) => {
   const c = (
@@ -56,7 +58,7 @@ const Spinner = ({
         borderTypes[type]._common,
         'transform-gpu animate-spin',
         'inline-block',
-        'self-center mx-auto',
+        center && 'self-center mx-auto',
         className
       )}
       {...props}
