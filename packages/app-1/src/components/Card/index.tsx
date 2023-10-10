@@ -9,8 +9,13 @@ type CardProps = BaseProps & {
   hover?: boolean;
   shadow?: boolean;
   title?: string;
-  message?: string;
-  objects?: unknown[];
+  message?: ReactNode;
+  objects?: {
+    key?: string;
+    [key: string]: unknown;
+  }[];
+  flex?: boolean;
+  status?: number;
 };
 
 const StyledArticle = styled.article``;
@@ -19,6 +24,7 @@ const Card: FC<CardProps> = ({
   className,
   type,
   hover,
+  flex = true,
   shadow,
   title,
   message,
@@ -29,8 +35,8 @@ const Card: FC<CardProps> = ({
   <StyledArticle
     className={cx(
       'w-full',
-      'flex flex-col justify-center',
-      shadow && 'shadow-lg',
+      flex && 'flex flex-col justify-center',
+      shadow && 'shadow-lg shadow-tertiary',
       cardPalette[type],
       hover && `${cardHoverClassnames[type]}`,
       className
