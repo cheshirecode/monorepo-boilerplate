@@ -34,9 +34,19 @@ export default defineConfig((config) => ({
       output: {
         manualChunks: (id) => {
           if (id.includes('node_modules')) {
-            const vendorModules = ['react', 'lodash', '@emotion'];
-            const m = vendorModules.find((x) => id.includes(x)) ?? '';
-            return `vendor${m ? `-${m}` : ''}`;
+              const dependents = [];
+              const m = vendorModules.find((x) => id.includes(`/${x}`)) ?? '';
+              const uniqueName = `vendor${m ? `-${m}` : ''}`;
+              // we use a Set here so we handle each module at most once. This
+              // prevents infinite loops in case of circular dependencies
+              const idsToHandle = new Set(getModuleInfo(id).dynamicImporters);
+              for (const moduleId of idsToHandle) {
+                const { isEntry, dynamicImporters, importers } = getModuleInfo(moduleId);
+                if (isEntry || dynamicImporters.length > 0) dependents.push(moduleId);
+                for (const importerId of importers) idsToHandle.add(importerId);
+              }
+
+              return dependents.length === 1 ? uniqueName : `shared.${uniqueName}`;
           }
         }
       }
