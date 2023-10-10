@@ -1,22 +1,51 @@
 /// <reference types="vitest" />
 import Unocss from '@unocss/vite';
 import react from '@vitejs/plugin-react';
+import browserslistToEsbuild from 'browserslist-to-esbuild';
 import { defineConfig } from 'vite';
 import { configDefaults } from 'vitest/config';
+import vitePluginImportus from 'vite-plugin-importus';
 
 import alias from './alias';
+import pkg from './package.json';
 import unocssConfig from './unocss.config';
+
+const isCI = !!process.env.CI;
 
 // https://vitejs.dev/config/
 export default defineConfig((config) => ({
   plugins: [
     Unocss({}, unocssConfig),
-    react({
-      jsxImportSource: '@emotion/react',
-      babel: {
-        plugins: ['@emotion/babel-plugin']
-      }
-    })
+      react({
+        jsxImportSource: '@emotion/react',
+        babel: {
+          plugins: []
+          // presets are not working right now, try again and install @babel/preset-env core-js@3.25.3
+          // presets: [
+          //   [
+          //     '@babel/preset-env',
+          //     {
+          //       useBuiltIns: 'usage',
+          //       corejs: { version: '3.25', proposals: true }
+          //     }
+          //   ]
+          // ]
+        }
+        // https://github.com/vitejs/awesome-vite#plugins
+      }),
+      ...(config.command === 'build'
+        ? [
+            vitePluginImportus([
+              {
+                libraryName: 'lodash-es',
+                customName: (name: string) => {
+                  return `lodash-es/${name}`;
+                },
+                camel2DashComponentName: false
+              }
+            ])
+          ]
+        : [])
   ],
   resolve: {
     alias
@@ -50,8 +79,34 @@ export default defineConfig((config) => ({
           }
         }
       }
-    }
+    },
+    // speed up build during pipelines
+    reportCompressedSize: !isCI,
+    target: browserslistToEsbuild()
   },
+  optimizeDeps: {
+    // disabled: false,
+    include: [
+      'hoist-non-react-statics',
+      '@emotion/react/jsx-dev-runtime',
+      '@unocss/preset-mini'
+    ],
+    exclude: []
+  },
+    define: {
+      // flag to enable MirageJS to mock API
+      'process.env.__MOCK_API__': [
+        'test'
+        // , 'development'
+      ].includes(config.mode),
+      'process.env.__VERSION__': JSON.stringify(pkg.version)
+    },
+    css: {
+      devSourcemap: true
+    },
+    json: {
+      stringify: true
+    },
   test: {
     globals: true,
     environment: 'jsdom',
