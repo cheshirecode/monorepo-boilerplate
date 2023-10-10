@@ -31,6 +31,10 @@
       "allowedCategories": [ "production" ]
     },
     {
+      "name": "@happy-dom/jest-environment",
+      "allowedCategories": [ "production" ]
+    },
+    {
       "name": "@mdx-js/react",
       "allowedCategories": [ "production" ]
     },
@@ -87,11 +91,19 @@
       "allowedCategories": [ "production" ]
     },
     {
+      "name": "@tanstack/react-virtual",
+      "allowedCategories": [ "production" ]
+    },
+    {
       "name": "@testing-library/jest-dom",
       "allowedCategories": [ "production" ]
     },
     {
       "name": "@testing-library/react",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "@testing-library/react-hooks",
       "allowedCategories": [ "production" ]
     },
     {
@@ -136,6 +148,10 @@
     },
     {
       "name": "babel-loader",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "browserslist-to-esbuild",
       "allowedCategories": [ "production" ]
     },
     {
@@ -199,11 +215,19 @@
       "allowedCategories": [ "tools" ]
     },
     {
+      "name": "eslint-plugin-storybook",
+      "allowedCategories": [ "production" ]
+    },
+    {
       "name": "eslint-plugin-unused-imports",
       "allowedCategories": [ "tools" ]
     },
     {
       "name": "fast-json-stable-stringify",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "isomorphic-unfetch",
       "allowedCategories": [ "production" ]
     },
     {
@@ -232,6 +256,14 @@
     },
     {
       "name": "react-dom",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "react-select",
+      "allowedCategories": [ "production" ]
+    },
+    {
+      "name": "sass",
       "allowedCategories": [ "production" ]
     },
     {
@@ -267,8 +299,16 @@
       "allowedCategories": [ "production" ]
     },
     {
+      "name": "unocss-preset-scrollbar",
+      "allowedCategories": [ "production" ]
+    },
+    {
       "name": "vite",
       "allowedCategories": [ "production", "tools" ]
+    },
+    {
+      "name": "vite-plugin-importus",
+      "allowedCategories": [ "production" ]
     },
     {
       "name": "vitest",
