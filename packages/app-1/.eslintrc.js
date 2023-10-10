@@ -18,6 +18,7 @@ module.exports = {
   },
   rules: {
     ...baseConfig.rules,
-    'react/no-unknown-property': ['error', { ignore: ['uno-border'] }]
+    'react/no-unknown-property': ['error', { ignore: ['uno-border'] }],
+    'prettier/prettier': ['error', { singleQuote: true }]
   }
 };
