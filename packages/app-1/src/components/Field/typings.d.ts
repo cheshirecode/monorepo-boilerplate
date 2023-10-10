@@ -1,4 +1,4 @@
-import type { MouseEvent, RefObject } from 'react';
+import type { KeyboardEvent, MouseEvent, RefObject } from 'react';
 
 export type FieldHookParams = {
   value: string | number;
@@ -7,50 +7,56 @@ export type FieldHookParams = {
   title?: string;
   readOnly?: boolean;
   saveOnBlur?: boolean;
+  noConfirmation?: boolean;
   /**
-   * autocomplete list
+   * autocomplete list, pass non-array to skip
    */
   autoCompleteItems?: {
     name: string;
     value: string;
   }[];
   filterByValue?: boolean;
+  edit?: boolean;
+  idPrefix?: string;
+  onBlur: (v?: unknown) => void;
 };
 
 export type FieldHookResults = {
-  readonly fieldRef: RefObject<HTMLDivElement>;
-  readonly getFieldInput: () => HTMLElement | null | undefined;
-  readonly v: FieldHookParams['value'];
+  fieldRef: RefObject<HTMLDivElement>;
+  getFieldInput: () => HTMLElement | null | undefined;
+  v: FieldHookParams['value'];
   /**
    * intermediate (not yet final) value before confirmation (if saveOnBlue=false), will always trigger onChange
    * @param v
    * @returns
    */
-  readonly setInnerValue: (v: FieldHookParams['value']) => void;
+  setInnerValue: (v: FieldHookParams['value']) => void;
   /**
    * commit/set the value from either data-value or input value
    * @param e
    * @returns
    */
-  readonly setValue: (e?: MouseEvent<HTMLElement>) => void;
-  readonly onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  setValue: (e?: MouseEvent<HTMLElement>) => void;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   /**
    * event handler for clicking on an autocomplete item, depending on saving mode (onBlur or otherwise)
    */
-  readonly onAutoCompleteItemClicked: (e: MouseEvent<HTMLElement>) => void;
-  readonly isEditing: boolean;
-  readonly onKeyUp: (e: KeyboardEvent<HTMLInputElement>) => void;
-  readonly onFocus: () => void;
-  readonly onBlur: () => void;
-  readonly readOnlyProps: {
+  onAutoCompleteItemClicked: (e: MouseEvent<HTMLElement>) => void;
+  isEditing: boolean;
+  onKeyUp: (e: KeyboardEvent<HTMLInputElement>) => void;
+  onFocus: () => void;
+
+  readOnlyProps: {
     onClick?: () => void;
     onFocus?: () => void;
     title?: string;
   };
-  readonly filteredAutoCompleteItems: {
+  filteredAutoCompleteItems: {
     name: string;
     value: string;
   }[];
+  saveOnBlur: boolean;
+  noConfirmation: boolean;
 };
 export type FieldProps = BaseProps &
   FieldHookParams & {
@@ -59,6 +65,6 @@ export type FieldProps = BaseProps &
     inputClassName?: string;
     readOnlyClassName?: string;
     iconClassName?: string;
-    noConfirmation?: boolean;
     autoCompletePos?: 'absolute' | 'relative';
+    autoCompleteClassName?: string;
   };
