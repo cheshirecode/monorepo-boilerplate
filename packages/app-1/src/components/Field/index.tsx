@@ -22,10 +22,12 @@ const Field = (props: FieldProps) => {
     onBlur,
     onFocus,
     readOnlyProps,
-    filteredAutoCompleteItems
+    filteredAutoCompleteItems,
+    noConfirmation
   } = useField(props);
   const {
-    value: _value,
+    value: originalValue,
+    onBlur: _ob,
     saveOnBlur: _s,
     set: _set,
     onChange: _onChange,
@@ -37,22 +39,32 @@ const Field = (props: FieldProps) => {
     title,
     readOnly,
     readOnlyClassName,
-    noConfirmation = false,
     autoCompleteItems: _a,
     autoCompletePos = 'absolute',
+    autoCompleteClassName,
     filterByValue: _f,
+    noConfirmation: _n,
+    idPrefix = '--poc-field-',
     ...rest
   } = props;
 
+  const fullAutoCompleteClassName = cx(
+    autoCompletePos === 'absolute' && 'absolute z-3',
+    autoCompletePos === 'relative' && 'relative flex flex-col',
+    'm-0 p-0 py-2 w-full max-h-40 overflow-y-auto',
+    'card-secondary',
+    autoCompleteClassName
+  );
+
   return (
     <div
-      className={cx('relative children:(my-auto)', 'w-full', isEditing && 'z-1', className)}
+      className={cx('relative children:(my-auto)', 'h-full w-full', isEditing && 'z-1', className)}
       ref={fieldRef}
       onFocus={onFocus}
       {...rest}
     >
       <input
-        id={`--poc-field-${name}`}
+        id={`${idPrefix}${name}`}
         name={name}
         className={cx(
           'py-0 pl-2 ',
@@ -65,7 +77,7 @@ const Field = (props: FieldProps) => {
           !readOnly && 'card-secondary',
           !readOnly && !isEditing && 'cursor-pointer',
           readOnly && readOnlyClassName,
-          readOnly && 'card-primary'
+          readOnly && 'card-primary pointer-events-none'
         )}
         type="text"
         value={isEditing ? v : isFunction(displayValue) ? displayValue(v) : v}
@@ -93,13 +105,10 @@ const Field = (props: FieldProps) => {
       )}
       {isEditing && (
         <Fragment>
-          {Array.isArray(filteredAutoCompleteItems) && filteredAutoCompleteItems.length > 0 && (
+          {filteredAutoCompleteItems?.length > 0 && (
             <section
               className={cx(
-                autoCompletePos === 'absolute' && 'absolute z-3',
-                autoCompletePos === 'relative' && 'relative flex flex-col',
-                'p-0 m-0 py-2 w-full max-h-40 overflow-y-auto',
-                'card-primary border border-t-0 shadow-lg',
+                fullAutoCompleteClassName,
                 'children:(w-full inline-block border-0)',
                 'animate-duration-200 animate-fade-in'
               )}
@@ -112,7 +121,9 @@ const Field = (props: FieldProps) => {
                     className={cx(
                       'bg-inherit',
                       // value !== v ? 'cursor-pointer anchor hover:bg-primary-hover' : 'disabled'
-                      'cursor-pointer anchor hover:bg-primary-hover'
+                      value !== originalValue
+                        ? 'cursor-pointer anchor hover:bg-primary-hover'
+                        : 'disabled'
                     )}
                     data-value={value}
                     onClick={onAutoCompleteItemClicked}
@@ -132,17 +143,8 @@ const Field = (props: FieldProps) => {
               })}
             </section>
           )}
-          {Array.isArray(filteredAutoCompleteItems) && filteredAutoCompleteItems.length === 0 && (
-            <section
-              className={cx(
-                autoCompletePos === 'absolute' && 'absolute z-3',
-                autoCompletePos === 'relative' && 'relative flex flex-col',
-                'p-0 m-0 py-2 w-full',
-                'card-primary border border-t-0 shadow-lg'
-              )}
-            >
-              No items...
-            </section>
+          {filteredAutoCompleteItems?.length === 0 && (
+            <section className={cx(fullAutoCompleteClassName, 'px-2')}>No items...</section>
           )}
         </Fragment>
       )}
