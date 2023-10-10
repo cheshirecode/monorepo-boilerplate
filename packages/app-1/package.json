@@ -55,6 +55,7 @@
     "@unocss/vite": "^0.53.5",
     "@vitejs/plugin-react": "^4.0.0",
     "@vitest/coverage-c8": "latest",
+    "browserslist-to-esbuild": "latest",
     "esbuild": "^0.15.13",
     "eslint-plugin-storybook": "^0.6.7",
     "jsdom": "^22.0.0",
