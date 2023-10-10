@@ -9,13 +9,9 @@ export type QueryStringHookParams = {
   persistState?: boolean;
 };
 
-export type QueryStringFormProps = BaseProps &
-  DetailsProps &
+export type QueryStringFormProps<T> = BaseProps &
+  DetailsProps<T> &
   QueryStringHookParams & {
     fieldPropsByKey?: (k: string) => FieldProps;
-    /**
-     * default - false. flag to set out per line unless the viewport is really small
-     */
-    oneFieldPerLine?: boolean;
     bigText?: boolean;
   };
