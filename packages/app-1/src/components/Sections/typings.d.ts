@@ -1,80 +1,126 @@
-import type { DebouncedFunc } from 'lodash-es';
-import type { HTMLAttributes, MouseEvent, ReactNode, RefObject } from 'react';
+import { isFunction, isUndefined, throttle } from 'lodash-es';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-export type ItemsType = {
-  id: string;
-  name: ReactNode;
-  className?: string;
-  content: ReactNode | (() => ReactNode);
-  onClick?: (e: MouseEvent<HTMLElement>) => void;
-}[];
+import useInitialEffect from '@/services/hooks/useInitialEffect';
+import useLocationHash from '@/services/hooks/useLocationHash';
+import { queryString } from '@/services/routes';
 
-export interface SectionHookParams {
-  items?: ItemsType;
-  activeIndex?: number;
-  /**
-   * default - false. set to infer active index from url hash
-   */
-  inferHash?: boolean;
-  /**
-   * default - false. set to infer active index from url params
-   */
-  inferQueryParams?: boolean;
-  /**
-   * callback to act on scrollTop of component
-   */
-  cbScrollTop?: (scrollTop: number) => void;
-  /**
-   * threshold (px|em|rm)  set offset for content
-   */
-  contentOffset?: string;
-  /**
-   * default - false. set to scroll content back to top whenever index changes
-   */
-  scrollTopOnIndexChange?: boolean;
-}
+import { SectionHookParams } from './typings';
 
-export interface SectionHookResults {
-  readonly ref: RefObject<HTMLElement>;
-  readonly preRef: RefObject<HTMLElement>;
-  readonly preRefWide: RefObject<HTMLElement>;
-  readonly contentRef: RefObject<HTMLDivElement>;
-  readonly checkOnScroll: DebouncedFunc<() => void>;
-}
+const useSections = ({
+  items = [],
+  activeIndex = 0,
+  inferHash = false,
+  inferQueryParams = false,
+  cbScrollTop,
+  // contentOffset = 0,
+  scrollTopOnIndexChange = false
+}: SectionHookParams) => {
+  const [currentIndex, setCurrentIndex] = useState(activeIndex);
+  const ref = useRef<HTMLElement>(null);
+  //scroll
+  const preRef = useRef<HTMLElement>(null);
+  const preRefWide = useRef<HTMLElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const bottomPaddingRef = useRef<HTMLDivElement>(null);
+  const checkOnScroll = useMemo(
+    () =>
+      throttle(
+        () => {
+          if (!isFunction(cbScrollTop)) {
+            return;
+          }
+          // TODO - take a closer look at scrolling logic later to determine dynamic heights better
+          const st = ref?.current?.scrollTop;
+          if (!isUndefined(st) && st >= 0) {
+            cbScrollTop(st);
+            if (preRef?.current) {
+              const { classList } = preRef.current;
+              const isScrollingPastPre = st > 0;
+              const alreadyHidden = classList.contains('hidden');
+              if (alreadyHidden && st === 1) {
+                return;
+              }
+              classList[isScrollingPastPre ? 'add' : 'remove']('hidden');
+              if (!alreadyHidden && isScrollingPastPre) {
+                ref.current?.scrollTo({
+                  // very slightly below the fold to still maintain the offset logic (if hiding heading e.g.)
+                  top: 1,
+                  behavior: 'smooth'
+                });
+              }
+            }
+            // const offsets = [ contentOffset || 9999].map((x) => `${x}px`);
+            // setContentOffsetStyle({
+            //   marginTop: `min(${offsets.join(', ')})`
+            // });
+          }
 
-export interface SectionsProps extends BaseProps, HTMLAttributes<HTMLElement>, SectionHookParams {
-  /**
-   * default - false. set to make the nav menu sticky on large screens > xl breakpoint ~1280px
-   */
-  stickyNav?: boolean;
-  /**
-   * list of each section items
-   * {
-   *   id - unique id to act as URL hash for the item
-   *   name - display name
-   *   content - actual content of the item
-   *   }[]
-   */
-  items?: ItemsType;
-  activeIndex?: number;
-  navClassName?: string;
-  contentClassName?: string;
+          if (bottomPaddingRef?.current?.style) {
+            bottomPaddingRef.current.style.height =
+              (contentRef?.current?.clientHeight ?? 0) + (preRef?.current?.clientHeight ?? 0) <=
+              window?.innerHeight
+                ? `max(${window?.innerHeight - (contentRef?.current?.clientHeight ?? 0) - 120}px, ${
+                    preRef?.current?.clientHeight
+                  }px)`
+                : `0px`;
+          }
+        },
+        300,
+        {
+          trailing: true,
+          leading: true
+        }
+      ),
+    [cbScrollTop]
+  );
+  const locationHash = useLocationHash();
+  const updateIndexByHash = useCallback(
+    (id: string) => {
+      const indexFromHash = items.findIndex((x) => x.id === id);
+      if (indexFromHash >= 0) {
+        setCurrentIndex(indexFromHash);
+      }
+    },
+    [items]
+  );
+  useInitialEffect(() => {
+    if (inferQueryParams) {
+      let hash = queryString.get('sectionHash') ?? '';
+      hash = decodeURIComponent(hash) !== hash ? decodeURIComponent(hash) : hash;
+      const indexFromHash = items.findIndex((x) => x.id === hash);
+      if (indexFromHash >= 0) {
+        setCurrentIndex(indexFromHash);
+      }
+    }
+  }, []);
 
-  /**
-   * default - false. set to allow items to take as much width as needed for content
-   */
-  itemFitContent?: boolean;
-  /**
-   * render something BEFORE nav + content
-   */
-  Pre?: ReactNode;
-  preContentClassName?: string;
-  /**
-   * style props to make content flex container
-   */
-  flexContent?: boolean;
-  /**
-   * style props to add standarding padding to content
-   */
-  contentPadding?: false | 'compact' | 'normal';
-}
+  useInitialEffect(() => {
+    if (inferHash) {
+      updateIndexByHash(locationHash?.slice(1)); // #abc > abc);
+    }
+  }, [locationHash]);
+
+  useEffect(() => {
+    if (scrollTopOnIndexChange && ref?.current) {
+      ref.current.scrollTo({
+        // very slightly below the fold to still maintain the offset logic (if hiding heading e.g.)
+        top: preRef?.current?.offsetHeight || 1,
+        behavior: 'smooth'
+      });
+    }
+  }, [scrollTopOnIndexChange, currentIndex]);
+
+  return {
+    ref,
+    preRef,
+    preRefWide,
+    contentRef,
+    bottomPaddingRef,
+    checkOnScroll,
+    currentIndex,
+    setCurrentIndex
+  } as const;
+};
+
+export default useSections;
