@@ -1,14 +1,18 @@
+/**
+ * @vitest-environment node
+ */
 import { describe, expect, it } from 'vitest';
 
 import {
-  addWord,
   deepFilter,
   getIntervals,
   getRoundedToNearest,
+  isEmptyObject,
   pascalToSeparatedWords,
-  removeWord,
   splitAlphanumeric,
-  toCamel
+  toCamel,
+  toHyphen,
+  toUnderscore
 } from './';
 
 describe('@/utils', () => {
@@ -39,11 +43,21 @@ describe('@/utils', () => {
     expect(toCamel('_snake_case')).toEqual('SnakeCase');
   });
 
+  it('toUnderscore', () => {
+    expect(toUnderscore('')).toEqual('');
+    expect(toUnderscore('1-2--3---4 5  6   7')).toEqual('1_2_3_4_5_6_7');
+  });
+
+  it('toHyphen', () => {
+    expect(toHyphen('')).toEqual('');
+    expect(toHyphen('1_2__3___4 5  6   7')).toEqual('1-2-3-4-5-6-7');
+  });
+
   it('deepFilter', () => {
     expect(deepFilter([])).toEqual([]);
     expect(deepFilter([], '')).toEqual([]);
     expect(deepFilter(['123'], '12')).toEqual(['123']);
-    expect(deepFilter(['123', '145', '2'], '1,4,')).toEqual(['123', '145']);
+    expect(deepFilter(['123', '145', '2'], '1,4,')).toEqual(['145']);
     expect(deepFilter(['123'], '124')).toEqual([]);
     expect(deepFilter(['123', ['1', '2', '3'], ['2', '3']], '1')).toEqual(['123', ['1', '2', '3']]);
     expect(
@@ -111,8 +125,9 @@ describe('@/utils', () => {
     expect(getIntervals([1, 10, 20, 50, 100, 250], 51)).toEqual([10, 20, 51]);
     expect(getIntervals([1, 17, 20, 22, 50, 100, 250], 51)).toEqual([17, 22, 51]);
     expect(getIntervals([1, 10, 20, 50, 100, 250], 501)).toEqual([100, 250, 501]);
-    expect(getIntervals([10, 20, 250], 501, 2)).toEqual([250, 501]);
-    expect(getIntervals([10, 26, 27, 28, 29, 30, 31], 100)).toEqual([10, 31, 100]);
+    expect(getIntervals([10, 20, 250], [0, 501], 2)).toEqual([250, 501]);
+    expect(getIntervals([10, 29, 30, 31], 100)).toEqual([10, 31, 100]);
+    expect(getIntervals([10, 29, 30, 31], [20, 100])).toEqual([31, 100]);
     expect(getIntervals([], 1)).toEqual([1]);
     expect(getIntervals([], 10)).toEqual([3, 5, 10]);
     expect(getIntervals([], 19)).toEqual([3, 5, 19]);
@@ -125,30 +140,11 @@ describe('@/utils', () => {
     expect(getIntervals([], 1000)).toEqual([250, 500, 1000]);
   });
 
-  it('addWord', () => {
-    expect(addWord()).toEqual('');
-    expect(addWord('')).toEqual('');
-    expect(addWord('', '')).toEqual('');
-    expect(addWord('foo bar ', 'foo1')).toContain('foo1');
-    expect([...addWord('foo bar ', 'foo').matchAll(/foo/gi)]).toHaveLength(1);
-  });
-
-  it('addWord', () => {
-    expect(addWord()).toEqual('');
-    expect(addWord('')).toEqual('');
-    expect(addWord('', '')).toEqual('');
-    expect(addWord('foo bar ', 'foo1')).toContain('foo1');
-    expect([...addWord('foo bar ', 'foo').matchAll(/foo/gi)]).toHaveLength(1);
-    expect(addWord('foo bar foo1   bar1 ', 'foo2 ')).toContain('foo2');
-    expect(addWord('foo bar foo1   bar1 ', 'foo2 ')).not.toContain('foo2 ');
-  });
-
-  it('removeWord', () => {
-    expect(removeWord()).toEqual('');
-    expect(removeWord('')).toEqual('');
-    expect(removeWord('', '')).toEqual('');
-    expect(removeWord('foo bar ', 'foo')).not.toContain('foo');
-    expect(removeWord('foo bar ', 'foo1')).not.toContain('foo1');
-    expect(removeWord('foo bar ', 'foo bar')).toEqual('');
+  it('isEmptyObject', () => {
+    expect(isEmptyObject(null)).toEqual(false);
+    expect(isEmptyObject({})).toEqual(true);
+    expect(isEmptyObject({ a: 1 })).toEqual(false);
+    expect(isEmptyObject({ a: undefined, b: null })).toEqual(true);
+    expect(isEmptyObject({ a: '', b: null }, ['', null])).toEqual(true);
   });
 });
