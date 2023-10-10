@@ -1,10 +1,12 @@
 import type { DebouncedFunc } from 'lodash-es';
-import type { HTMLAttributes, ReactNode, RefObject } from 'react';
+import type { HTMLAttributes, MouseEvent, ReactNode, RefObject } from 'react';
 
 export type ItemsType = {
   id: string;
-  name: string;
-  content: ReactNode;
+  name: ReactNode;
+  className?: string;
+  content: ReactNode | (() => ReactNode);
+  onClick?: (e: MouseEvent<HTMLElement>) => void;
 }[];
 
 export interface SectionHookParams {
@@ -35,7 +37,8 @@ export interface SectionHookParams {
 export interface SectionHookResults {
   readonly ref: RefObject<HTMLElement>;
   readonly preRef: RefObject<HTMLElement>;
-  readonly contentRef: RefObject<HTMLElement>;
+  readonly preRefWide: RefObject<HTMLElement>;
+  readonly contentRef: RefObject<HTMLDivElement>;
   readonly checkOnScroll: DebouncedFunc<() => void>;
 }
 
@@ -66,4 +69,12 @@ export interface SectionsProps extends BaseProps, HTMLAttributes<HTMLElement>, S
    */
   Pre?: ReactNode;
   preContentClassName?: string;
+  /**
+   * style props to make content flex container
+   */
+  flexContent?: boolean;
+  /**
+   * style props to add standarding padding to content
+   */
+  contentPadding?: false | 'compact' | 'normal';
 }
