@@ -107,14 +107,20 @@ const config: UserConfig = defineConfig({
       ...gridShortcutObj,
       // @ts-ignore
       btn: 'border-0 py-2 px-4 font-semibold rounded-md cursor-pointer',
+      'btn--rounded-none': 'border-0 py-2 px-4 font-light cursor-pointer',
       'btn-compact': 'py-1 px-1',
+      'btn-icon': 'cursor-pointer color-inherit bg-inherit border-0 p-0 m-0',
       anchor:
-        'text-blue-600 dark:text-blue-500 no-underline @hover:(underline text-blue-800 dark:text-blue-300)',
+        'text-blue-600 dark:text-blue-500 no-underline @hover:(underline text-blue-80 dark:text-blue-30)',
       disabled: 'focus:outline-none cursor-auto pointer-events-none',
-      'responsive-page': ['max-w-custom', 'mx-auto'].join(' '),
-      'px-res': ['px-4 xxl:px-1/10 4xl:px-1/5'].join(' '),
-      'mx-res': ['mx-4 xxl:mx-1/10 4xl:mx-1/5'].join(' '),
-      'mx--res': ['mx--4 xl:mx--1/5 xxl:mx--1/10 4xl:mx--1/5'].join(' '),
+      tag: 'border rounded-full text-center',
+      'tag--hover': '@hover:(cursor-pointer) border-transparent',
+      //https://github.com/unocss/unocss/tree/main/packages/preset-wind#sm-lg-variants
+      'responsive-page': 'max-w-custom mx-auto',
+      'px-res': 'px-4 xxl:px-1/10 4xl:px-1/5',
+      'w-res': 'w-4 xxl:w-[10vw] 4xl:w-[20vw]',
+      'mx-res': 'mx-4 xxl:mx-1/10 4xl:mx-1/5',
+      'mx--res': 'mx--4 xl:mx--1/5 xxl:mx--1/10 4xl:mx--1/5',
       'responsive-content-layout': [
         'flex',
         'lt-xs:justify-start',
