@@ -31,19 +31,19 @@ const Template: ComponentStory<typeof Field> = ({ autoCompleteItems, ...args }) 
           />
         </dd>
       </dl>
-      <Field
-        {...args}
-        autoCompleteItems={aci}
-        value={final}
-        set={setV}
-        onChange={(v) => {
-          onChange(v);
-          setAci((v) => {
-            const shuffled = [...(v ?? [])].sort(() => Math.random() - 0.5);
-            return shuffled;
-          });
-        }}
-      />
+      <div className="flex flex-gap-2 h-10">
+        <label>{args.name}</label>
+        <Field
+          {...args}
+          autoCompleteItems={aci}
+          value={final}
+          set={setV}
+          onChange={(v) => {
+            onChange(v);
+            setAci((v) => (v ? [...(v ?? [])].sort(() => Math.random() - 0.5) : v));
+          }}
+        />
+      </div>
       <b>after field</b>
     </fieldset>
   );
@@ -91,12 +91,11 @@ NoConfirmation.args = {
   displayValue: (v) => `custom (${v})`
 };
 
-export const AutoCompleteWithConfirmation = Template.bind({});
+export const AutoComplete = Template.bind({});
 
-AutoCompleteWithConfirmation.args = {
+AutoComplete.args = {
   ...Default.args,
-  saveOnBlur: false,
-  noConfirmation: false,
+  noConfirmation: true,
   autoCompleteItems: [
     {
       name: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
@@ -127,14 +126,4 @@ AutoCompleteWithConfirmation.args = {
       value: 'iaculis at erat pellentesque adipiscing'
     }
   ]
-};
-
-export const AutoCompleteWithSaveOnBlur: ComponentStory<typeof Field> = (args) =>
-  Array(2)
-    .fill(0)
-    .map((_x, i) => <Template key={i} {...args} />);
-AutoCompleteWithSaveOnBlur.args = {
-  ...AutoCompleteWithConfirmation.args,
-  saveOnBlur: true,
-  noConfirmation: true
 };
