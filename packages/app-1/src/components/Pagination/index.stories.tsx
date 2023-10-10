@@ -17,9 +17,9 @@ const Template: ComponentStory<typeof Pagination> = (args) => <Pagination {...ar
 export const Basic = Template.bind({});
 Basic.args = {
   className: 'flex flex-gap-2',
-  itemClassName: 'btn-secondary p-2 transition-all-200',
-  activeItemClassName: 'opacity-20 disabled',
-  disabledItemClassName: 'opacity-20 disabled',
+  itemClassName: '',
+  activeItemClassName: '',
+  disabledItemClassName: '',
   pageSize: 7,
   count: 50,
   isRollover: false
@@ -70,41 +70,6 @@ TwoItems.args = {
   ...ExternalCallback.args,
   count: 2,
   pageSize: 1
-};
-
-export const MultiplePaginators: ComponentStory<typeof Pagination> = (props) => {
-  const [params, setParams] = useState(props);
-
-  return (
-    <section className="flex flex-col">
-      <Pagination
-        onChange={(params) => {
-          setParams((v) => ({
-            ...v,
-            ...params
-          }));
-        }}
-        {...params}
-      />
-      <Pagination
-        onChange={(params) => {
-          setParams((v) => ({
-            ...v,
-            ...params
-          }));
-        }}
-        {...params}
-      />
-      <div className="">
-        <pre>{JSON.stringify(props, null, 2)}</pre>
-        <pre>{JSON.stringify(params, null, 2)}</pre>
-      </div>
-    </section>
-  );
-};
-MultiplePaginators.args = {
-  ...Basic.args,
-  page: 2
 };
 
 export const UsePagination: ComponentStory<typeof Pagination> = (props) => {
@@ -169,4 +134,29 @@ UsePaginationWithPageSizes.args = {
   page: 2,
   count: 50000,
   pageSize: 9999
+};
+
+export const UsePaginationWithMultiplePaginators: ComponentStory<typeof Pagination> = (props) => {
+  const [counter, setCounter] = useState(0);
+  const extraProps = usePagination({
+    ...props,
+    onChange: () => setCounter((v) => ++v)
+  });
+
+  return (
+    <section className="flex flex-col">
+      <PlainPagination {...props} {...extraProps} />
+      <div className="">
+        <PlainPagination {...props} {...extraProps} showAllPages />
+        <pre>perform filtering or pagination to see counter go up - {counter}</pre>
+        <pre>returned props from hook</pre>
+        <pre>{JSON.stringify(extraProps, null, 2)}</pre>
+      </div>
+      <PlainPagination {...props} {...extraProps} />
+    </section>
+  );
+};
+UsePaginationWithMultiplePaginators.args = {
+  ...Basic.args,
+  page: 2
 };
