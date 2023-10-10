@@ -12,7 +12,6 @@ import {
 import cx from 'classnames';
 import { useEffect, useMemo, useReducer, useState } from 'react';
 
-import formatter from '@/services/locale/formatter';
 import { isEmptyObject } from '@/utils';
 
 import { TableCoreProps, TableProps } from './typings';
@@ -95,15 +94,10 @@ const useTableCore = <T,>({
         // accessorKey: x,
         // header: x,
         header: function Header(props) {
-          const displayX = formatter(x);
-          return headerRenderer ? headerRenderer?.(props, x, displayX) : displayX;
+          return headerRenderer ? headerRenderer?.(props, x) : x;
         },
         cell: function Cell(props) {
-          const v =
-            formatter({
-              k: props.column.id,
-              v: props.getValue()
-            }) ?? props.getValue();
+          const v = props.getValue();
           const cachedV = useBaseCell(v) ?? v;
           return cellRenderer ? cellRenderer?.(props, cachedV) : cachedV;
         }
