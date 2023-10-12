@@ -251,6 +251,10 @@
       "allowedCategories": [ "production" ]
     },
     {
+      "name": "miragejs",
+      "allowedCategories": [ "production" ]
+    },
+    {
       "name": "nyc",
       "allowedCategories": [ "tools" ]
     },
