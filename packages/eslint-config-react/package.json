@@ -23,8 +23,8 @@
   "dependencies": {
     "@babel/core": "^7.20.2",
     "@babel/eslint-parser": "^7.19.0",
-    "@typescript-eslint/eslint-plugin": "^5",
-    "@typescript-eslint/parser": "^5",
+    "@typescript-eslint/eslint-plugin": "^6.x",
+    "@typescript-eslint/parser": "^6.x",
     "eslint": "^8",
     "eslint-config-prettier": "^8.3.0",
     "eslint-import-resolver-typescript": "~3.5.2",
@@ -47,8 +47,6 @@
     "react": "latest"
   },
   "resolutions": {
-    "@typescript-eslint/eslint-plugin": "^5",
-    "@typescript-eslint/parser": "^5",
     "typescript": "^4.8.4"
   },
   "bugs": {
