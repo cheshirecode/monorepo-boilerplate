@@ -268,7 +268,7 @@
     },
     {
       "name": "react-dom",
-      "allowedCategories": [ "production" ]
+      "allowedCategories": [ "production", "tools" ]
     },
     {
       "name": "react-select",

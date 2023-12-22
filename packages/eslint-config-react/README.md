@@ -26,7 +26,7 @@ to reduces package.json clutter from
     "eslint-plugin-react": "^7.26.1",
     "eslint-plugin-react-hooks": "^4.2.0",
     "prettier": "^2.6.2",
-    "typescript": "^4.8.0"
+    "typescript": "latest"
 ```
 to
 ```
