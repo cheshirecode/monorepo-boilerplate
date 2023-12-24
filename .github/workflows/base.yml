@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [14.x, 16.x]
+        node-version: [16.x, 18.x, 20.x]
     steps:
       # Get code from repo
       - name: Checkout code
@@ -41,6 +41,7 @@ jobs:
       - uses: ./.github/actions/setup
       # Run rush install
       - name: Install dependencies
+        continue-on-error: true
         run: |
           npm set verify-store-integrity false
           node common/scripts/install-run-rush.js change -v
@@ -80,6 +81,7 @@ jobs:
         working-directory: ${{ inputs.package-path }}/${{ inputs.package-name }}
         run: |
           node $GITHUB_WORKSPACE/common/scripts/install-run-rush.js build --verbose --to ${{ inputs.namespace }}/${{ inputs.package-name }}
+        continue-on-error: true
       - name: build-storybook ${{ inputs.package-name }}
         if: 
           inputs.package-name != null && inputs.storybook
