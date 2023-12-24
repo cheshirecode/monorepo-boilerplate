@@ -43,7 +43,6 @@ jobs:
       - name: Install dependencies
         continue-on-error: true
         run: |
-          npm set verify-store-integrity false
           node common/scripts/install-run-rush.js change -v
           node common/scripts/install-run-rush.js install
       # Run lint for this package
