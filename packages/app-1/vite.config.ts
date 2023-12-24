@@ -12,6 +12,8 @@ import unocssConfig from './unocss.config';
 
 const isCI = !!process.env.CI;
 
+const vendorModules = ['react', 'faker', 'react-table', 'react-virtual', 'lodash'];
+
 // https://vitejs.dev/config/
 export default defineConfig((config) => ({
   plugins: [
@@ -61,7 +63,7 @@ export default defineConfig((config) => ({
     },
     rollupOptions: {
       output: {
-        manualChunks: (id) => {
+        manualChunks: (id, { getModuleInfo }) => {
           if (id.includes('node_modules')) {
             const dependents = [];
             const m = vendorModules.find((x) => id.includes(`/${x}`)) ?? '';
