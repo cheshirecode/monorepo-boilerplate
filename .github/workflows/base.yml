@@ -80,10 +80,10 @@ jobs:
         working-directory: ${{ inputs.package-path }}/${{ inputs.package-name }}
         run: |
           node $GITHUB_WORKSPACE/common/scripts/install-run-rush.js build --verbose --to ${{ inputs.namespace }}/${{ inputs.package-name }}
-      - name: build-storybook ${{ inputs.package-name }}
-        if: 
-          inputs.package-name != null && inputs.storybook
-        working-directory: ${{ inputs.package-path }}/${{ inputs.package-name }}
-        run: |
-          node $GITHUB_WORKSPACE/common/scripts/install-run-rushx.js build-storybook
+      # - name: build-storybook ${{ inputs.package-name }}
+      #   if: 
+      #     inputs.package-name != null && inputs.storybook
+      #   working-directory: ${{ inputs.package-path }}/${{ inputs.package-name }}
+      #   run: |
+      #     node $GITHUB_WORKSPACE/common/scripts/install-run-rushx.js build-storybook
     continue-on-error: true

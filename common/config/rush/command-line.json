@@ -167,6 +167,16 @@
     //   // "autoinstallerName": "my-task"
     // }
     {
+      "name": "build",
+      "commandKind": "bulk",
+      "summary": "Run build on each package",
+      "description": "Iterates through each package in the monorepo and runs the 'build' script",
+      "enableParallelism": true,
+      "ignoreMissingScript": true,
+      "ignoreDependencyOrder": true,
+      "allowWarningsInSuccessfulBuild": true
+    },
+    {
       "name": "test",
       "commandKind": "bulk",
       "summary": "Run tests on each package",
