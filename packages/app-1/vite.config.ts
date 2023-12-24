@@ -112,7 +112,12 @@ export default defineConfig((config) => ({
     include: ['**/*(*.)?{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     exclude: [...configDefaults.exclude, 'src/test/**/*'],
     coverage: {
-      reporter: ['text', 'lcov'],
+      reporter: [
+        ['lcov', { projectRoot: './src' }],
+        ['json', { file: 'coverage.json' }],
+        ['text'],
+        ['html', { subdir: './html' }]
+      ],
       provider: 'v8'
     }
   }

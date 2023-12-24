@@ -29,3 +29,17 @@ jobs:
       package-name: measure-hook
       lcov: true
       build: false
+  finish:
+    needs: [app-1,eslint-config-react,measure-hook]
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x, 20.x]
+    steps:
+    - name: Coveralls Finished
+      uses: coverallsapp/github-action@v2
+      with:
+        parallel-finished: true
+        carryforward: "app-1,eslint-config-react,measure-hook"
+    continue-on-error: true
