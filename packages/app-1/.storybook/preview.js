@@ -1,4 +1,3 @@
-import '@unocss/reset/tailwind.css';
 import '../src/styles/index.css';
 import '../src/styles/reset.css';
 // uno

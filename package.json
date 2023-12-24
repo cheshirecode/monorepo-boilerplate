@@ -1,0 +1,15 @@
+{
+  "name": "rush-monorepo-boilerplate",
+  "private": true,
+  "resolutions": {
+    "uuid": "^7",
+    "@babel/core": ">=7.11.0",
+    "react": ">=18",
+    "chokidar": "^3",
+    "esbuild": "*",
+    "lodash-es": "*",
+    "@typescript-eslint/eslint-plugin": "^5",
+    "@typescript-eslint/parser": "^5",
+    "typescript": "latest"
+  }
+}
