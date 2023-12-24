@@ -1,6 +1,7 @@
 {
   "name": "@rush-monorepo-boilerplate/app-1",
   "private": true,
+  "type": "module",
   "version": "0.0.0",
   "engines": {
     "node": ">= 14"
@@ -10,8 +11,8 @@
     "typecheck": "tsc",
     "build": "vite build",
     "preview": "vite preview --host",
-    "test": "vitest --no-threads",
-    "coverage": "vitest run --coverage --no-threads",
+    "test": "vitest",
+    "coverage": "vitest run --coverage",
     "format": "prettier --write {**/*,*}.{js,ts,jsx,tsx} --ignore-path .gitignore",
     "lint": "eslint --fix {**/*,*}.{js,ts,jsx,tsx} --ignore-path .gitignore",
     "storybook": "start-storybook -p 6006",

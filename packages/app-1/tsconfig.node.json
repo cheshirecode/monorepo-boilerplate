@@ -3,6 +3,7 @@
     "composite": true,
     "module": "esnext",
     "moduleResolution": "node",
+    "resolveJsonModule": true,
     "types": [
       "vite/client",
       "node"

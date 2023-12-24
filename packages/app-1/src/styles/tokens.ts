@@ -20,7 +20,7 @@ export const matchColorToCode = (c: string): string => {
   if (typeof palette === 'string') {
     res = palette ?? res;
   } else {
-    res = (palette[String(shade)] as string) ?? res;
+    res = (palette && (palette[String(shade)] as string)) ?? res;
   }
   return res;
 };

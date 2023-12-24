@@ -3,8 +3,8 @@ import Unocss from '@unocss/vite';
 import react from '@vitejs/plugin-react';
 import browserslistToEsbuild from 'browserslist-to-esbuild';
 import { defineConfig } from 'vite';
-import { configDefaults } from 'vitest/config';
 import vitePluginImportus from 'vite-plugin-importus';
+import { configDefaults } from 'vitest/config';
 
 import alias from './alias';
 import pkg from './package.json';
@@ -16,36 +16,36 @@ const isCI = !!process.env.CI;
 export default defineConfig((config) => ({
   plugins: [
     Unocss({}, unocssConfig),
-      react({
-        jsxImportSource: '@emotion/react',
-        babel: {
-          plugins: []
-          // presets are not working right now, try again and install @babel/preset-env core-js@3.25.3
-          // presets: [
-          //   [
-          //     '@babel/preset-env',
-          //     {
-          //       useBuiltIns: 'usage',
-          //       corejs: { version: '3.25', proposals: true }
-          //     }
-          //   ]
-          // ]
-        }
-        // https://github.com/vitejs/awesome-vite#plugins
-      }),
-      ...(config.command === 'build'
-        ? [
-            vitePluginImportus([
-              {
-                libraryName: 'lodash-es',
-                customName: (name: string) => {
-                  return `lodash-es/${name}`;
-                },
-                camel2DashComponentName: false
-              }
-            ])
-          ]
-        : [])
+    react({
+      jsxImportSource: '@emotion/react',
+      babel: {
+        plugins: []
+        // presets are not working right now, try again and install @babel/preset-env core-js@3.25.3
+        // presets: [
+        //   [
+        //     '@babel/preset-env',
+        //     {
+        //       useBuiltIns: 'usage',
+        //       corejs: { version: '3.25', proposals: true }
+        //     }
+        //   ]
+        // ]
+      }
+      // https://github.com/vitejs/awesome-vite#plugins
+    }),
+    ...(config.command === 'build'
+      ? [
+          vitePluginImportus([
+            {
+              libraryName: 'lodash-es',
+              customName: (name: string) => {
+                return `lodash-es/${name}`;
+              },
+              camel2DashComponentName: false
+            }
+          ])
+        ]
+      : [])
   ],
   resolve: {
     alias
@@ -63,19 +63,19 @@ export default defineConfig((config) => ({
       output: {
         manualChunks: (id) => {
           if (id.includes('node_modules')) {
-              const dependents = [];
-              const m = vendorModules.find((x) => id.includes(`/${x}`)) ?? '';
-              const uniqueName = `vendor${m ? `-${m}` : ''}`;
-              // we use a Set here so we handle each module at most once. This
-              // prevents infinite loops in case of circular dependencies
-              const idsToHandle = new Set(getModuleInfo(id).dynamicImporters);
-              for (const moduleId of idsToHandle) {
-                const { isEntry, dynamicImporters, importers } = getModuleInfo(moduleId);
-                if (isEntry || dynamicImporters.length > 0) dependents.push(moduleId);
-                for (const importerId of importers) idsToHandle.add(importerId);
-              }
+            const dependents = [];
+            const m = vendorModules.find((x) => id.includes(`/${x}`)) ?? '';
+            const uniqueName = `vendor${m ? `-${m}` : ''}`;
+            // we use a Set here so we handle each module at most once. This
+            // prevents infinite loops in case of circular dependencies
+            const idsToHandle = new Set(getModuleInfo(id).dynamicImporters);
+            for (const moduleId of idsToHandle) {
+              const { isEntry, dynamicImporters, importers } = getModuleInfo(moduleId);
+              if (isEntry || dynamicImporters.length > 0) dependents.push(moduleId);
+              for (const importerId of importers) idsToHandle.add(importerId);
+            }
 
-              return dependents.length === 1 ? uniqueName : `shared.${uniqueName}`;
+            return dependents.length === 1 ? uniqueName : `shared.${uniqueName}`;
           }
         }
       }
@@ -86,27 +86,23 @@ export default defineConfig((config) => ({
   },
   optimizeDeps: {
     // disabled: false,
-    include: [
-      'hoist-non-react-statics',
-      '@emotion/react/jsx-dev-runtime',
-      '@unocss/preset-mini'
-    ],
+    include: ['hoist-non-react-statics', '@emotion/react/jsx-dev-runtime', '@unocss/preset-mini'],
     exclude: []
   },
-    define: {
-      // flag to enable MirageJS to mock API
-      'process.env.__MOCK_API__': [
-        'test'
-        // , 'development'
-      ].includes(config.mode),
-      'process.env.__VERSION__': JSON.stringify(pkg.version)
-    },
-    css: {
-      devSourcemap: true
-    },
-    json: {
-      stringify: true
-    },
+  define: {
+    // flag to enable MirageJS to mock API
+    'process.env.__MOCK_API__': [
+      'test'
+      // , 'development'
+    ].includes(config.mode),
+    'process.env.__VERSION__': JSON.stringify(pkg.version)
+  },
+  css: {
+    devSourcemap: true
+  },
+  json: {
+    stringify: true
+  },
   test: {
     globals: true,
     environment: 'jsdom',
@@ -114,7 +110,8 @@ export default defineConfig((config) => ({
     include: ['**/*(*.)?{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     exclude: [...configDefaults.exclude, 'src/test/**/*'],
     coverage: {
-      reporter: ['text', 'lcov']
+      reporter: ['text', 'lcov'],
+      provider: 'v8'
     }
   }
 }));

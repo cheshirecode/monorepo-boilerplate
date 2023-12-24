@@ -1,18 +1,17 @@
-import { createServer, hasMany, Model, Request, Response } from 'miragejs';
+import type { Request } from 'miragejs';
+import { createServer } from 'miragejs';
+import type Schema from 'miragejs/orm/schema';
+import type { Server, ServerConfig } from 'miragejs/server';
 
-export function seeds(server: Server) {
+export function seeds(server: Server) {}
 
-}
-
-export function makeServer(config: ServerConfig = {}): Server {
+export function makeServer(config: ServerConfig<{}, {}> = {}): Server {
   const { environment = 'test', ...conf } = config;
-  return createServer<Models, Factories>({
+  return createServer({
     ...conf,
     environment,
 
-    models: {
-
-    },
+    models: {},
 
     seeds(server) {
       seeds(server);
@@ -20,7 +19,7 @@ export function makeServer(config: ServerConfig = {}): Server {
 
     routes() {
       // specifically for testing fetch code
-      const testHandler = (s: AppSchema, r: Request) => ({
+      const testHandler = (s: Schema<{}>, r: Request) => ({
         headers: r.requestHeaders,
         body: r.requestBody,
         params: r.params,
