@@ -19,19 +19,19 @@
     "build-storybook": "npx --yes cross-env NODE_OPTIONS='--openssl-legacy-provider' build-storybook"
   },
   "dependencies": {
-    "classnames": "^2.3.2",
-    "fast-json-stable-stringify": "^2.1.0",
+    "classnames": "latest",
+    "fast-json-stable-stringify": "latest",
     "lodash-es": "*",
     "react": ">=18",
     "react-dom": ">=18",
-    "react-select": "^5.7.3",
-    "swr": "^2.1.5",
-    "isomorphic-unfetch": "~3.1.0",
+    "react-select": "latest",
+    "swr": "latest",
+    "isomorphic-unfetch": "latest",
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.11.0",
-    "@tanstack/react-table": "^8.9.2",
-    "@tanstack/react-virtual": "beta",
-    "wouter": "~2.9.0"
+    "@tanstack/react-table": "latest",
+    "@tanstack/react-virtual": "latest",
+    "wouter": "^2"
   },
   "devDependencies": {
     "@babel/core": "latest",
@@ -69,12 +69,5 @@
     "@faker-js/faker": "~7.6.0",
     "@unocss/preset-mini": "latest",
     "miragejs": "latest"
-  },
-  "resolutions": {
-    "uuid": "^7",
-    "@babel/core": ">=7.11.0",
-    "react": ">=18",
-    "chokidar": "^3",
-    "esbuild": "*"
   }
 }

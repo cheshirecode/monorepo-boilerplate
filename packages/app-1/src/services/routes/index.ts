@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import makeMatcher from 'wouter/matcher';
 import type { LocationHook } from 'wouter/use-location';
 import useLocation from 'wouter/use-location';
@@ -54,20 +53,6 @@ export const multipathMatcher = (patterns: string | string[], path: string) => {
   }
 
   return [false, null];
-};
-
-export const useRouteMatch = (locationHref = location.href) => {
-  const { pathname } = new URL(locationHref);
-  const isMatchedRoute = useCallback(
-    ({ href }: { href: string } = { href: '' }) =>
-      href && (pathname === href || (href !== routes.home && pathname?.startsWith(href))),
-    [pathname]
-  );
-  const currentRoute = (Object.keys(routes) as (keyof typeof routes)[]).find(
-    (i) => pathname === routes[i] || (i !== 'home' && pathname?.startsWith(routes[i]))
-  );
-
-  return [isMatchedRoute, currentRoute] as const;
 };
 
 const useLocationSetter = (locationHref: string, setter?: ReturnType<LocationHook>[1]) => {

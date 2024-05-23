@@ -47,11 +47,6 @@
     "react": ">=18",
     "react-dom": ">=18"
   },
-  "resolutions": {
-    "@typescript-eslint/eslint-plugin": "^5",
-    "@typescript-eslint/parser": "^5",
-    "typescript": "latest"
-  },
   "bugs": {
     "url": "https://github.com/cheshirecode/rush-monorepo-boilerplate/issues"
   },

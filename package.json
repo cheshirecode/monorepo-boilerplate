@@ -6,10 +6,16 @@
     "@babel/core": ">=7.11.0",
     "react": ">=18",
     "chokidar": "^3",
+    "eslint": "^8",
     "esbuild": "*",
     "lodash-es": "*",
     "@typescript-eslint/eslint-plugin": "^5",
     "@typescript-eslint/parser": "^5",
+    "typescript": "latest"
+  },
+  "devDependencies": {
+    "@rushstack/eslint-config": "^3.6.10",
+    "eslint": "^8",
     "typescript": "latest"
   }
 }

@@ -1,5 +1,4 @@
 import stringify from 'fast-json-stable-stringify';
-// TODO - bump isomorphic-unfetch to ^4 when https://github.com/developit/unfetch/pull/164#issuecomment-1426069180 is resolved
 import fetch from 'isomorphic-unfetch';
 import { isPlainObject, merge } from 'lodash-es';
 import type { Key, SWRConfiguration, SWRHook, SWRResponse } from 'swr';
@@ -19,7 +18,6 @@ export const REQUEST_BASE_OPTIONS = {
 };
 
 export const SWR_BASE_CONFIG: SWRConfiguration = {
-  populateCache: true,
   // reduce re-renders when clicking on a component
   revalidateOnFocus: false,
   revalidateOnMount: true
