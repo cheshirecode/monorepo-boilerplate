@@ -1,6 +1,9 @@
 {
   "name": "rush-monorepo-boilerplate",
   "private": true,
+  "engines": {
+    "node": ">= 18"
+  },
   "resolutions": {
     "uuid": "^7",
     "@babel/core": ">=7.11.0",
