@@ -491,7 +491,7 @@
       "shouldPublish": true
     },
     {
-      "packageName": "@fieryeagle/pkce-poc",
+      "packageName": "@fieryeagle/pkce",
       "projectFolder": "packages/pkce",
       "reviewCategory": "tools",
       "tags": [
