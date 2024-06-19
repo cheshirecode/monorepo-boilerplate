@@ -29,8 +29,15 @@ jobs:
       package-name: measure-hook
       lcov: true
       build: false
+  pkce:
+    needs: [base]
+    uses: ./.github/workflows/base.yml
+    with:
+      package-name: pkce
+      lcov: true
+      build: false
   finish:
-    needs: [app-1,eslint-config-react,measure-hook]
+    needs: [app-1,eslint-config-react,measure-hook,pkce]
     if: ${{ always() }}
     # runs-on: ubuntu-latest
     # strategy:
@@ -41,5 +48,5 @@ jobs:
       uses: coverallsapp/github-action@v2
       with:
         parallel-finished: true
-        carryforward: "app-1,eslint-config-react,measure-hook"
+        carryforward: "app-1,eslint-config-react,measure-hook,pkce"
     continue-on-error: true

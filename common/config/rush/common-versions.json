@@ -63,6 +63,9 @@
     ],
     "@types/react": [
       "latest"
+    ],
+    "isomorphic-unfetch": [
+      "^3"
     ]
   }
 }

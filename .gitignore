@@ -111,6 +111,6 @@ common/autoinstallers/*/.npmrc
 **/.rush/temp/
 
 # Common toolchain intermediate files
-lib
+# lib
 temp
 storybook-static

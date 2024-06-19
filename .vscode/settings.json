@@ -2,10 +2,16 @@
   "typescript.tsdk": "packages/eslint-config-react/node_modules/typescript/lib",
   "unocss.root": "packages/app-1",
   "search.exclude": {
-    "**/common/temp/**": true
+    "**/common/temp/**": true,
+    "**/packages/**/site": true
   },
   "files.watcherExclude": {
-    "**/common/temp/**": true
+    "**/common/temp/**": true,
+    "**/packages/**/site": true
+  },
+  "files.exclude": {
+    "**/common/temp/**": true,
+    "**/packages/**/site": true
   },
   "eslint.workingDirectories": [
     {

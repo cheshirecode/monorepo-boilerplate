@@ -28,7 +28,7 @@
     },
     {
       "name": "@fieryeagle/eslint-config-react",
-      "allowedCategories": [ "production" ]
+      "allowedCategories": [ "production", "tools" ]
     },
     {
       "name": "@happy-dom/jest-environment",
@@ -44,7 +44,7 @@
     },
     {
       "name": "@rushstack/eslint-patch",
-      "allowedCategories": [ "production" ]
+      "allowedCategories": [ "production", "tools" ]
     },
     {
       "name": "@storybook/addon-actions",
@@ -96,19 +96,19 @@
     },
     {
       "name": "@testing-library/jest-dom",
-      "allowedCategories": [ "production" ]
+      "allowedCategories": [ "production", "tools" ]
     },
     {
       "name": "@testing-library/react",
-      "allowedCategories": [ "production" ]
+      "allowedCategories": [ "production", "tools" ]
     },
     {
       "name": "@testing-library/react-hooks",
-      "allowedCategories": [ "production" ]
+      "allowedCategories": [ "production", "tools" ]
     },
     {
       "name": "@testing-library/user-event",
-      "allowedCategories": [ "production" ]
+      "allowedCategories": [ "production", "tools" ]
     },
     {
       "name": "@typescript-eslint/eslint-plugin",
@@ -147,6 +147,10 @@
       "allowedCategories": [ "production" ]
     },
     {
+      "name": "@vitejs/plugin-react-swc",
+      "allowedCategories": [ "tools" ]
+    },
+    {
       "name": "@vitest/coverage-c8",
       "allowedCategories": [ "production", "tools" ]
     },
@@ -168,10 +172,18 @@
     },
     {
       "name": "classnames",
-      "allowedCategories": [ "production" ]
+      "allowedCategories": [ "production", "tools" ]
     },
     {
       "name": "coveralls",
+      "allowedCategories": [ "tools" ]
+    },
+    {
+      "name": "crypto-js",
+      "allowedCategories": [ "tools" ]
+    },
+    {
+      "name": "dayjs",
       "allowedCategories": [ "tools" ]
     },
     {
@@ -223,6 +235,10 @@
       "allowedCategories": [ "tools" ]
     },
     {
+      "name": "eslint-plugin-react-refresh",
+      "allowedCategories": [ "tools" ]
+    },
+    {
       "name": "eslint-plugin-storybook",
       "allowedCategories": [ "production" ]
     },
@@ -236,15 +252,19 @@
     },
     {
       "name": "isomorphic-unfetch",
-      "allowedCategories": [ "production" ]
+      "allowedCategories": [ "production", "tools" ]
     },
     {
       "name": "istanbul",
       "allowedCategories": [ "tools" ]
     },
     {
+      "name": "js-cookie",
+      "allowedCategories": [ "tools" ]
+    },
+    {
       "name": "jsdom",
-      "allowedCategories": [ "production" ]
+      "allowedCategories": [ "production", "tools" ]
     },
     {
       "name": "lodash-es",
@@ -308,7 +328,7 @@
     },
     {
       "name": "unocss",
-      "allowedCategories": [ "production" ]
+      "allowedCategories": [ "production", "tools" ]
     },
     {
       "name": "unocss-preset-scrollbar",
@@ -325,6 +345,18 @@
     {
       "name": "vitest",
       "allowedCategories": [ "production", "tools" ]
+    },
+    {
+      "name": "vitest-fetch-mock",
+      "allowedCategories": [ "tools" ]
+    },
+    {
+      "name": "vitest-localstorage-mock",
+      "allowedCategories": [ "tools" ]
+    },
+    {
+      "name": "vitest-location-mock",
+      "allowedCategories": [ "tools" ]
     },
     {
       "name": "wouter",
