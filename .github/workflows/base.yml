@@ -58,7 +58,7 @@ jobs:
         if: inputs.lcov != ''
         working-directory: ${{ inputs.package-path }}/${{ inputs.package-name }}
         run: |
-          echo - ${{ inputs.package-path }} - ${{ inputs.package-name }} - ${{ github.job }}
+          pwd
           node $GITHUB_WORKSPACE/common/scripts/install-run-rushx.js coverage
       - name: Coveralls GitHub Action
         if: inputs.lcov != ''
@@ -73,5 +73,6 @@ jobs:
         if: ${{ inputs.build }}
         working-directory: ${{ inputs.package-path }}/${{ inputs.package-name }}
         run: |
-          node $GITHUB_WORKSPACE/common/scripts/install-run-rush.js build --verbose --to ${{ inputs.namespace }}/${{ inputs.package-name }}
+          pwd
+          node $GITHUB_WORKSPACE/common/scripts/install-run-rushx.js build
     continue-on-error: true

@@ -464,7 +464,7 @@
     //   "tags": ["tools"]
     // }
     {
-      "packageName": "@rush-monorepo-boilerplate/app-1",
+      "packageName": "app-1",
       "projectFolder": "packages/app-1",
       "reviewCategory": "production",
       "tags": [
@@ -482,7 +482,7 @@
       "shouldPublish": true
     },
     {
-      "packageName": "@rush-monorepo-boilerplate/measure-hook",
+      "packageName": "measure-hook",
       "projectFolder": "packages/measure-hook",
       "reviewCategory": "tools",
       "tags": [
