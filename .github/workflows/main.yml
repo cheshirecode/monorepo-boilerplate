@@ -30,6 +30,7 @@ jobs:
     with:
       package-name: measure-hook
       lcov: true
+      build: false
   pkce:
     needs: [base]
     uses: ./.github/workflows/base.yml
