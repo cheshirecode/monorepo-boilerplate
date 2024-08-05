@@ -14,14 +14,15 @@ jobs:
     needs: [base]
     uses: ./.github/workflows/base.yml
     with:
-      package-name: "@rush-monorepo-boilerplate/app-1" 
+      package-name: app-1
       storybook: true
       lcov: true
   eslint-config-react:
     needs: [base]
     uses: ./.github/workflows/base.yml
     with:
-      package-name: "@fieryeagle/eslint-config-react"
+      package-name: eslint-config-react
+      namespace: '@fieryeagle'
       lcov: true
   measure-hook:
     needs: [base]
@@ -29,12 +30,12 @@ jobs:
     with:
       package-name: measure-hook
       lcov: true
-      build: false
   pkce:
     needs: [base]
     uses: ./.github/workflows/base.yml
     with:
-      package-name: '@fieryeagle/pkce'
+      package-name: pkce
+      namespace: '@fieryeagle'
       lcov: true
   finish:
     needs: [app-1,eslint-config-react,measure-hook,pkce]

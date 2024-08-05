@@ -482,7 +482,7 @@
       "shouldPublish": true
     },
     {
-      "packageName": "measure-hook",
+      "packageName": "@rush-monorepo-boilerplate/measure-hook",
       "projectFolder": "packages/measure-hook",
       "reviewCategory": "tools",
       "tags": [

@@ -7,6 +7,10 @@ on:
         required: false
         type: string
         default: '@rush-monorepo-boilerplate'
+      namespace:
+        required: false
+        type: string
+        default: '@rush-monorepo-boilerplate'
       package-name:
         required: false
         type: string
@@ -47,36 +51,31 @@ jobs:
           node common/scripts/install-run-rush.js install
       # Run lint for this package
       - name: lint ${{ inputs.package-name }}
-        if: inputs.package-name != null
-        run: node common/scripts/install-run-rush.js lint --to ${{ inputs.namespace }}/${{ inputs.package-name }}        
+        if: inputs.package-name != ''
+        run: node common/scripts/install-run-rush.js lint --to ${{ inputs.namespace }}/${{ inputs.package-name }}
         continue-on-error: true
       # Run unit tests for this package
       - name: test ${{ inputs.package-name }}
-        if: inputs.package-name != null && inputs.lcov == null
+        if: inputs.package-name != '' && inputs.lcov == ''
         run: node common/scripts/install-run-rush.js test --to ${{ inputs.namespace }}/${{ inputs.package-name }}
       - name: test:lcov ${{ inputs.package-name }}
-        if: inputs.lcov != null
-        working-directory: ${{ inputs.package-path }}/${{ github.jobs[github.job].name }}
+        if: inputs.lcov != ''
+        working-directory: ${{ inputs.package-path }}/${{ inputs.package-name }}
         run: |
-          echo - ${{ inputs.package-path }} - ${{ github.jobs[github.job].name }} - ${{ github.job }}
+          echo - ${{ inputs.package-path }} - ${{ inputs.package-name }} - ${{ github.job }}
           node $GITHUB_WORKSPACE/common/scripts/install-run-rushx.js coverage
       - name: Coveralls GitHub Action
-        if: inputs.lcov != null
+        if: inputs.lcov != ''
         uses: coverallsapp/github-action@v2
         with:
           github-token: ${{ secrets.github_token }}
-          file: ${{ github.workspace }}/${{ inputs.package-path }}/${{ github.jobs[github.job].name }}/coverage/lcov.info
+          file: ${{ github.workspace }}/${{ inputs.package-path }}/${{ inputs.package-name }}/coverage/lcov.info
           format: lcov
           flag-name: ${{ inputs.package-name }}
           parallel: true
       - name: build ${{ inputs.package-name }}
-        if: ${{ inputs.namespace }} == null && ${{ inputs.package-name }} != null && ${{ inputs.build }}
-        working-directory: ${{ inputs.package-path }}/${{ github.jobs[github.job].name }}
-        run: |
-          node $GITHUB_WORKSPACE/common/scripts/install-run-rush.js build --verbose --to ${{ inputs.namespace }}/${{ inputs.package-name }}
-      - name: build ${{ inputs.namespace }}/${{ inputs.package-name }}
-        if: ${{ inputs.namespace }} != null && ${{ inputs.package-name }} != null && ${{ inputs.build }}
-        working-directory: ${{ inputs.package-path }}/${{ github.jobs[github.job].name }}
+        if: ${{ inputs.build }}
+        working-directory: ${{ inputs.package-path }}/${{ inputs.package-name }}
         run: |
           node $GITHUB_WORKSPACE/common/scripts/install-run-rush.js build --verbose --to ${{ inputs.namespace }}/${{ inputs.package-name }}
     continue-on-error: true
