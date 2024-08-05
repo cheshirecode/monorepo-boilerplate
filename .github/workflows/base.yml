@@ -7,10 +7,6 @@ on:
         required: false
         type: string
         default: '@rush-monorepo-boilerplate'
-      namespace:
-        required: false
-        type: string
-        default: '@rush-monorepo-boilerplate'
       package-name:
         required: false
         type: string
